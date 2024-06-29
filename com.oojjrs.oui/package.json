@@ -5,12 +5,11 @@
   "unity": "2022.3",
   "description": "잘 알아보고 쓰셈",
   "repository": {
-    "url": "https://github.com/oojjrs/unity_oui.git",
+    "url": "git+https://github.com/oojjrs/unity_oui?path=/com.oojjrs.oui",
     "type": "git"
   },
   "author": {
     "name": "oojjrs",
-    "email": "oojjrs@gmail.com",
-    "url": "https://github.com/oojjrs/unity_oui"
+    "email": "oojjrs@gmail.com"
   }
 }
