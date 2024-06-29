@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using UnityEngine;
 
-namespace Assets.oojjrs.oui
+namespace oojjrs.oui
 {
     public class MySelector : MonoBehaviour
     {

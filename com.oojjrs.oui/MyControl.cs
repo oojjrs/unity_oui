@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-namespace Assets.oojjrs.oui
+namespace oojjrs.oui
 {
     public static class MyControl
     {

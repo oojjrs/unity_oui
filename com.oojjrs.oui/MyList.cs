@@ -2,7 +2,7 @@
 using System.Linq;
 using UnityEngine;
 
-namespace Assets.oojjrs.oui
+namespace oojjrs.oui
 {
     public partial class MyList : MonoBehaviour
     {

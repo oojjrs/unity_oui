@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.EventSystems;
 
-namespace Assets.oojjrs.oui
+namespace oojjrs.oui
 {
     // ㅡ,.ㅡ 클릭 이벤트를 받으려면 down과 up이 있어야 하네?? 아니 근데 없어도 되는 놈들은 또 뭔데
     public class MyEventUpwardsClick : MonoBehaviour, IPointerClickHandler, IPointerDownHandler, IPointerUpHandler

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace Assets.oojjrs.oui
+namespace oojjrs.oui
 {
     public partial class MyList
     {
