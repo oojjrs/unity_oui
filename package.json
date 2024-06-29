@@ -4,10 +4,10 @@
   "version": "1.0.0",
   "unity": "2022.3",
   "description": "잘 알아보고 쓰셈",
-  "keywords": [
-    "unity",
-    "package"
-  ],
+  "repository": {
+    "url": "https://github.com/oojjrs/unity_oui.git",
+    "type": "git",
+  },
   "author": {
     "name": "oojjrs",
     "email": "oojjrs@gmail.com",
