@@ -1,4 +1,4 @@
-﻿namespace Assets.oojjrs.oui
+﻿namespace Assets.oui
 {
     public partial class MyButton
     {

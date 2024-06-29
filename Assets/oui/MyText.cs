@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
-namespace Assets.oojjrs.oui
+namespace Assets.oui
 {
     [RequireComponent(typeof(Text))]
     public class MyText : MonoBehaviour

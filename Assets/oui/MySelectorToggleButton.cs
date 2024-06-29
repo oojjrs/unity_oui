@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Assets.oojjrs.oui
+namespace Assets.oui
 {
     [RequireComponent(typeof(MyButton))]
     public class MySelectorToggleButton : MonoBehaviour, MyButton.CallbackInterface, MyButton.DoubleClickInterface

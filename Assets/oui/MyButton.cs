@@ -2,7 +2,7 @@
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-namespace Assets.oojjrs.oui
+namespace Assets.oui
 {
     [RequireComponent(typeof(Button))]
     public partial class MyButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler

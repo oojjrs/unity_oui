@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.EventSystems;
 
-namespace Assets.oojjrs.oui
+namespace Assets.oui
 {
     [RequireComponent(typeof(MySelector))]
     public class MySelectorToggle : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, MySelector.CallbackInterface

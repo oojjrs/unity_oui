@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.EventSystems;
 
-namespace Assets.oojjrs.oui
+namespace Assets.oui
 {
     public class MyEventUpwardsDrag : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
     {
