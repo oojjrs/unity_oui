@@ -1,0 +1,18 @@
+{
+  "name": "com.oojjrs.oui",
+  "displayName": "OOJJRS' Unity UI Helper",
+  "version": "1.0.0",
+  "unity": "2022.3",
+  "description": "잘 알아보고 쓰셈",
+  "keywords": [
+    "unity",
+    "package"
+  ],
+  "dependencies": {
+  },
+  "author": {
+    "name": "oojjrs",
+    "email": "oojjrs@gmail.com",
+    "url": "https://github.com/oojjrs/unity_oui"
+  }
+}
