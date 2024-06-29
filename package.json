@@ -6,7 +6,7 @@
   "description": "잘 알아보고 쓰셈",
   "repository": {
     "url": "https://github.com/oojjrs/unity_oui.git",
-    "type": "git",
+    "type": "git"
   },
   "author": {
     "name": "oojjrs",
