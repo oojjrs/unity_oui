@@ -8,9 +8,6 @@
     "unity",
     "package"
   ],
-  "dependencies": {
-    "com.oojjrs.oui": "https://github.com/oojjrs/unity_oui.git"
-  },
   "author": {
     "name": "oojjrs",
     "email": "oojjrs@gmail.com",
