@@ -3,7 +3,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Assets.oui
+namespace Assets.oojjrs.oui
 {
     [RequireComponent(typeof(Dropdown))]
     public class MyDropdown : MonoBehaviour

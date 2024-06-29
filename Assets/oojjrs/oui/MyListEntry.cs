@@ -1,4 +1,4 @@
-﻿namespace Assets.oui
+﻿namespace Assets.oojjrs.oui
 {
     public interface MyListEntry<TValue>
     {

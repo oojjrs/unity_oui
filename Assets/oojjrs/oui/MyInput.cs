@@ -2,7 +2,7 @@
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-namespace Assets.oui
+namespace Assets.oojjrs.oui
 {
     [RequireComponent(typeof(InputField))]
     public class MyInput : MonoBehaviour, IDeselectHandler, ISelectHandler

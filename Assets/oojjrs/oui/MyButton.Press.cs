@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-namespace Assets.oui
+namespace Assets.oojjrs.oui
 {
     public partial class MyButton : IPointerDownHandler, IPointerUpHandler
     {
