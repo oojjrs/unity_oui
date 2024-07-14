@@ -15,7 +15,16 @@ namespace oojjrs.oui
         public string Text
         {
             get => GetComponent<Text>().text;
-            set => GetComponent<Text>().text = value;
+            set
+            {
+                // 유니티의 Localization을 사용할 경우 prefab text 값을 edit time에 자꾸 바꿔버리기 때문에 방지해보았다.
+#if UNITY_EDITOR
+                if (Application.isPlaying)
+#endif
+                {
+                    GetComponent<Text>().text = value;
+                }
+            }
         }
         public int TextFromInt32
         {
