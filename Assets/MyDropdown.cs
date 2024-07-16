@@ -34,8 +34,6 @@ namespace oojjrs.oui
 
         private void Start()
         {
-            MyControl.Dropdown.OnUpdate += UpdateValue;
-
             Callback = GetComponent<CallbackInterface>();
             if (Callback == default)
                 Debug.LogWarning($"{name}> DON'T HAVE CALLBACK FUNCTION.");
@@ -48,7 +46,7 @@ namespace oojjrs.oui
             Callback?.OnValueChanged(index, GetComponent<Dropdown>().options[index].text);
         }
 
-        private void UpdateValue()
+        public void OuiUpdateValue()
         {
             if (Callback != default)
             {

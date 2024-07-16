@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace oojjrs.oui
 {
@@ -16,55 +15,39 @@ namespace oojjrs.oui
         private CallbackInterface Callback { get; set; }
         private int? Index { get; set; }
 
-        private void OnEnable()
-        {
-            UpdateSelection();
-        }
-
         private void Start()
         {
-            MyControl.Selector.OnUpdate += UpdateSelection;
-
             Callback = GetComponent<CallbackInterface>();
             if (Callback == default)
                 Debug.LogWarning($"{name}> DON'T HAVE CALLBACK FUNCTION.");
         }
 
-        public int GetIndexByName(string name)
+        public void OuiSelect(int index)
         {
-            return _values.TakeWhile(t => t.name != name).Count();
-        }
-
-        public void UpdateSelection()
-        {
-            if (Callback != default)
+            if (index != Index)
             {
-                var index = Callback.GetIndex();
-                if (index != Index)
-                {
-                    Index = index;
+                Index = index;
 
-                    foreach (var value in _values)
-                    {
-                        if (value != default)
-                            value.SetActive(false);
-                    }
-
-                    if ((Index >= 0) && (Index < _values.Length))
-                    {
-                        if (_values[Index.Value] != default)
-                            _values[Index.Value].SetActive(true);
-                    }
-                }
-            }
-            else
-            {
                 foreach (var value in _values)
                 {
                     if (value != default)
                         value.SetActive(false);
                 }
+
+                if ((Index >= 0) && (Index < _values.Length))
+                {
+                    if (_values[Index.Value] != default)
+                        _values[Index.Value].SetActive(true);
+                }
             }
+        }
+
+        public void OuiUpdate()
+        {
+            if (Callback != default)
+                OuiSelect(Callback.GetIndex());
+            else
+                OuiSelect(-1);
         }
     }
 }
