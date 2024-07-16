@@ -202,60 +202,54 @@ namespace oojjrs.oui
             }
         }
 
-        public void PlayClick()
+        private void OuiPlayAnimation(string trigger, string state)
+        {
+            var animator = GetComponent<Animator>();
+            if (animator != default)
+            {
+                if (animator.GetCurrentAnimatorStateInfo(0).IsName(state) == false)
+                    animator.SetTrigger(trigger);
+            }
+            else
+            {
+                Debug.LogWarning($"{name}> I'M NOT ANIMATED BUTTON.");
+            }
+        }
+
+        private void OuiPlayClick()
         {
             GetComponent<Button>().OnSubmit(default);
         }
 
-        public void PlayDisabledAnimation()
+        public void OuiPlayDisabledAnimation()
         {
-            var animator = GetComponent<Animator>();
-            if (animator != default)
-                animator.SetTrigger(GetComponent<Button>().animationTriggers.disabledTrigger);
-            else
-                Debug.LogWarning($"{name}> I'M NOT ANIMATED BUTTON.");
+            OuiPlayAnimation(GetComponent<Button>().animationTriggers.disabledTrigger, "Disabled");
         }
 
-        public void PlayHighlightedAnimation()
+        public void OuiPlayHighlightedAnimation()
         {
-            var animator = GetComponent<Animator>();
-            if (animator != default)
-                animator.SetTrigger(GetComponent<Button>().animationTriggers.highlightedTrigger);
-            else
-                Debug.LogWarning($"{name}> I'M NOT ANIMATED BUTTON.");
+            OuiPlayAnimation(GetComponent<Button>().animationTriggers.highlightedTrigger, "Highlighted");
         }
 
-        public void PlayNormalAnimation()
+        public void OuiPlayNormalAnimation()
         {
-            var animator = GetComponent<Animator>();
-            if (animator != default)
-                animator.SetTrigger(GetComponent<Button>().animationTriggers.normalTrigger);
-            else
-                Debug.LogWarning($"{name}> I'M NOT ANIMATED BUTTON.");
+            OuiPlayAnimation(GetComponent<Button>().animationTriggers.normalTrigger, "Normal");
         }
 
-        public void PlayPressedAnimation()
+        public void OuiPlayPressedAnimation()
         {
-            var animator = GetComponent<Animator>();
-            if (animator != default)
-                animator.SetTrigger(GetComponent<Button>().animationTriggers.pressedTrigger);
-            else
-                Debug.LogWarning($"{name}> I'M NOT ANIMATED BUTTON.");
+            OuiPlayAnimation(GetComponent<Button>().animationTriggers.pressedTrigger, "Pressed");
         }
 
-        public void PlaySelectedAnimation()
+        public void OuiPlaySelectedAnimation()
         {
-            var animator = GetComponent<Animator>();
-            if (animator != default)
-                animator.SetTrigger(GetComponent<Button>().animationTriggers.selectedTrigger);
-            else
-                Debug.LogWarning($"{name}> I'M NOT ANIMATED BUTTON.");
+            OuiPlayAnimation(GetComponent<Button>().animationTriggers.selectedTrigger, "Selected");
         }
 
         private void __OnPointerClick(PointerEventData eventData)
         {
             if (Interactable)
-                PlayClick();
+                OuiPlayClick();
         }
     }
 }
