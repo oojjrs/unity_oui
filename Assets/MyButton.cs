@@ -202,18 +202,13 @@ namespace oojjrs.oui
             }
         }
 
-        private void OuiPlayAnimation(string trigger, string state)
+        private void OuiPlayAnimation(string trigger)
         {
             var animator = GetComponent<Animator>();
             if (animator != default)
-            {
-                if (animator.GetCurrentAnimatorStateInfo(0).IsName(state) == false)
-                    animator.SetTrigger(trigger);
-            }
+                animator.SetTrigger(trigger);
             else
-            {
                 Debug.LogWarning($"{name}> I'M NOT ANIMATED BUTTON.");
-            }
         }
 
         private void OuiPlayClick()
@@ -223,27 +218,27 @@ namespace oojjrs.oui
 
         public void OuiPlayDisabledAnimation()
         {
-            OuiPlayAnimation(GetComponent<Button>().animationTriggers.disabledTrigger, "Disabled");
+            OuiPlayAnimation(GetComponent<Button>().animationTriggers.disabledTrigger);
         }
 
         public void OuiPlayHighlightedAnimation()
         {
-            OuiPlayAnimation(GetComponent<Button>().animationTriggers.highlightedTrigger, "Highlighted");
+            OuiPlayAnimation(GetComponent<Button>().animationTriggers.highlightedTrigger);
         }
 
         public void OuiPlayNormalAnimation()
         {
-            OuiPlayAnimation(GetComponent<Button>().animationTriggers.normalTrigger, "Normal");
+            OuiPlayAnimation(GetComponent<Button>().animationTriggers.normalTrigger);
         }
 
         public void OuiPlayPressedAnimation()
         {
-            OuiPlayAnimation(GetComponent<Button>().animationTriggers.pressedTrigger, "Pressed");
+            OuiPlayAnimation(GetComponent<Button>().animationTriggers.pressedTrigger);
         }
 
         public void OuiPlaySelectedAnimation()
         {
-            OuiPlayAnimation(GetComponent<Button>().animationTriggers.selectedTrigger, "Selected");
+            OuiPlayAnimation(GetComponent<Button>().animationTriggers.selectedTrigger);
         }
 
         private void __OnPointerClick(PointerEventData eventData)
