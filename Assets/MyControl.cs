@@ -16,11 +16,37 @@ namespace oojjrs.oui
             public static Action PlaySwitchSfx { get; set; }
         }
 
+        internal static class Dropdown
+        {
+            internal static event Action OnUpdate;
+
+            internal static void Update()
+            {
+                OnUpdate?.Invoke();
+            }
+        }
+
         public static class Image
         {
             public static Sprite Null { get; set; }
         }
 
+        internal static class Selector
+        {
+            internal static event Action OnUpdate;
+
+            internal static void Update()
+            {
+                OnUpdate?.Invoke();
+            }
+        }
+
         public static bool Texting { get; internal set; }
+
+        public static void Update()
+        {
+            Dropdown.Update();
+            Selector.Update();
+        }
     }
 }
