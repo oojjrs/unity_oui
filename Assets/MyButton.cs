@@ -29,8 +29,6 @@ namespace oojjrs.oui
         }
 
         [SerializeField]
-        private GameObject _dimmedCover;
-        [SerializeField]
         private bool _hoverSoundDisabled;
         [SerializeField]
         private Color _textDisableColor;
@@ -45,16 +43,6 @@ namespace oojjrs.oui
         public ClickSoundEnum ClickSound { get; set; }
         private HoverInterface Hover { get; set; }
         public bool Interactable { get => GetComponent<Button>().interactable; set => GetComponent<Button>().interactable = value; }
-        public bool InteractableWithDimmedCover
-        {
-            set
-            {
-                Interactable = value;
-
-                if (_dimmedCover != default)
-                    _dimmedCover.SetActive(value == false);
-            }
-        }
         public bool InteractableWithSprite
         {
             set
