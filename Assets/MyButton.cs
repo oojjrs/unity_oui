@@ -219,6 +219,51 @@ namespace oojjrs.oui
             GetComponent<Button>().OnSubmit(default);
         }
 
+        public void PlayDisabledAnimation()
+        {
+            var animator = GetComponent<Animator>();
+            if (animator != default)
+                animator.SetTrigger(GetComponent<Button>().animationTriggers.disabledTrigger);
+            else
+                Debug.LogWarning($"{name}> I'M NOT ANIMATED BUTTON.");
+        }
+
+        public void PlayHighlightedAnimation()
+        {
+            var animator = GetComponent<Animator>();
+            if (animator != default)
+                animator.SetTrigger(GetComponent<Button>().animationTriggers.highlightedTrigger);
+            else
+                Debug.LogWarning($"{name}> I'M NOT ANIMATED BUTTON.");
+        }
+
+        public void PlayNormalAnimation()
+        {
+            var animator = GetComponent<Animator>();
+            if (animator != default)
+                animator.SetTrigger(GetComponent<Button>().animationTriggers.normalTrigger);
+            else
+                Debug.LogWarning($"{name}> I'M NOT ANIMATED BUTTON.");
+        }
+
+        public void PlayPressedAnimation()
+        {
+            var animator = GetComponent<Animator>();
+            if (animator != default)
+                animator.SetTrigger(GetComponent<Button>().animationTriggers.pressedTrigger);
+            else
+                Debug.LogWarning($"{name}> I'M NOT ANIMATED BUTTON.");
+        }
+
+        public void PlaySelectedAnimation()
+        {
+            var animator = GetComponent<Animator>();
+            if (animator != default)
+                animator.SetTrigger(GetComponent<Button>().animationTriggers.selectedTrigger);
+            else
+                Debug.LogWarning($"{name}> I'M NOT ANIMATED BUTTON.");
+        }
+
         private void __OnPointerClick(PointerEventData eventData)
         {
             if (Interactable)
