@@ -202,7 +202,7 @@ namespace oojjrs.oui
             }
         }
 
-        private void OuiPlayAnimation(string trigger)
+        public void OuiPlayAnimation(string trigger)
         {
             var animator = GetComponent<Animator>();
             if (animator != default)
