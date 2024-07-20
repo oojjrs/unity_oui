@@ -10,6 +10,8 @@ namespace oojjrs.oui
         }
 
         [SerializeField]
+        private bool _emptyCallbackInterface;
+        [SerializeField]
         private GameObject[] _values;
 
         private CallbackInterface Callback { get; set; }
@@ -18,8 +20,11 @@ namespace oojjrs.oui
         private void Start()
         {
             Callback = GetComponent<CallbackInterface>();
-            if (Callback == default)
-                Debug.LogWarning($"{name}> DON'T HAVE CALLBACK FUNCTION.");
+            if (_emptyCallbackInterface == false)
+            {
+                if (Callback == default)
+                    Debug.LogWarning($"{name}> DON'T HAVE CALLBACK FUNCTION.");
+            }
         }
 
         public void OuiSelect(int index)
@@ -46,7 +51,7 @@ namespace oojjrs.oui
         {
             if (Callback != default)
                 OuiSelect(Callback.GetIndex());
-            else
+            else if (_emptyCallbackInterface == false)
                 OuiSelect(-1);
         }
     }
