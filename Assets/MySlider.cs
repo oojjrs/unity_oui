@@ -8,15 +8,19 @@ namespace oojjrs.oui
     {
         public interface CallbackInterface
         {
-            float InitialValue { get; }
-
             void OnValueChanged(float value);
+        }
+
+        public interface InitializerInterface
+        {
+            float InitialValue { get; }
         }
 
         [SerializeField]
         private MyText _text;
 
-        private CallbackInterface Callback { get; set; }
+        private CallbackInterface[] Callbacks { get; set; }
+        private InitializerInterface Initializer { get; set; }
         public string Text
         {
             get => (_text != default) ? _text.Text : string.Empty;
@@ -34,23 +38,28 @@ namespace oojjrs.oui
 
         private void OnEnable()
         {
-            if (Callback != default)
-                GetComponent<Slider>().value = Callback.InitialValue;
+            if (Initializer != default)
+                GetComponent<Slider>().value = Initializer.InitialValue;
         }
 
         private void Start()
         {
-            Callback = GetComponent<CallbackInterface>();
-            if (Callback == default)
+            Callbacks = GetComponents<CallbackInterface>();
+            if (Callbacks == default)
                 Debug.LogWarning($"{name}> DON'T HAVE CALLBACK FUNCTION.");
 
-            if (Callback != default)
-                GetComponent<Slider>().value = Callback.InitialValue;
+            Initializer = GetComponent<InitializerInterface>();
+            if (Initializer != default)
+                GetComponent<Slider>().value = Initializer.InitialValue;
         }
 
         public void OnValueChanged(float value)
         {
-            Callback?.OnValueChanged(value);
+            if (Callbacks != default)
+            {
+                foreach (var callback in Callbacks)
+                    callback.OnValueChanged(value);
+            }
         }
     }
 }

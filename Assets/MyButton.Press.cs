@@ -13,23 +13,26 @@ namespace oojjrs.oui
             void OnUp();
         }
 
-        private PressInterface Press { get; set; }
+        private PressInterface[] Presses { get; set; }
         private Coroutine PressCoroutine { get; set; }
         private bool Pressing { get; set; }
         private float PressTime { get; set; }
 
         private void Update()
         {
-            if (Press != default)
+            if (Presses != default)
             {
                 if (Pressing)
-                    Press.OnPressing(Time.time - PressTime);
+                {
+                    foreach (var press in Presses)
+                        press.OnPressing(Time.time - PressTime);
+                }
             }
         }
 
         void IPointerDownHandler.OnPointerDown(PointerEventData eventData)
         {
-            if (Press != default)
+            if (Presses != default)
             {
                 if (Interactable && (eventData.button == PointerEventData.InputButton.Left))
                 {
@@ -43,9 +46,10 @@ namespace oojjrs.oui
 
         void IPointerUpHandler.OnPointerUp(PointerEventData eventData)
         {
-            if (Press != default)
+            if (Presses != default)
             {
-                Press.OnUp();
+                foreach (var press in Presses)
+                    press.OnUp();
 
                 if (PressCoroutine != default)
                 {
@@ -64,7 +68,11 @@ namespace oojjrs.oui
             Pressing = true;
             PressTime = Time.time;
 
-            Press.OnDown();
+            if (Presses != default)
+            {
+                foreach (var press in Presses)
+                    press.OnDown();
+            }
         }
     }
 }

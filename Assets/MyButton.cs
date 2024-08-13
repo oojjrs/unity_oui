@@ -39,9 +39,9 @@ namespace oojjrs.oui
         [SerializeField]
         private MyText _text;
 
-        private CallbackInterface Callback { get; set; }
+        private CallbackInterface[] Callbacks { get; set; }
         public ClickSoundEnum ClickSound { get; set; }
-        private HoverInterface Hover { get; set; }
+        private HoverInterface[] Hovers { get; set; }
         public bool Interactable { get => GetComponent<Button>().interactable; set => GetComponent<Button>().interactable = value; }
         public bool InteractableWithSprite
         {
@@ -141,13 +141,13 @@ namespace oojjrs.oui
 
         private void Start()
         {
-            Callback = GetComponent<CallbackInterface>();
-            if (Callback == default)
+            Callbacks = GetComponents<CallbackInterface>();
+            if (Callbacks == default)
                 Debug.LogWarning($"{name}> DON'T HAVE CALLBACK FUNCTION.");
 
-            DoubleClick = GetComponent<DoubleClickInterface>();
-            Hover = GetComponent<HoverInterface>();
-            Press = GetComponent<PressInterface>();
+            DoubleClicks = GetComponents<DoubleClickInterface>();
+            Hovers = GetComponents<HoverInterface>();
+            Presses = GetComponents<PressInterface>();
         }
 
         void IPointerEnterHandler.OnPointerEnter(PointerEventData eventData)
@@ -155,22 +155,29 @@ namespace oojjrs.oui
             if (Interactable && (_hoverSoundDisabled == false))
                 MyControl.Audio.PlayHoverSfx?.Invoke();
 
-            if (Interactable && (Hover != default))
-                Hover.OnHoverEnter();
+            if (Interactable && (Hovers != default))
+            {
+                foreach (var hover in Hovers)
+                    hover.OnHoverEnter();
+            }
         }
 
         void IPointerExitHandler.OnPointerExit(PointerEventData eventData)
         {
-            if (Interactable && (Hover != default))
-                Hover.OnHoverExit();
+            if (Interactable && (Hovers != default))
+            {
+                foreach (var hover in Hovers)
+                    hover.OnHoverExit();
+            }
         }
 
         public void OnClick()
         {
-            if (Callback != default)
+            if (Callbacks != default)
             {
                 ClickSound = ClickSoundEnum.Click;
-                Callback.OnClick();
+                foreach (var callback in Callbacks)
+                    callback.OnClick();
 
                 switch (ClickSound)
                 {

@@ -7,12 +7,15 @@
             void OnDoubleClick();
         }
 
-        private DoubleClickInterface DoubleClick { get; set; }
+        private DoubleClickInterface[] DoubleClicks { get; set; }
 
         public void OnDoubleClick()
         {
-            if (DoubleClick != default)
-                DoubleClick.OnDoubleClick();
+            if (DoubleClicks != default)
+            {
+                foreach (var dc in DoubleClicks)
+                    dc.OnDoubleClick();
+            }
         }
     }
 }

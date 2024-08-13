@@ -10,16 +10,21 @@ namespace oojjrs.oui
     {
         public interface CallbackInterface
         {
+            void OnValueChanged(int index, string option);
+        }
+
+        public interface InitializerInterface
+        {
             IEnumerable<string> InitialOptions { get; }
 
             int GetInitialIndex(IEnumerable<string> options);
-            void OnValueChanged(int index, string option);
         }
 
         [SerializeField]
         private GameObject _dimmedCover;
 
-        private CallbackInterface Callback { get; set; }
+        private CallbackInterface[] Callbacks { get; set; }
+        private InitializerInterface Initializer { get; set; }
         public bool Interactable
         {
             get => GetComponent<Dropdown>().interactable;
@@ -34,25 +39,31 @@ namespace oojjrs.oui
 
         private void Start()
         {
-            Callback = GetComponent<CallbackInterface>();
-            if (Callback == default)
+            Callbacks = GetComponents<CallbackInterface>();
+            if (Callbacks == default)
                 Debug.LogWarning($"{name}> DON'T HAVE CALLBACK FUNCTION.");
+
+            Initializer = GetComponent<InitializerInterface>();
         }
 
         public void OnValueChanged(int index)
         {
             MyControl.Audio.PlaySwitchSfx?.Invoke();
 
-            Callback?.OnValueChanged(index, GetComponent<Dropdown>().options[index].text);
+            if (Callbacks != default)
+            {
+                foreach (var callback in Callbacks)
+                    callback.OnValueChanged(index, GetComponent<Dropdown>().options[index].text);
+            }
         }
 
         public void OuiUpdateValue()
         {
-            if (Callback != default)
+            if (Initializer != default)
             {
                 var dropdown = GetComponent<Dropdown>();
-                dropdown.options = Callback.InitialOptions.Select(t => new Dropdown.OptionData(t)).ToList();
-                dropdown.SetValueWithoutNotify(Callback.GetInitialIndex(dropdown.options.Select(t => t.text)));
+                dropdown.options = Initializer.InitialOptions.Select(t => new Dropdown.OptionData(t)).ToList();
+                dropdown.SetValueWithoutNotify(Initializer.GetInitialIndex(dropdown.options.Select(t => t.text)));
             }
         }
     }

@@ -8,11 +8,13 @@ namespace oojjrs.oui
     {
         public interface CallbackInterface
         {
-            bool CurrentValue { get; }
-
             void OnValueChanged(bool isOn);
         }
 
+        public interface InitializerInterface
+        {
+            bool InitialValue { get; }
+        }
 
         [SerializeField]
         private bool _hoverSoundDisabled;
@@ -23,7 +25,8 @@ namespace oojjrs.oui
         [SerializeField]
         private GameObject _on;
 
-        private CallbackInterface Callback { get; set; }
+        private CallbackInterface[] Callbacks { get; set; }
+        private InitializerInterface Initializer { get; set; }
         public bool Interactable { get; set; }
         public bool IsOn
         {
@@ -41,18 +44,19 @@ namespace oojjrs.oui
 
         private void OnEnable()
         {
-            if (Callback != default)
-                SetIsOnWithoutNotify(Callback.CurrentValue);
+            if (Initializer != default)
+                SetIsOnWithoutNotify(Initializer.InitialValue);
         }
 
         private void Start()
         {
-            Callback = GetComponent<CallbackInterface>();
-            if (Callback == default)
+            Callbacks = GetComponents<CallbackInterface>();
+            if (Callbacks == default)
                 Debug.LogWarning($"{name}> DON'T HAVE CALLBACK FUNCTION.");
 
-            if (Callback != default)
-                SetIsOnWithoutNotify(Callback.CurrentValue);
+            Initializer = GetComponent<InitializerInterface>();
+            if (Initializer != default)
+                SetIsOnWithoutNotify(Initializer.InitialValue);
         }
 
         void IPointerEnterHandler.OnPointerEnter(PointerEventData eventData)
@@ -71,8 +75,11 @@ namespace oojjrs.oui
         {
             SetIsOnWithoutNotify(isOn);
 
-            if (Callback != default)
-                Callback.OnValueChanged(isOn);
+            if (Callbacks != default)
+            {
+                foreach (var callback in Callbacks)
+                    callback.OnValueChanged(isOn);
+            }
         }
 
         public void SetIsOnWithoutNotify(bool isOn)

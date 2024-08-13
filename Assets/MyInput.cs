@@ -7,9 +7,9 @@ namespace oojjrs.oui
     [RequireComponent(typeof(InputField))]
     public class MyInput : MonoBehaviour, IDeselectHandler, ISelectHandler
     {
-        public interface InitialValueInterface
+        public interface InitializerInterface
         {
-            string Value { get; }
+            string InitialValue { get; }
         }
 
         public interface SubmitInterface
@@ -30,7 +30,7 @@ namespace oojjrs.oui
         private bool _focusAfterSubmit;
 
         public int CharacterLimit => GetComponent<InputField>().characterLimit;
-        private InitialValueInterface InitialValue { get; set; }
+        private InitializerInterface Initializer { get; set; }
         private SubmitInterface Submit { get; set; }
         public string Text
         {
@@ -54,21 +54,21 @@ namespace oojjrs.oui
             if (_clearWhenOpen)
                 GetComponent<InputField>().text = string.Empty;
 
-            if (InitialValue != default)
-                GetComponent<InputField>().text = InitialValue.Value;
+            if (Initializer != default)
+                GetComponent<InputField>().text = Initializer.InitialValue;
 
             GetComponent<InputField>().Select();
         }
 
         private void Start()
         {
-            InitialValue = GetComponent<InitialValueInterface>();
+            Initializer = GetComponent<InitializerInterface>();
             Submit = GetComponent<SubmitInterface>();
             ValueChanged = GetComponent<ValueChangedInterface>();
 
-            if (InitialValue != default)
+            if (Initializer != default)
             {
-                GetComponent<InputField>().text = InitialValue.Value;
+                GetComponent<InputField>().text = Initializer.InitialValue;
                 GetComponent<InputField>().Select();
             }
         }
