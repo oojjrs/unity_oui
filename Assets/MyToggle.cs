@@ -42,7 +42,7 @@ namespace oojjrs.oui
         private void OnEnable()
         {
             if (Callback != default)
-                IsOn = Callback.CurrentValue;
+                SetIsOnWithoutNotify(Callback.CurrentValue);
         }
 
         private void Start()
@@ -52,7 +52,7 @@ namespace oojjrs.oui
                 Debug.LogWarning($"{name}> DON'T HAVE CALLBACK FUNCTION.");
 
             if (Callback != default)
-                IsOn = Callback.CurrentValue;
+                SetIsOnWithoutNotify(Callback.CurrentValue);
         }
 
         void IPointerEnterHandler.OnPointerEnter(PointerEventData eventData)
