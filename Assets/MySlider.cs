@@ -30,13 +30,19 @@ namespace oojjrs.oui
         public float Value
         {
             get => GetComponent<Slider>().value;
-            set => GetComponent<Slider>().value = value;
+            set
+            {
+                // -_- 호출 안해줄 줄이야...
+                GetComponent<Slider>().value = value;
+
+                OnValueChanged(value);
+            }
         }
 
         private void OnEnable()
         {
             if (Initializer != default)
-                GetComponent<Slider>().value = Initializer.InitialValue;
+                Value = Initializer.InitialValue;
         }
 
         private void Start()
@@ -49,7 +55,7 @@ namespace oojjrs.oui
 
             Initializer = GetComponent<InitializerInterface>();
             if (Initializer != default)
-                GetComponent<Slider>().value = Initializer.InitialValue;
+                Value = Initializer.InitialValue;
         }
 
         public void OnValueChanged(float value)
