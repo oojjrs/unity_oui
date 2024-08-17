@@ -1,12 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 namespace oojjrs.oui
 {
-    [RequireComponent(typeof(Dropdown))]
-    public class MyDropdown : MonoBehaviour
+    [RequireComponent(typeof(RectTransform))]
+    public partial class MyDropdown : Selectable, IPointerClickHandler, IEventSystemHandler, ISubmitHandler, ICancelHandler
     {
         public interface CallbackInterface
         {
@@ -27,18 +28,22 @@ namespace oojjrs.oui
         private InitializerInterface Initializer { get; set; }
         public bool Interactable
         {
-            get => GetComponent<Dropdown>().interactable;
+            get => interactable;
             set
             {
-                GetComponent<Dropdown>().interactable = value;
+                interactable = value;
 
                 if (_dimmedCover != default)
                     _dimmedCover.SetActive(value == false);
             }
         }
 
-        private void Start()
+        protected override void Start()
         {
+            // 아래 두 줄은 유니티 오리지널
+            base.Start();
+            RefreshShownValue();
+
             Callbacks = GetComponents<CallbackInterface>();
             if (Callbacks == default)
                 Debug.LogWarning($"{name}> DON'T HAVE CALLBACK FUNCTION.");
@@ -53,7 +58,7 @@ namespace oojjrs.oui
             if (Callbacks != default)
             {
                 foreach (var callback in Callbacks)
-                    callback.OnValueChanged(index, GetComponent<Dropdown>().options[index].text);
+                    callback.OnValueChanged(index, options[index].text);
             }
         }
 
@@ -61,9 +66,8 @@ namespace oojjrs.oui
         {
             if (Initializer != default)
             {
-                var dropdown = GetComponent<Dropdown>();
-                dropdown.options = Initializer.InitialOptions.Select(t => new Dropdown.OptionData(t)).ToList();
-                dropdown.SetValueWithoutNotify(Initializer.GetInitialIndex(dropdown.options.Select(t => t.text)));
+                options = Initializer.InitialOptions.Select(t => new OptionData(t)).ToList();
+                SetValueWithoutNotify(Initializer.GetInitialIndex(options.Select(t => t.text)));
             }
         }
     }
