@@ -33,12 +33,9 @@ namespace oojjrs.oui
             get => _isOn;
             set
             {
-                if (value != _isOn)
-                {
-                    _isOn = value;
+                _isOn = value;
 
-                    OnValueChanged(_isOn);
-                }
+                OnValueChanged(_isOn);
             }
         }
 
