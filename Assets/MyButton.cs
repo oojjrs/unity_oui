@@ -42,21 +42,23 @@ namespace oojjrs.oui
         private CallbackInterface[] Callbacks { get; set; }
         public ClickSoundEnum ClickSound { get; set; }
         private HoverInterface[] Hovers { get; set; }
-        public bool Interactable { get => GetComponent<Button>().interactable; set => GetComponent<Button>().interactable = value; }
-        public bool InteractableWithSprite
+        public bool Interactable
         {
+            get => GetComponent<Button>().interactable;
             set
             {
                 GetComponent<Button>().interactable = value;
-                SpriteActive = value;
-            }
-        }
-        public bool InteractableWithText
-        {
-            set
-            {
-                GetComponent<Button>().interactable = value;
-                TextInteractable = value;
+
+                if (_image != default)
+                    _image.gameObject.SetActive(value);
+
+                if (_text != default)
+                {
+                    if (value)
+                        _text.Color = _textNormalColor;
+                    else
+                        _text.Color = _textDisableColor;
+                }
             }
         }
         public Sprite Sprite
@@ -86,58 +88,7 @@ namespace oojjrs.oui
                     Debug.Assert(false, "이미지 컨트롤 없는 버튼이라니까?");
             }
         }
-        public bool SpriteActive
-        {
-            get
-            {
-                if (_image != default)
-                    return _image.gameObject.activeSelf;
-                else
-                    return false;
-            }
-            set
-            {
-                if (_image != default)
-                    _image.gameObject.SetActive(value);
-                else
-                    Debug.Assert(false, "이미지 컨트롤 없다구요");
-            }
-        }
         public MyText Text => _text;
-        public bool TextActive
-        {
-            get
-            {
-                if (_text != default)
-                    return _text.gameObject.activeSelf;
-                else
-                    return false;
-            }
-            set
-            {
-                if (_text != default)
-                    _text.gameObject.SetActive(value);
-                else
-                    Debug.Assert(false, "텍스트 컨트롤 없다구요");
-            }
-        }
-        private bool TextInteractable
-        {
-            set
-            {
-                if (_text != default)
-                {
-                    if (value)
-                        _text.Color = _textNormalColor;
-                    else
-                        _text.Color = _textDisableColor;
-                }
-                else
-                {
-                    Debug.Assert(false, "텍스트 컨트롤 없다구요");
-                }
-            }
-        }
 
         private void Start()
         {

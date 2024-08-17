@@ -27,7 +27,7 @@ namespace oojjrs.oui
 
         private CallbackInterface[] Callbacks { get; set; }
         private InitializerInterface Initializer { get; set; }
-        public bool Interactable { get; set; }
+        public bool Interactable { get => GetComponent<MyButton>().Interactable; set => GetComponent<MyButton>().Interactable = value; }
         public bool IsOn
         {
             get => _isOn;
