@@ -16,20 +16,17 @@ namespace oojjrs.oui
             float InitialValue { get; }
         }
 
+        public interface TextertInterface
+        {
+            string ToText(float value);
+        }
+
         [SerializeField]
         private MyText _text;
 
         private CallbackInterface[] Callbacks { get; set; }
         private InitializerInterface Initializer { get; set; }
-        public string Text
-        {
-            get => (_text != default) ? _text.Text : string.Empty;
-            set
-            {
-                if (_text != default)
-                    _text.Text = value;
-            }
-        }
+        private TextertInterface Texter { get; set; }
         public float Value
         {
             get => GetComponent<Slider>().value;
@@ -48,6 +45,8 @@ namespace oojjrs.oui
             if (Callbacks == default)
                 Debug.LogWarning($"{name}> DON'T HAVE CALLBACK FUNCTION.");
 
+            Texter = GetComponent<TextertInterface>();
+
             Initializer = GetComponent<InitializerInterface>();
             if (Initializer != default)
                 GetComponent<Slider>().value = Initializer.InitialValue;
@@ -60,6 +59,9 @@ namespace oojjrs.oui
                 foreach (var callback in Callbacks)
                     callback.OnValueChanged(value);
             }
+
+            if (Texter != default)
+                _text.Text = Texter.ToText(value);
         }
     }
 }
