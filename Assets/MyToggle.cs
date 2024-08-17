@@ -67,10 +67,10 @@ namespace oojjrs.oui
 
         void MyButton.CallbackInterface.OnClick()
         {
-            IsOn = !_isOn;
-
             if (EventSystem.current.currentSelectedGameObject == gameObject)
                 GetComponent<MyButton>().ClickSound = MyButton.ClickSoundEnum.Switch;
+
+            IsOn = !_isOn;
         }
 
         private void OnValueChanged(bool isOn)
@@ -96,9 +96,6 @@ namespace oojjrs.oui
             }
             else
             {
-                if (EventSystem.current.currentSelectedGameObject == gameObject)
-                    EventSystem.current.SetSelectedGameObject(default);
-
                 if (_off != default)
                     _off.SetActive(true);
 
