@@ -67,8 +67,10 @@ namespace oojjrs.oui
 
         void MyButton.CallbackInterface.OnClick()
         {
-            if (Interactable)
-                IsOn = !_isOn;
+            IsOn = !_isOn;
+
+            if (EventSystem.current.currentSelectedGameObject == gameObject)
+                GetComponent<MyButton>().ClickSound = MyButton.ClickSoundEnum.Switch;
         }
 
         private void OnValueChanged(bool isOn)
@@ -86,9 +88,6 @@ namespace oojjrs.oui
         {
             if (isOn)
             {
-                if (EventSystem.current.currentSelectedGameObject == gameObject)
-                    MyControl.Audio.PlaySwitchSfx?.Invoke();
-
                 if (_off != default)
                     _off.SetActive(false);
 
