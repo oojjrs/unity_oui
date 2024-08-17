@@ -45,7 +45,7 @@ namespace oojjrs.oui
         private void OnEnable()
         {
             if (Initializer != default)
-                SetIsOnWithoutNotify(Initializer.InitialValue);
+                IsOn = Initializer.InitialValue;
         }
 
         private void Start()
@@ -56,7 +56,7 @@ namespace oojjrs.oui
 
             Initializer = GetComponent<InitializerInterface>();
             if (Initializer != default)
-                SetIsOnWithoutNotify(Initializer.InitialValue);
+                IsOn = Initializer.InitialValue;
         }
 
         void IPointerEnterHandler.OnPointerEnter(PointerEventData eventData)
