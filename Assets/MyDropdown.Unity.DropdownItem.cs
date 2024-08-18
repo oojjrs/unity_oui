@@ -68,12 +68,12 @@ namespace oojjrs.oui
                 }
             }
 
-            public virtual void OnPointerEnter(PointerEventData eventData)
+            void IPointerEnterHandler.OnPointerEnter(PointerEventData eventData)
             {
                 EventSystem.current.SetSelectedGameObject(base.gameObject);
             }
 
-            public virtual void OnCancel(BaseEventData eventData)
+            void ICancelHandler.OnCancel(BaseEventData eventData)
             {
                 Dropdown componentInParent = GetComponentInParent<Dropdown>();
                 if ((bool)componentInParent)

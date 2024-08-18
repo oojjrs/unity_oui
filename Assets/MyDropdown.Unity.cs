@@ -31,7 +31,7 @@ namespace oojjrs.oui
 
         [Space]
         [SerializeField]
-        private OptionDataList m_Options = new();
+        private List<OptionData> m_Options;
 
         [Space]
         [SerializeField]
@@ -118,11 +118,11 @@ namespace oojjrs.oui
         {
             get
             {
-                return m_Options.options;
+                return m_Options;
             }
             set
             {
-                m_Options.options = value;
+                m_Options = value;
                 RefreshShownValue();
             }
         }
@@ -378,17 +378,17 @@ namespace oojjrs.oui
             return val;
         }
 
-        public virtual void OnPointerClick(PointerEventData eventData)
+        void IPointerClickHandler.OnPointerClick(PointerEventData eventData)
         {
             Show();
         }
 
-        public virtual void OnSubmit(BaseEventData eventData)
+        void ISubmitHandler.OnSubmit(BaseEventData eventData)
         {
             Show();
         }
 
-        public virtual void OnCancel(BaseEventData eventData)
+        void ICancelHandler.OnCancel(BaseEventData eventData)
         {
             Hide();
         }
