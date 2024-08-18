@@ -38,6 +38,13 @@ namespace oojjrs.oui
             }
         }
 
+        protected override void OnEnable()
+        {
+            base.OnEnable();
+
+            OuiUpdateValue();
+        }
+
         protected override void Start()
         {
             // 아래 두 줄은 유니티 오리지널
@@ -49,6 +56,8 @@ namespace oojjrs.oui
                 Debug.LogWarning($"{name}> DON'T HAVE CALLBACK FUNCTION.");
 
             Initializer = GetComponent<InitializerInterface>();
+
+            OuiUpdateValue();
         }
 
         public void OnValueChanged(int index)
@@ -62,7 +71,7 @@ namespace oojjrs.oui
             }
         }
 
-        public void OuiUpdateValue()
+        private void OuiUpdateValue()
         {
             if (Initializer != default)
             {

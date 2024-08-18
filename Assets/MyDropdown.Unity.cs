@@ -148,7 +148,7 @@ namespace oojjrs.oui
             set
             {
                 Set(value);
-                OnSelectItem(m_Items[value].selectable);
+                OnSelectItem(value);
             }
         }
 
@@ -453,7 +453,7 @@ namespace oojjrs.oui
                     if (value == j)
                     {
                         item.selectable.Select();
-                        OnSelectItem(item.selectable);
+                        OnSelectItem(j);
                     }
 
                     if (selectable != null)
@@ -666,31 +666,11 @@ namespace oojjrs.oui
             m_Dropdown = null;
         }
 
-        private void OnSelectItem(Selectable selectable)
+        private void OnSelectItem(int index)
         {
-            var index = m_Items.Select(item => item.selectable).TakeWhile(t => t != selectable).Count();
-            if (index != value)
-            {
-                value = index;
-            }
-
-            int num = -1;
-            Transform transform = selectable.transform;
-            Transform parent = transform.parent;
-            for (int i = 0; i < parent.childCount; i++)
-            {
-                if (parent.GetChild(i) == transform)
-                {
-                    num = i - 1;
-                    break;
-                }
-            }
-
-            if (num >= 0)
-            {
-                value = num;
+            var selectable = m_Items.ElementAtOrDefault(index);
+            if (selectable != default)
                 Hide();
-            }
         }
     }
 }
