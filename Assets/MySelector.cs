@@ -17,9 +17,13 @@ namespace oojjrs.oui
         private CallbackInterface Callback { get; set; }
         private int? Index { get; set; }
 
-        private void Start()
+        private void Awake()
         {
             Callback = GetComponent<CallbackInterface>();
+        }
+
+        private void Start()
+        {
             if (_emptyCallbackInterface == false)
             {
                 if (Callback == default)

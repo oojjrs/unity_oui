@@ -39,6 +39,13 @@ namespace oojjrs.oui
         }
         private ValueChangedInterface ValueChanged { get; set; }
 
+        private void Awake()
+        {
+            Initializer = GetComponent<InitializerInterface>();
+            Submit = GetComponent<SubmitInterface>();
+            ValueChanged = GetComponent<ValueChangedInterface>();
+        }
+
         private void OnDisable()
         {
             if (EventSystem.current?.currentSelectedGameObject == gameObject)
@@ -62,10 +69,6 @@ namespace oojjrs.oui
 
         private void Start()
         {
-            Initializer = GetComponent<InitializerInterface>();
-            Submit = GetComponent<SubmitInterface>();
-            ValueChanged = GetComponent<ValueChangedInterface>();
-
             if (Initializer != default)
             {
                 GetComponent<InputField>().text = Initializer.InitialValue;

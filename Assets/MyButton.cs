@@ -90,15 +90,18 @@ namespace oojjrs.oui
         }
         public MyText Text => _text;
 
-        private void Start()
+        private void Awake()
         {
             Callbacks = GetComponents<CallbackInterface>();
-            if (Callbacks == default)
-                Debug.LogWarning($"{name}> DON'T HAVE CALLBACK FUNCTION.");
-
             DoubleClicks = GetComponents<DoubleClickInterface>();
             Hovers = GetComponents<HoverInterface>();
             Presses = GetComponents<PressInterface>();
+        }
+
+        private void Start()
+        {
+            if (Callbacks == default)
+                Debug.LogWarning($"{name}> DON'T HAVE CALLBACK FUNCTION.");
         }
 
         void IPointerEnterHandler.OnPointerEnter(PointerEventData eventData)

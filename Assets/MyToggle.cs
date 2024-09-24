@@ -39,6 +39,12 @@ namespace oojjrs.oui
             }
         }
 
+        private void Awake()
+        {
+            Callbacks = GetComponents<CallbackInterface>();
+            Initializer = GetComponent<InitializerInterface>();
+        }
+
         private void OnEnable()
         {
             if (Initializer != default)
@@ -47,11 +53,9 @@ namespace oojjrs.oui
 
         private void Start()
         {
-            Callbacks = GetComponents<CallbackInterface>();
             if (Callbacks == default)
                 Debug.LogWarning($"{name}> DON'T HAVE CALLBACK FUNCTION.");
 
-            Initializer = GetComponent<InitializerInterface>();
             if (Initializer != default)
                 IsOn = Initializer.InitialValue;
         }

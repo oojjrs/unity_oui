@@ -26,6 +26,7 @@ namespace oojjrs.oui
 
         private CallbackInterface[] Callbacks { get; set; }
         private InitializerInterface Initializer { get; set; }
+        private bool Started { get; set; }
         private TextertInterface Texter { get; set; }
         public float Value
         {
@@ -39,23 +40,31 @@ namespace oojjrs.oui
             }
         }
 
+        private void Awake()
+        {
+            Callbacks = GetComponents<CallbackInterface>();
+            Initializer = GetComponent<InitializerInterface>();
+            Texter = GetComponent<TextertInterface>();
+        }
+
         private void OnEnable()
         {
-            if (Initializer != default)
-                Value = Initializer.InitialValue;
+            if (Started)
+            {
+                if (Initializer != default)
+                    Value = Initializer.InitialValue;
+            }
         }
 
         private void Start()
         {
-            Callbacks = GetComponents<CallbackInterface>();
             if (Callbacks == default)
                 Debug.LogWarning($"{name}> DON'T HAVE CALLBACK FUNCTION.");
 
-            Texter = GetComponent<TextertInterface>();
-
-            Initializer = GetComponent<InitializerInterface>();
             if (Initializer != default)
                 Value = Initializer.InitialValue;
+
+            Started = true;
         }
 
         public void OnValueChanged(float value)
