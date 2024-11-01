@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
@@ -41,6 +42,7 @@ namespace oojjrs.oui
 
         private CallbackInterface[] Callbacks { get; set; }
         public ClickSoundEnum ClickSound { get; set; }
+        private bool Cooldowning { get; set; }
         private HoverInterface[] Hovers { get; set; }
         public bool Interactable
         {
@@ -61,6 +63,7 @@ namespace oojjrs.oui
                 }
             }
         }
+        private bool InteractableBeforeCooldown { get; set; }
         public Sprite Sprite
         {
             get
@@ -96,6 +99,15 @@ namespace oojjrs.oui
             DoubleClicks = GetComponents<DoubleClickInterface>();
             Hovers = GetComponents<HoverInterface>();
             Presses = GetComponents<PressInterface>();
+        }
+
+        private void OnDisable()
+        {
+            if (Cooldowning)
+            {
+                Cooldowning = false;
+                Interactable = InteractableBeforeCooldown;
+            }
         }
 
         private void Start()
@@ -160,6 +172,24 @@ namespace oojjrs.oui
             else
             {
                 MyControl.Audio.PlayClickSfx?.Invoke();
+            }
+        }
+
+        public void OuiCooldown(float seconds)
+        {
+            Cooldowning = true;
+            InteractableBeforeCooldown = Interactable;
+            Interactable = false;
+
+            _ = StartCoroutine(Func());
+
+            IEnumerator Func()
+            {
+                if (seconds > 0)
+                    yield return new WaitForSeconds(seconds);
+
+                Cooldowning = false;
+                Interactable = InteractableBeforeCooldown;
             }
         }
 
