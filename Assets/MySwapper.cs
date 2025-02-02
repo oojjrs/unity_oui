@@ -59,6 +59,11 @@ namespace oojjrs.oui
                     Callback.OnClick(Callback.IsOn == false);
             }
 
+            OuiUpdate();
+        }
+
+        public void OuiUpdate()
+        {
             GetComponent<MySelector>().OuiUpdate();
         }
     }
