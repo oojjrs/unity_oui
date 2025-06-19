@@ -2,7 +2,7 @@
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-namespace Assets
+namespace oojjrs.oui
 {
     [RequireComponent(typeof(Selectable))]
     public class MySelectable : MonoBehaviour, IDeselectHandler, ISelectHandler
