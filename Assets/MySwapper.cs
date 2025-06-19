@@ -62,6 +62,28 @@ namespace oojjrs.oui
             OuiUpdate();
         }
 
+        public void OuiDeselect()
+        {
+            if (Callback != default)
+            {
+                if (Callback.Interactable)
+                    Callback.OnClick(false);
+            }
+
+            OuiUpdate();
+        }
+
+        public void OuiSelect()
+        {
+            if (Callback != default)
+            {
+                if (Callback.Interactable)
+                    Callback.OnClick(true);
+            }
+
+            OuiUpdate();
+        }
+
         public void OuiUpdate()
         {
             GetComponent<MySelector>().OuiUpdate();

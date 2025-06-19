@@ -6,7 +6,7 @@ using UnityEngine.UI;
 namespace oojjrs.oui
 {
     [RequireComponent(typeof(Button))]
-    public partial class MyButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, ISelectHandler
+    public partial class MyButton : MonoBehaviour, IDeselectHandler, IPointerEnterHandler, IPointerExitHandler, ISelectHandler
     {
         public enum ClickSoundEnum
         {
@@ -31,6 +31,7 @@ namespace oojjrs.oui
 
         public interface SelectInterface
         {
+            void OnDeselect();
             void OnSelect();
         }
 
@@ -121,6 +122,15 @@ namespace oojjrs.oui
         {
             if (Callbacks == default)
                 Debug.LogWarning($"{name}> DON'T HAVE CALLBACK FUNCTION.");
+        }
+
+        void IDeselectHandler.OnDeselect(BaseEventData eventData)
+        {
+            if (Interactable && (Selects != default))
+            {
+                foreach (var select in Selects)
+                    select.OnDeselect();
+            }
         }
 
         void IPointerEnterHandler.OnPointerEnter(PointerEventData eventData)
