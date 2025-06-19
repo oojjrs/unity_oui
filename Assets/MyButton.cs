@@ -6,7 +6,7 @@ using UnityEngine.UI;
 namespace oojjrs.oui
 {
     [RequireComponent(typeof(Button))]
-    public partial class MyButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
+    public partial class MyButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, ISelectHandler
     {
         public enum ClickSoundEnum
         {
@@ -27,6 +27,11 @@ namespace oojjrs.oui
         {
             void OnHoverEnter();
             void OnHoverExit();
+        }
+
+        public interface SelectInterface
+        {
+            void OnSelect();
         }
 
         [SerializeField]
@@ -64,6 +69,7 @@ namespace oojjrs.oui
             }
         }
         private bool InteractableBeforeCooldown { get; set; }
+        private SelectInterface[] Selects { get; set; }
         public Sprite Sprite
         {
             get
@@ -99,6 +105,7 @@ namespace oojjrs.oui
             DoubleClicks = GetComponents<DoubleClickInterface>();
             Hovers = GetComponents<HoverInterface>();
             Presses = GetComponents<PressInterface>();
+            Selects = GetComponents<SelectInterface>();
         }
 
         private void OnDisable()
@@ -134,6 +141,15 @@ namespace oojjrs.oui
             {
                 foreach (var hover in Hovers)
                     hover.OnHoverExit();
+            }
+        }
+
+        void ISelectHandler.OnSelect(BaseEventData eventData)
+        {
+            if (Interactable && (Selects != default))
+            {
+                foreach (var select in Selects)
+                    select.OnSelect();
             }
         }
 
