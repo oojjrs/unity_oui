@@ -114,6 +114,8 @@ namespace oojjrs.oui
         {
             if (Callbacks == default)
                 Debug.LogWarning($"{name}> DON'T HAVE CALLBACK FUNCTION.");
+
+            Debug.LogWarning($"{name}> 테스트 중입니다.");
         }
 
         void IPointerEnterHandler.OnPointerEnter(PointerEventData eventData)
