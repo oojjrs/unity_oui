@@ -27,7 +27,7 @@ namespace oojjrs.oui
 
         private void Start()
         {
-            if (Callbacks == default)
+            if (Callbacks?.Length <= 0)
                 Debug.LogWarning($"{name}> DON'T HAVE CALLBACK FUNCTION.");
         }
 
