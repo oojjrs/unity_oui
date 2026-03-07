@@ -34,12 +34,20 @@ namespace oojjrs.oui
         }
         public string Text
         {
-            get => _text.Text;
+            get => (_text != default) ? _text.Text : string.Empty;
             set
             {
-                _text.Text = value;
-                if (_textBackImage != default)
-                    _textBackImage.gameObject.SetActive(string.IsNullOrWhiteSpace(value) == false);
+                if (_text != default)
+                {
+                    _text.Text = value;
+
+                    if (_textBackImage != default)
+                        _textBackImage.gameObject.SetActive(string.IsNullOrWhiteSpace(value) == false);
+                }
+                else
+                {
+                    Debug.LogWarning($"Text Setter> Text PROPERTY IS NULL.");
+                }
             }
         }
 
