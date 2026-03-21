@@ -1,60 +1,48 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 namespace oojjrs.oui
 {
     public partial class MyAsker : MonoBehaviour
     {
-        public interface OkInterface
+        private event Action OnNo;
+        private event Action OnOk;
+        private event Action OnYes;
+
+        internal void ClickNo()
         {
-            void OnOk();
+            OnNo?.Invoke();
         }
 
-        public interface YesNoInterface
+        internal void ClickOk()
         {
-            void OnNo();
-            void OnYes();
+            OnOk?.Invoke();
         }
 
-        private OkInterface[] _oks;
-        private YesNoInterface[] _yesNos;
-
-        private void Awake()
+        internal void ClickYes()
         {
-            _oks = GetComponentsInChildren<OkInterface>();
-            _yesNos = GetComponentsInChildren<YesNoInterface>();
+            OnYes?.Invoke();
         }
 
-        private void Start()
+        public void OuiOpenOk(Action onOk)
         {
-            if ((_oks?.Length <= 0) && (_yesNos?.Length <= 0))
-                Debug.LogWarning($"{name}> DON'T HAVE CALLBACK FUNCTION.");
+            if (gameObject == default)
+                return;
+
+            OnOk = onOk;
+
+            gameObject.SetActive(true);
         }
 
-        internal void OnNo()
+        public void OuiOpenYesNo(Action onYes, Action onNo)
         {
-            if (_yesNos != default)
-            {
-                foreach (var c in _yesNos)
-                    c.OnNo();
-            }
-        }
+            if (gameObject == default)
+                return;
 
-        internal void OnOk()
-        {
-            if (_oks != default)
-            {
-                foreach (var c in _oks)
-                    c.OnOk();
-            }
-        }
+            OnNo = onNo;
+            OnYes = onYes;
 
-        internal void OnYes()
-        {
-            if (_yesNos != default)
-            {
-                foreach (var c in _yesNos)
-                    c.OnYes();
-            }
+            gameObject.SetActive(true);
         }
     }
 }
