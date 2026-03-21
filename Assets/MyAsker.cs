@@ -11,17 +11,28 @@ namespace oojjrs.oui
 
         internal void ClickNo()
         {
+            OuiClose();
+
             OnNo?.Invoke();
         }
 
         internal void ClickOk()
         {
+            OuiClose();
+
             OnOk?.Invoke();
         }
 
         internal void ClickYes()
         {
+            OuiClose();
+
             OnYes?.Invoke();
+        }
+
+        public void OuiClose()
+        {
+            gameObject.SetActive(false);
         }
 
         public void OuiOpenOk(Action onOk)
