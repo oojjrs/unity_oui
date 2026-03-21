@@ -6,6 +6,11 @@ namespace oojjrs.oui
 {
     public partial class MyAsker : MonoBehaviour
     {
+        public interface AskTextInterface
+        {
+            void OnUpdate(MyText text);
+        }
+
         public class MyAskerArguments
         {
             private Dictionary<string, object> NamedValues { get; } = new();
@@ -39,13 +44,21 @@ namespace oojjrs.oui
         }
 
         private MyAskerArguments _arguments;
-        private readonly MyAskerArguments _emptyArguments = new();
+        private readonly MyAskerArguments _argumentsEmpty = new();
+        [SerializeField]
+        private MyText _askText;
+        private AskTextInterface[] _askTexts;
 
-        public MyAskerArguments Arguments => _arguments ?? _emptyArguments;
+        public MyAskerArguments Arguments => _arguments ?? _argumentsEmpty;
 
         private event Action OnNo;
         private event Action OnOk;
         private event Action OnYes;
+
+        private void Awake()
+        {
+            _askTexts = GetComponentsInChildren<AskTextInterface>();
+        }
 
         internal void ClickNo()
         {
@@ -80,6 +93,19 @@ namespace oojjrs.oui
 
             _arguments = arguments;
 
+            if (_askText != default)
+            {
+                if (_askTexts?.Length > 0)
+                {
+                    foreach (var c in _askTexts)
+                        c.OnUpdate(_askText);
+                }
+                else
+                {
+                    Debug.LogWarning($"{name}> DON'T HAVE {nameof(AskTextInterface)}.");
+                }
+            }
+
             OnOk = onOk;
 
             gameObject.SetActive(true);
@@ -91,6 +117,19 @@ namespace oojjrs.oui
                 return;
 
             _arguments = arguments;
+
+            if (_askText != default)
+            {
+                if (_askTexts?.Length > 0)
+                {
+                    foreach (var c in _askTexts)
+                        c.OnUpdate(_askText);
+                }
+                else
+                {
+                    Debug.LogWarning($"{name}> DON'T HAVE {nameof(AskTextInterface)}.");
+                }
+            }
 
             OnNo = onNo;
             OnYes = onYes;
