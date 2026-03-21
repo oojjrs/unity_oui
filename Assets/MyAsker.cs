@@ -57,7 +57,7 @@ namespace oojjrs.oui
 
         private void Awake()
         {
-            _askTexts = GetComponentsInChildren<AskTextInterface>();
+            _askTexts = GetComponents<AskTextInterface>();
         }
 
         internal void ClickNo()
