@@ -55,21 +55,21 @@ namespace oojjrs.oui
         private event Action OnOk;
         private event Action OnYes;
 
-        internal void ClickNo()
+        public void OuiClickNo()
         {
             OuiClose();
 
             OnNo?.Invoke();
         }
 
-        internal void ClickOk()
+        public void OuiClickOk()
         {
             OuiClose();
 
             OnOk?.Invoke();
         }
 
-        internal void ClickYes()
+        public void OuiClickYes()
         {
             OuiClose();
 

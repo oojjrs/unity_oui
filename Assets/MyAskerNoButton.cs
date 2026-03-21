@@ -11,7 +11,7 @@ namespace oojjrs.oui
 
             var asker = GetComponentInParent<MyAsker>();
             if (asker != default)
-                asker.ClickNo();
+                asker.OuiClickNo();
         }
     }
 }
