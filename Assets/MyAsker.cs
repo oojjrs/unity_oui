@@ -55,11 +55,6 @@ namespace oojjrs.oui
         private event Action OnOk;
         private event Action OnYes;
 
-        private void Awake()
-        {
-            _askTexts = GetComponents<AskTextInterface>();
-        }
-
         internal void ClickNo()
         {
             OuiClose();
@@ -93,6 +88,10 @@ namespace oojjrs.oui
 
             _arguments = arguments;
 
+            // public 함수라서 gameObject의 상태에 상관 없이 불릴 수 있으므로 다른 컨트롤과는 달리 Awake에서 하면 안 되는겨.
+            if (_askTexts == default)
+                _askTexts = GetComponents<AskTextInterface>();
+
             if (_askText != default)
             {
                 if (_askTexts?.Length > 0)
@@ -117,6 +116,10 @@ namespace oojjrs.oui
                 return;
 
             _arguments = arguments;
+
+            // public 함수라서 gameObject의 상태에 상관 없이 불릴 수 있으므로 다른 컨트롤과는 달리 Awake에서 하면 안 되는겨.
+            if (_askTexts == default)
+                _askTexts = GetComponents<AskTextInterface>();
 
             if (_askText != default)
             {
