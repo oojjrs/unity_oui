@@ -29,6 +29,18 @@ namespace oojjrs.oui
             void OnHoverExit();
         }
 
+        [System.Serializable]
+        public struct SoundOverrides
+        {
+            public AudioSource Cancel;
+            public AudioSource Click;
+            public AudioSource Confirm;
+            public AudioSource Error;
+            public AudioSource Hover;
+            public AudioSource Start;
+            public AudioSource Switch;
+        }
+
         [SerializeField]
         private bool _hoverSoundDisabled;
         [SerializeField]
@@ -39,6 +51,8 @@ namespace oojjrs.oui
         private Image _image;
         [SerializeField]
         private MyText _text;
+        [SerializeField]
+        private SoundOverrides _soundOverrides;
 
         private CallbackInterface[] Callbacks { get; set; }
         public ClickSoundEnum ClickSound { get; set; }
@@ -119,7 +133,12 @@ namespace oojjrs.oui
         void IPointerEnterHandler.OnPointerEnter(PointerEventData eventData)
         {
             if (Interactable && (_hoverSoundDisabled == false))
-                MyControl.Audio.PlayHoverSfx?.Invoke();
+            {
+                if (_soundOverrides.Hover != default)
+                    _soundOverrides.Hover.Play();
+                else
+                    MyControl.Audio.PlayHoverSfx?.Invoke();
+            }
 
             if (Interactable && (Hovers != default))
             {
@@ -148,22 +167,40 @@ namespace oojjrs.oui
                 switch (ClickSound)
                 {
                     case ClickSoundEnum.Cancel:
-                        MyControl.Audio.PlayCancelSfx?.Invoke();
+                        if (_soundOverrides.Cancel != default)
+                            _soundOverrides.Cancel.Play();
+                        else
+                            MyControl.Audio.PlayCancelSfx?.Invoke();
                         break;
                     case ClickSoundEnum.Click:
-                        MyControl.Audio.PlayClickSfx?.Invoke();
+                        if (_soundOverrides.Click != default)
+                            _soundOverrides.Click.Play();
+                        else
+                            MyControl.Audio.PlayClickSfx?.Invoke();
                         break;
                     case ClickSoundEnum.Confirm:
-                        MyControl.Audio.PlayConfirmSfx?.Invoke();
+                        if (_soundOverrides.Confirm != default)
+                            _soundOverrides.Confirm.Play();
+                        else
+                            MyControl.Audio.PlayConfirmSfx?.Invoke();
                         break;
                     case ClickSoundEnum.Error:
-                        MyControl.Audio.PlayErrorSfx?.Invoke();
+                        if (_soundOverrides.Error != default)
+                            _soundOverrides.Error.Play();
+                        else
+                            MyControl.Audio.PlayErrorSfx?.Invoke();
                         break;
                     case ClickSoundEnum.Start:
-                        MyControl.Audio.PlayStartSfx?.Invoke();
+                        if (_soundOverrides.Start != default)
+                            _soundOverrides.Start.Play();
+                        else
+                            MyControl.Audio.PlayStartSfx?.Invoke();
                         break;
                     case ClickSoundEnum.Switch:
-                        MyControl.Audio.PlaySwitchSfx?.Invoke();
+                        if (_soundOverrides.Switch != default)
+                            _soundOverrides.Switch.Play();
+                        else
+                            MyControl.Audio.PlaySwitchSfx?.Invoke();
                         break;
                     default:
                         throw new System.NotImplementedException();
@@ -171,7 +208,10 @@ namespace oojjrs.oui
             }
             else
             {
-                MyControl.Audio.PlayClickSfx?.Invoke();
+                if (_soundOverrides.Click != default)
+                    _soundOverrides.Click.Play();
+                else
+                    MyControl.Audio.PlayClickSfx?.Invoke();
             }
         }
 
