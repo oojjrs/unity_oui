@@ -135,7 +135,7 @@ namespace oojjrs.oui
             if (Interactable && (_hoverSoundDisabled == false))
             {
                 if (_soundOverrides.Hover != default)
-                    _soundOverrides.Hover.Play();
+                    PlaySfxSafety(_soundOverrides.Hover);
                 else
                     MyControl.Audio.PlayHoverSfx?.Invoke();
             }
@@ -168,37 +168,37 @@ namespace oojjrs.oui
                 {
                     case ClickSoundEnum.Cancel:
                         if (_soundOverrides.Cancel != default)
-                            _soundOverrides.Cancel.Play();
+                            PlaySfxSafety(_soundOverrides.Cancel);
                         else
                             MyControl.Audio.PlayCancelSfx?.Invoke();
                         break;
                     case ClickSoundEnum.Click:
                         if (_soundOverrides.Click != default)
-                            _soundOverrides.Click.Play();
+                            PlaySfxSafety(_soundOverrides.Click);
                         else
                             MyControl.Audio.PlayClickSfx?.Invoke();
                         break;
                     case ClickSoundEnum.Confirm:
                         if (_soundOverrides.Confirm != default)
-                            _soundOverrides.Confirm.Play();
+                            PlaySfxSafety(_soundOverrides.Confirm);
                         else
                             MyControl.Audio.PlayConfirmSfx?.Invoke();
                         break;
                     case ClickSoundEnum.Error:
                         if (_soundOverrides.Error != default)
-                            _soundOverrides.Error.Play();
+                            PlaySfxSafety(_soundOverrides.Error);
                         else
                             MyControl.Audio.PlayErrorSfx?.Invoke();
                         break;
                     case ClickSoundEnum.Start:
                         if (_soundOverrides.Start != default)
-                            _soundOverrides.Start.Play();
+                            PlaySfxSafety(_soundOverrides.Start);
                         else
                             MyControl.Audio.PlayStartSfx?.Invoke();
                         break;
                     case ClickSoundEnum.Switch:
                         if (_soundOverrides.Switch != default)
-                            _soundOverrides.Switch.Play();
+                            PlaySfxSafety(_soundOverrides.Switch);
                         else
                             MyControl.Audio.PlaySwitchSfx?.Invoke();
                         break;
@@ -209,7 +209,7 @@ namespace oojjrs.oui
             else
             {
                 if (_soundOverrides.Click != default)
-                    _soundOverrides.Click.Play();
+                    PlaySfxSafety(_soundOverrides.Click);
                 else
                     MyControl.Audio.PlayClickSfx?.Invoke();
             }
@@ -276,6 +276,21 @@ namespace oojjrs.oui
         {
             if (Interactable)
                 OuiPlayClick();
+        }
+
+        private void PlaySfxSafety(AudioSource audioSource)
+        {
+            if (audioSource.gameObject.scene.IsValid())
+            {
+                audioSource.Play();
+            }
+            else
+            {
+                var instance = Instantiate(audioSource);
+                instance.Play();
+
+                Destroy(instance.gameObject, instance.clip.length);
+            }
         }
     }
 }
