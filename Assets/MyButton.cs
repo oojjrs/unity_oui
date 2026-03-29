@@ -44,9 +44,9 @@ namespace oojjrs.oui
         [SerializeField]
         private bool _hoverSoundDisabled;
         [SerializeField]
-        private Color _textDisableColor;
+        private Color _textDisableColor = Color.gray;
         [SerializeField]
-        private Color _textNormalColor;
+        private Color _textNormalColor = Color.white;
         [SerializeField]
         private Image _image;
         [SerializeField]
@@ -64,6 +64,7 @@ namespace oojjrs.oui
             set
             {
                 GetComponent<Button>().interactable = value;
+                InteractableCached = value;
 
                 if (_image != default)
                     _image.gameObject.SetActive(value);
@@ -78,6 +79,7 @@ namespace oojjrs.oui
             }
         }
         private bool InteractableBeforeCooldown { get; set; }
+        private bool InteractableCached { get; set; }
         public Sprite Sprite
         {
             get
@@ -128,6 +130,25 @@ namespace oojjrs.oui
         {
             if (Callbacks?.Length <= 0)
                 Debug.LogWarning($"{name}> DON'T HAVE CALLBACK FUNCTION.");
+
+            // 첫 색상 설정을 위해서 하는 거임.
+            Interactable = Interactable;
+
+#if UNITY_EDITOR
+            _ = StartCoroutine(Func());
+
+            IEnumerator Func()
+            {
+                while (this != default)
+                {
+                    // Button의 설정과 동기화를 보장함 - Inspector 수정에 대응한 것
+                    if (InteractableCached != Interactable)
+                        Interactable = Interactable;
+
+                    yield return default;
+                }
+            }
+#endif
         }
 
         void IPointerEnterHandler.OnPointerEnter(PointerEventData eventData)
