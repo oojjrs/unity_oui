@@ -1,0 +1,18 @@
+{
+  "name": "com.oojjrs.oui",
+  "displayName": "OOJJRS' Unity UI Helper",
+  "version": "1.5.0",
+  "unity": "6000.4",
+  "description": "Small Unity UI component helpers for buttons, text, lists, bars, selectors, toggles, inputs, portraits, and modal askers.",
+  "dependencies": {
+    "com.unity.ugui": "2.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/oojjrs/unity_oui.git?path=/Packages/src"
+  },
+  "author": {
+    "name": "oojjrs",
+    "email": "oojjrs@gmail.com"
+  }
+}

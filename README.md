@@ -1,0 +1,32 @@
+# OOJJRS' Unity UI Helper
+
+`com.oojjrs.oui`는 Unity UGUI 기반 프로젝트에서 반복해서 쓰는 UI 컴포넌트 동작을 모아 둔 헬퍼 패키지입니다.
+
+## 설치
+
+Unity Package Manager의 Git URL로 설치합니다.
+
+```text
+https://github.com/oojjrs/unity_oui.git?path=/Packages/src
+```
+
+이 저장소를 직접 열어 개발할 때는 `Packages/manifest.json`에 로컬 패키지로 연결되어 있습니다.
+
+```json
+"com.oojjrs.oui": "file:src"
+```
+
+## 포함 기능
+
+- `MyButton`: 클릭, 호버, 프레스, 더블 클릭 콜백과 버튼 사운드 재생을 다룹니다.
+- `MyText`, `MyImage`, `MyPortrait`: UGUI 텍스트와 이미지 값을 코드에서 간단히 갱신합니다.
+- `MyList`: 프리팹 기반 리스트 엔트리 생성, 제거, 정렬을 관리합니다.
+- `MyBar`, `MySlider`, `MyToggle`, `MySelector`, `MySwapper`: 값 기반 UI 상태를 갱신합니다.
+- `MyInput`: 입력 초기화, 선택 상태, 제출, 값 변경 콜백을 제공합니다.
+- `MyAsker`: 확인 및 예/아니오 형태의 간단한 모달 흐름을 구성합니다.
+
+## 패키지 구조
+
+- `Packages/src/package.json`: UPM 패키지 메타데이터입니다.
+- `Packages/src/Runtime`: 런타임 컴포넌트와 asmdef가 들어 있습니다.
+- `Packages/src/Documentation~`: Unity Package Manager에서 열 수 있는 패키지 문서입니다.
