@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.5.3
+
+- `MyImage` native size API를 setter에서 `SetNativeSizeSprite`, `SetNativeSizeOverrideSprite` 메서드로 변경했습니다.
+- native size 적용 후 `nativeSizeScale` 배율로 크기를 조정할 수 있게 했습니다.
+
 ## 1.5.2
 
 - `MyImage`에 스프라이트 설정 후 native size를 함께 맞추는 `NativeSizeSprite`, `NativeSizeOverrideSprite` setter를 추가했습니다.
