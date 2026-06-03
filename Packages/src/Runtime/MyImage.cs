@@ -21,18 +21,14 @@ namespace oojjrs.oui
         {
             var image = GetComponent<Image>();
             image.overrideSprite = sprite;
-            SetNativeSize(image, nativeSizeScale);
+            image.SetNativeSize();
+            image.rectTransform.sizeDelta *= nativeSizeScale;
         }
 
         public void SetNativeSizeSprite(Sprite sprite, float nativeSizeScale = 1f)
         {
             var image = GetComponent<Image>();
             image.sprite = sprite;
-            SetNativeSize(image, nativeSizeScale);
-        }
-
-        private void SetNativeSize(Image image, float nativeSizeScale)
-        {
             image.SetNativeSize();
             image.rectTransform.sizeDelta *= nativeSizeScale;
         }
