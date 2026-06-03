@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.5.2
+
+- `MyImage`에 스프라이트 설정 후 native size를 함께 맞추는 `NativeSizeSprite`, `NativeSizeOverrideSprite` setter를 추가했습니다.
+- 패키지 문서에 `MyImage` native size setter 사용 안내를 추가했습니다.
+
 ## 1.5.0
 
 - 패키지 루트를 `Assets`에서 `Packages/src`로 정리했습니다.

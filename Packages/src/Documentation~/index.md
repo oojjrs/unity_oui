@@ -35,7 +35,7 @@ public sealed class StartButton : MonoBehaviour, MyButton.CallbackInterface
 
 ## 값 표시
 
-`MyText`, `MyImage`, `MyPortrait`는 UGUI `Text`와 `Image` 갱신을 간단한 프로퍼티로 감쌉니다.
+`MyText`, `MyImage`, `MyPortrait`는 UGUI `Text`와 `Image` 갱신을 간단한 프로퍼티로 감쌉니다. `MyImage.NativeSizeSprite`와 `MyImage.NativeSizeOverrideSprite`는 각각 `sprite` 또는 `overrideSprite`를 설정한 뒤 `SetNativeSize()`를 호출합니다. 단순히 값을 읽거나 크기 조정 없이 교체할 때는 기존 `Sprite`, `OverrideSprite` 프로퍼티를 사용합니다.
 
 `MyBar`, `MySlider`, `MyToggle`, `MySelector`, `MySwapper`는 값 기반 UI를 갱신할 때 사용합니다. 각 컴포넌트는 필요한 초기화 또는 변경 콜백 인터페이스를 함께 제공합니다.
 
