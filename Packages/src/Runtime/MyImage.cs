@@ -17,14 +17,7 @@ namespace oojjrs.oui
             set => GetComponent<Image>().sprite = value;
         }
 
-        public void SetNativeSizeOverrideSprite(Sprite sprite, float nativeSizeScale = 1f)
-        {
-            var image = GetComponent<Image>();
-            image.overrideSprite = sprite;
-            image.SetNativeSize();
-            image.rectTransform.sizeDelta *= nativeSizeScale;
-        }
-
+        // overrideSprite는 사용 목적이 맞지 않으므로 전용 함수를 두지 않는다.
         public void SetNativeSizeSprite(Sprite sprite, float nativeSizeScale = 1f)
         {
             var image = GetComponent<Image>();

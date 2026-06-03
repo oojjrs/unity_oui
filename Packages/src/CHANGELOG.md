@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.5.4
+
+- `overrideSprite`는 표시 이미지만 교체하는 용도에 가깝기 때문에 `SetNativeSizeOverrideSprite` 메서드를 제거했습니다.
+- `MyImage` native size 문서를 `SetNativeSizeSprite` 기준으로 정리했습니다.
+
 ## 1.5.3
 
 - `MyImage` native size API를 setter에서 `SetNativeSizeSprite`, `SetNativeSizeOverrideSprite` 메서드로 변경했습니다.
