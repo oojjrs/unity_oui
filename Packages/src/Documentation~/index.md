@@ -39,6 +39,12 @@ public sealed class StartButton : MonoBehaviour, MyButton.CallbackInterface
 
 `MyBar`, `MySlider`, `MyToggle`, `MySelector`, `MySwapper`는 값 기반 UI를 갱신할 때 사용합니다. 각 컴포넌트는 필요한 초기화 또는 변경 콜백 인터페이스를 함께 제공합니다.
 
+## 탭
+
+`MyTab`은 헤더 버튼 목록과 `MySelector`를 연결해 탭 선택 상태를 갱신합니다. 헤더 버튼에는 `MyTabHeaderButton`을 붙이고, 각 버튼은 부모 `MyTab`의 헤더 배열 기준 인덱스로 선택됩니다.
+
+`OuiMoveNext()`와 `OuiMovePrevious()`는 현재 선택된 탭 기준으로 다음 또는 이전 interactable 탭을 찾습니다. `allowWrapAround`를 `true`로 넘기면 끝에서 반대편 탭으로 순환합니다.
+
 ## 리스트
 
 `MyList`는 값 컬렉션과 프리팹 엔트리를 동기화합니다. 엔트리 컴포넌트는 `MyListEntry<TValue>`를 구현하고, 리스트 소유자는 `MyList.Master<TEntry, TValue>`를 구현합니다.

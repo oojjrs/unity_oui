@@ -21,7 +21,7 @@ https://github.com/oojjrs/unity_oui.git?path=/Packages/src
 - `MyButton`: 클릭, 호버, 프레스, 더블 클릭 콜백과 버튼 사운드 재생을 다룹니다.
 - `MyText`, `MyImage`, `MyPortrait`: UGUI 텍스트와 이미지 값을 코드에서 간단히 갱신하고, 필요하면 이미지의 native size를 배율까지 지정해 함께 맞춥니다.
 - `MyList`: 프리팹 기반 리스트 엔트리 생성, 제거, 정렬을 관리합니다.
-- `MyBar`, `MySlider`, `MyToggle`, `MySelector`, `MySwapper`: 값 기반 UI 상태를 갱신합니다.
+- `MyBar`, `MySlider`, `MyToggle`, `MySelector`, `MySwapper`, `MyTab`: 값 기반 UI 상태와 탭 선택 상태를 갱신합니다.
 - `MyInput`: 입력 초기화, 선택 상태, 제출, 값 변경 콜백을 제공합니다.
 - `MyAsker`: 확인 및 예/아니오 형태의 간단한 모달 흐름을 구성합니다.
 

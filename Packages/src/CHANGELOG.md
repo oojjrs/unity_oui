@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.6.0
+
+- `MyTab`과 `MyTabHeaderButton`을 추가해 탭 헤더 클릭과 이전/다음 탭 이동을 `MySelector` 선택 상태와 연결할 수 있게 했습니다.
+- 탭 이동 시 `allowWrapAround`를 지정하면 끝에서 반대편의 interactable 탭으로 순환할 수 있습니다.
+- `MyTab`의 헤더 설정이 비어 있으면 경고를 출력하도록 했습니다.
+
 ## 1.5.4
 
 - `overrideSprite`는 표시 이미지만 교체하는 용도에 가깝기 때문에 `SetNativeSizeOverrideSprite` 메서드를 제거했습니다.
