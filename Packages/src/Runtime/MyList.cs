@@ -4,6 +4,7 @@ using UnityEngine;
 
 namespace oojjrs.oui
 {
+    [DisallowMultipleComponent]
     public partial class MyList : MonoBehaviour
     {
         public interface Master<TEntry, TValue> where TEntry : MonoBehaviour, MyListEntry<TValue>

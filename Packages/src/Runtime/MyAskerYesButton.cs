@@ -2,6 +2,7 @@ using UnityEngine;
 
 namespace oojjrs.oui
 {
+    [DisallowMultipleComponent]
     [RequireComponent(typeof(MyButton))]
     public class MyAskerYesButton : MonoBehaviour, MyButton.CallbackInterface
     {

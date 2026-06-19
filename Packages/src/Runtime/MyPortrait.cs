@@ -2,6 +2,7 @@ using UnityEngine;
 
 namespace oojjrs.oui
 {
+    [DisallowMultipleComponent]
     public class MyPortrait : MonoBehaviour
     {
         [Tooltip("Sprite에 null이 대입될 때 이것으로 대체됩니다. 또한 Portrait Image가 null인 경우 이 값으로 반환됩니다.")]

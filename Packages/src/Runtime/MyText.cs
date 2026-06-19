@@ -3,6 +3,7 @@ using UnityEngine.UI;
 
 namespace oojjrs.oui
 {
+    [DisallowMultipleComponent]
     [RequireComponent(typeof(Text))]
     public class MyText : MonoBehaviour
     {

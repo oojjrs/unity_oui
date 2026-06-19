@@ -25,6 +25,8 @@ https://github.com/oojjrs/unity_oui.git?path=/Packages/src
 - `MyInput`: 입력 초기화, 선택 상태, 제출, 값 변경 콜백을 제공합니다.
 - `MyAsker`: 확인 및 예/아니오 형태의 간단한 모달 흐름을 구성합니다.
 
+런타임 헬퍼 컴포넌트는 같은 GameObject에 같은 타입을 중복으로 붙이지 않는 것을 기본 규칙으로 삼고, 이를 `DisallowMultipleComponent`로 표시합니다.
+
 ## 패키지 구조
 
 - `Packages/src/package.json`: UPM 패키지 메타데이터입니다.

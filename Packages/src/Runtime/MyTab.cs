@@ -3,6 +3,7 @@ using UnityEngine;
 
 namespace oojjrs.oui
 {
+    [DisallowMultipleComponent]
     public class MyTab : MonoBehaviour
     {
         public interface CallbackInterface

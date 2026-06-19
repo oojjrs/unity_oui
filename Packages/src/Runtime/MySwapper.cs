@@ -2,6 +2,7 @@ using UnityEngine;
 
 namespace oojjrs.oui
 {
+    [DisallowMultipleComponent]
     [RequireComponent(typeof(MySelector))]
     public class MySwapper : MonoBehaviour, MySelector.CallbackInterface
     {

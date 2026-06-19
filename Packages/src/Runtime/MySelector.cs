@@ -2,6 +2,7 @@ using UnityEngine;
 
 namespace oojjrs.oui
 {
+    [DisallowMultipleComponent]
     public class MySelector : MonoBehaviour
     {
         public interface CallbackInterface

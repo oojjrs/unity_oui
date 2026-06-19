@@ -16,4 +16,8 @@ UGUI 기반 UI에서 자주 반복되는 컴포넌트 제어를 `oojjrs.oui` 네
 - `MyInput`: 입력값 초기화, 변경, 제출 콜백을 연결합니다.
 - `MyAsker`: 확인 또는 예/아니오 모달을 열고 닫는 흐름을 제공합니다.
 
+## 컴포넌트 배치 규칙
+
+런타임 UI 헬퍼 컴포넌트는 하나의 GameObject에 같은 헬퍼 타입을 하나만 두는 것을 기준으로 합니다. 같은 오브젝트의 필수 UGUI 컴포넌트가 필요한 타입은 `RequireComponent`로 의존성을 드러내고, 헬퍼 본체는 `DisallowMultipleComponent`로 중복 부착을 막습니다.
+
 자세한 내용은 `Documentation~/index.md`를 참고합니다.

@@ -12,6 +12,10 @@ https://github.com/oojjrs/unity_oui.git?path=/Packages/src
 
 로컬 개발용 프로젝트에서는 `Packages/manifest.json`의 `com.oojjrs.oui` 항목이 `file:src`를 가리킵니다.
 
+## 컴포넌트 배치 규칙
+
+패키지의 런타임 헬퍼 컴포넌트는 한 GameObject에 같은 타입을 하나만 두는 것을 기준으로 합니다. 같은 오브젝트에 필수 UGUI 컴포넌트가 있어야 하는 타입은 `RequireComponent`로 의존성을 표시하고, 헬퍼 컴포넌트 본체는 `DisallowMultipleComponent`로 중복 부착을 막습니다.
+
 ## 버튼
 
 `MyButton`은 Unity `Button` 컴포넌트 위에서 클릭 콜백, 호버 콜백, 프레스 콜백, 더블 클릭 콜백, 쿨다운, 애니메이션 트리거, 사운드 재생을 처리합니다.

@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.6.1
+
+- 런타임 UI 헬퍼 컴포넌트에 `DisallowMultipleComponent`를 적용해 같은 GameObject에 같은 헬퍼를 중복 부착하지 않도록 했습니다.
+- 문서에 컴포넌트 배치 규칙과 중복 부착 방지 기준을 추가했습니다.
+
 ## 1.6.0
 
 - `MyTab`과 `MyTabHeaderButton`을 추가해 탭 헤더 클릭과 이전/다음 탭 이동을 `MySelector` 선택 상태와 연결할 수 있게 했습니다.

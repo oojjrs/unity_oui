@@ -3,6 +3,7 @@ using UnityEngine.EventSystems;
 
 namespace oojjrs.oui
 {
+    [DisallowMultipleComponent]
     [RequireComponent(typeof(MyButton))]
     public class MyToggle : MonoBehaviour, IPointerEnterHandler, MyButton.CallbackInterface
     {

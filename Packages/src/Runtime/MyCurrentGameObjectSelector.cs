@@ -3,6 +3,7 @@ using UnityEngine.EventSystems;
 
 namespace oojjrs.oui
 {
+    [DisallowMultipleComponent]
     public class MyCurrentGameObjectSelector : MonoBehaviour
     {
         private GameObject _previous;

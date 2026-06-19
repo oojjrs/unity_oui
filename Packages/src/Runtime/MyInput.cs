@@ -4,6 +4,7 @@ using UnityEngine.UI;
 
 namespace oojjrs.oui
 {
+    [DisallowMultipleComponent]
     [RequireComponent(typeof(InputField))]
     public class MyInput : MonoBehaviour, IDeselectHandler, ISelectHandler
     {

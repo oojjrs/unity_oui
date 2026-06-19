@@ -4,6 +4,7 @@ using UnityEngine;
 
 namespace oojjrs.oui
 {
+    [DisallowMultipleComponent]
     public partial class MyAsker : MonoBehaviour
     {
         public interface AskTextInterface

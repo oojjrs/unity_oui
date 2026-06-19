@@ -4,6 +4,7 @@ using UnityEngine.UI;
 
 namespace oojjrs.oui
 {
+    [DisallowMultipleComponent]
     public class MyBar : MonoBehaviour
     {
         public interface TextertInterface

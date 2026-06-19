@@ -5,6 +5,7 @@ using UnityEngine.UI;
 
 namespace oojjrs.oui
 {
+    [DisallowMultipleComponent]
     [RequireComponent(typeof(Button))]
     public partial class MyButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {

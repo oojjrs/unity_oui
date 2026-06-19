@@ -3,6 +3,7 @@ using UnityEngine.EventSystems;
 
 namespace oojjrs.oui
 {
+    [DisallowMultipleComponent]
     public class MyEventUpwardsDrag : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
     {
         void IBeginDragHandler.OnBeginDrag(PointerEventData eventData)

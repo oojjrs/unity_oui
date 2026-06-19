@@ -4,6 +4,7 @@ using UnityEngine.UI;
 
 namespace oojjrs.oui
 {
+    [DisallowMultipleComponent]
     [RequireComponent(typeof(Selectable))]
     public class MySelectable : MonoBehaviour, IDeselectHandler, ISelectHandler
     {
