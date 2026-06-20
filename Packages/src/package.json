@@ -1,9 +1,9 @@
 {
   "name": "com.oojjrs.oui",
   "displayName": "OOJJRS' Unity UI Helper",
-  "version": "1.6.1",
+  "version": "1.7.0",
   "unity": "6000.4",
-  "description": "Small Unity UI component helpers for buttons, text, lists, bars, selectors, toggles, inputs, portraits, and modal askers.",
+  "description": "Small Unity UI component helpers for buttons, radios, text, lists, bars, selectors, toggles, inputs, portraits, and modal askers.",
   "dependencies": {
     "com.unity.ugui": "2.0.0"
   },

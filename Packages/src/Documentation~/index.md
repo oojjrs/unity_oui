@@ -43,6 +43,12 @@ public sealed class StartButton : MonoBehaviour, MyButton.CallbackInterface
 
 `MyBar`, `MySlider`, `MyToggle`, `MySelector`, `MySwapper`는 값 기반 UI를 갱신할 때 사용합니다. 각 컴포넌트는 필요한 초기화 또는 변경 콜백 인터페이스를 함께 제공합니다.
 
+## 라디오
+
+`MyRadio`와 `MyRadioGroup`은 Unity `Toggle`, `ToggleGroup`, `Selectable`에 기대지 않고 라디오 버튼과 토글 묶음을 구성합니다. `MyRadio`는 `IsOn`과 `IsInteractable`을 Inspector에서 설정할 수 있으며, off/on 각각의 normal, highlighted, pressed preview, selected, disabled 상태 GameObject를 직접 켜고 끕니다.
+
+`MyRadioGroup.SelectionMode`는 항상 하나를 선택하는 `Required`, 선택 없음도 허용하는 `Optional`, 각 항목을 독립 토글처럼 다루는 `Multiple`을 제공합니다. `Optional`에서 `Initial Index`의 `-1`은 선택 없음이며, `Multiple`에서는 초기 인덱스를 사용하지 않습니다.
+
 ## 탭
 
 `MyTab`은 헤더 버튼 목록과 `MySelector`를 연결해 탭 선택 상태를 갱신합니다. 헤더 버튼에는 `MyTabHeaderButton`을 붙이고, 각 버튼은 부모 `MyTab`의 헤더 배열 기준 인덱스로 선택됩니다.

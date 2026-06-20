@@ -1,0 +1,726 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>UnityOui 기획 문서</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #d8e0e7;
+      --panel: #eef2f5;
+      --panel-strong: #142033;
+      --text: #182231;
+      --muted: #536172;
+      --line: #b7c2cf;
+      --accent: #176c7d;
+      --accent-soft: #d7e8ec;
+      --amber: #8a6508;
+      --amber-soft: #eadfcb;
+      --danger: #9a3d31;
+      --danger-soft: #ead7d3;
+      --code: #132235;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: "Segoe UI", "Malgun Gothic", sans-serif;
+      line-height: 1.58;
+    }
+
+    header {
+      background: var(--panel-strong);
+      color: #f8fafc;
+      border-bottom: 1px solid #0a1220;
+    }
+
+    main,
+    .header-inner {
+      width: min(1160px, calc(100% - 40px));
+      margin: 0 auto;
+    }
+
+    .header-inner {
+      padding: 42px 0 30px;
+    }
+
+    main {
+      padding: 22px 0 52px;
+    }
+
+    h1,
+    h2,
+    h3 {
+      margin: 0;
+      line-height: 1.25;
+      letter-spacing: 0;
+    }
+
+    h1 {
+      font-size: clamp(46px, 9vw, 92px);
+      font-weight: 820;
+    }
+
+    h2 {
+      margin-bottom: 14px;
+      color: var(--accent);
+      font-size: 24px;
+    }
+
+    h3 {
+      margin: 16px 0 8px;
+      font-size: 17px;
+    }
+
+    p {
+      margin: 0 0 10px;
+    }
+
+    ul,
+    ol {
+      margin: 0;
+      padding-left: 22px;
+    }
+
+    li + li {
+      margin-top: 5px;
+    }
+
+    code {
+      padding: 2px 5px;
+      border-radius: 4px;
+      background: #d7e0e8;
+      color: var(--code);
+      font-family: Consolas, "Cascadia Mono", monospace;
+      font-size: 0.94em;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 12px 0;
+      background: #f8fafc;
+    }
+
+    th,
+    td {
+      padding: 9px 10px;
+      border: 1px solid var(--line);
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      background: #dfe7ef;
+      color: #1b2a3d;
+      font-weight: 760;
+    }
+
+    .meta {
+      margin-top: 10px;
+      color: #b8c5d6;
+      font-size: 14px;
+    }
+
+    .thesis {
+      max-width: 960px;
+      margin-top: 10px;
+      color: #edf3fb;
+      font-size: clamp(20px, 2.5vw, 30px);
+      font-weight: 720;
+      line-height: 1.36;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      gap: 14px;
+    }
+
+    .section,
+    details {
+      padding: 22px 24px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel);
+    }
+
+    .section.lead {
+      padding: 30px 34px;
+      background: #172337;
+      color: #f8fafc;
+    }
+
+    .section.lead h2 {
+      color: #f8fafc;
+    }
+
+    .section.lead code {
+      background: #26364e;
+      color: #f8fafc;
+    }
+
+    .summary {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .metric {
+      padding: 12px;
+      border: 1px solid #314053;
+      border-radius: 8px;
+      background: #203047;
+    }
+
+    .metric strong {
+      display: block;
+      margin-bottom: 4px;
+      color: #9fb1c7;
+      font-size: 13px;
+    }
+
+    .metric span {
+      display: block;
+      color: #f8fafc;
+      font-weight: 720;
+    }
+
+    summary {
+      cursor: pointer;
+      color: var(--accent);
+      font-size: 22px;
+      font-weight: 780;
+      line-height: 1.35;
+    }
+
+    details > *:not(summary) {
+      margin-top: 12px;
+    }
+
+    .note {
+      margin-top: 12px;
+      padding: 12px 14px;
+      border: 1px solid var(--line);
+      border-left: 4px solid var(--accent);
+      border-radius: 6px;
+      background: var(--accent-soft);
+    }
+
+    .note.amber {
+      border-left-color: var(--amber);
+      background: var(--amber-soft);
+    }
+
+    .note.danger {
+      border-left-color: var(--danger);
+      background: var(--danger-soft);
+    }
+
+    .tag-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 14px 0 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .tag-list li {
+      padding: 6px 9px;
+      border: 1px solid #c4ced8;
+      border-radius: 6px;
+      background: #f7f9fb;
+      color: #26364a;
+      font-size: 13px;
+      font-weight: 650;
+    }
+
+    .decision {
+      margin-top: 12px;
+      padding: 12px 14px;
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      background: #f8fafc;
+    }
+
+    .decision strong {
+      display: block;
+      margin-bottom: 4px;
+      color: #1f334c;
+    }
+
+    @media (max-width: 760px) {
+      main,
+      .header-inner {
+        width: min(100% - 24px, 1160px);
+      }
+
+      .section,
+      details,
+      .section.lead {
+        padding: 18px;
+      }
+
+      .summary {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="header-inner">
+      <h1>UnityOui</h1>
+      <p class="thesis">UGUI 기반 프로젝트에서 반복되는 입력, 선택, 상태 연출을 작고 명확한 컴포넌트로 묶는 패키지다. 이 문서는 기능 주제보다 컴포넌트 단위로 책임, 결정 이유, 보류점을 정리한다.</p>
+      <p class="meta">작성일: 2026-06-18 · 문서 범위: <code>Packages/src/Runtime</code> 컴포넌트 설계, 특히 <code>MyRadio</code>와 관련 컴포넌트</p>
+    </div>
+  </header>
+
+  <main>
+    <div class="grid">
+      <section class="section lead">
+        <h2>컴포넌트 맵</h2>
+        <p><code>MyRadio</code>는 Unity 기본 <code>Toggle</code>, <code>ToggleGroup</code>, <code>Selectable</code>의 연출 구조를 피하고, 상태별로 이름이 붙은 GameObject 필드를 직접 켜고 끄며 라디오 버튼을 표현한다.</p>
+        <p>문서 구조는 각 컴포넌트를 기준으로 둔다. 앞으로 특정 타입을 수정할 때 해당 타입 섹션을 먼저 열어 보면 현재 의도와 피해야 할 방향을 확인할 수 있어야 한다.</p>
+        <ul class="tag-list">
+          <li>라디오 선택 묶음: MyRadio / MyRadioGroup</li>
+          <li>상태 표시: MyRadio 직접 제어</li>
+          <li>참고 타입: MyButton / MySwapper</li>
+          <li>보류 타입: Selectable</li>
+        </ul>
+        <div class="summary">
+          <div class="metric">
+            <strong>상태 계약</strong>
+            <span>Off/On x 5 = 10</span>
+          </div>
+          <div class="metric">
+            <strong>현재 구현</strong>
+            <span>Radio + Group 초안</span>
+          </div>
+          <div class="metric">
+            <strong>그룹 구현</strong>
+            <span>MyRadioGroup 초안</span>
+          </div>
+          <div class="metric">
+            <strong>제작 UX</strong>
+            <span>자동 setup 필요</span>
+          </div>
+        </div>
+      </section>
+
+      <details>
+        <summary>공통 컴포넌트 속성</summary>
+        <p>런타임 UI 헬퍼 컴포넌트는 하나의 GameObject에 같은 헬퍼 타입을 하나만 두는 것을 기준으로 한다. 같은 타입을 여러 개 붙이면 콜백 수집, 상태 캐시, UGUI 래퍼 역할이 서로 겹쳐 Inspector와 런타임 의미가 흐려진다.</p>
+        <div class="decision">
+          <strong><code>DisallowMultipleComponent</code> 적용</strong>
+          <p>컨트롤 본체와 얇은 어댑터 컴포넌트에는 <code>DisallowMultipleComponent</code>를 붙여 중복 부착을 막는다. 필수 의존성이 있는 타입은 기존처럼 <code>RequireComponent</code>를 함께 둔다.</p>
+        </div>
+        <div class="note">
+          <p><code>RequireComponent</code>는 같은 GameObject의 필수 의존성 표시에만 쓴다. 구조 생성, 자식 오브젝트 구성, 프리팹 스캐폴딩은 이 속성의 책임이 아니므로 별도 Editor 도구나 템플릿 프리팹으로 다룬다.</p>
+        </div>
+      </details>
+
+      <details>
+        <summary>MyRadio / MyRadioGroup 컴포넌트</summary>
+        <p><code>MyRadio</code>와 <code>MyRadioGroup</code>은 하나의 라디오 선택 묶음을 이룬다. <code>MyRadio</code>는 개별 선택지의 입력과 on/off 상태를 담당하고, <code>MyRadioGroup</code>은 자식 라디오 중 하나만 선택되도록 조율한다.</p>
+        <h3>MyRadio 책임</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>책임</th>
+              <th>현재 방향</th>
+              <th>이유</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>클릭 영역</td>
+              <td><code>MyRadio</code> 자신이 담당</td>
+              <td><code>MyButton</code>에 맡기면 on/off 연출 오브젝트와 클릭 오브젝트가 갈라져 프리팹 제작자가 클릭 처리를 중복 배치할 위험이 생긴다.</td>
+            </tr>
+            <tr>
+              <td>상태 보관</td>
+              <td><code>_state</code> enum</td>
+              <td>on/off 기준 상태와 Normal, Highlighted, Selected, Disabled, 그리고 반대값으로 전환되는 Pressed preview를 하나의 상태값으로 보관한다. <code>IsOn</code>과 <code>IsInteractable</code>은 Inspector에서 조정 가능한 authoring 값이며, 값이 바뀌면 현재 조합에 맞는 상태 GameObject를 표시한다.</td>
+            </tr>
+            <tr>
+              <td>상태 출력</td>
+              <td>명명된 상태 GameObject 필드</td>
+              <td>연출 표시도 <code>MyRadio</code>가 직접 맡는다. 상태 enum과 표시 오브젝트가 같은 컴포넌트에 있어야 pressed preview처럼 라디오 전용 의미를 Inspector에서 바로 읽을 수 있다.</td>
+            </tr>
+            <tr>
+              <td>그룹 통지</td>
+              <td><code>GroupInterface.OnClick(this)</code></td>
+              <td>부모 그룹이 있으면 선택/해제 정책을 그룹에 맡기고, 그룹이 없으면 단독 토글처럼 현재 on/off를 반전한다.</td>
+            </tr>
+            <tr>
+              <td>버튼 공통 기능</td>
+              <td><code>IsInteractable</code>, <code>SoundOverrides</code>, <code>HoverInterface</code></td>
+              <td><code>MyButton</code>을 직접 붙이거나 그 내부 타입을 참조하지 않고, 버튼 계열 컴포넌트로 기대되는 외부 제어 표면과 사운드/hover 콜백 계약을 <code>MyRadio</code> 안에 복제한다. 단, 라디오에서 switch는 곧 click 동작이므로 외부 <code>ClickSound</code> 선택지로 열지 않고, <code>SoundOverrides.Click</code>은 기본 switch SFX의 대체 사운드로만 쓴다.</td>
+            </tr>
+          </tbody>
+        </table>
+        <h3>입력 처리</h3>
+        <ul>
+          <li><code>IPointerEnterHandler</code>: 상호작용 가능하면 hover 상태를 켜고 hover 사운드를 재생한다.</li>
+          <li><code>IPointerExitHandler</code>: 현재 EventSystem 선택 여부에 따라 Normal 또는 Selected enum 상태로 되돌린다.</li>
+          <li><code>IPointerDownHandler</code>: 왼쪽 버튼이면 현재 EventSystem 선택 오브젝트로 지정한 뒤 현재 값의 반대값을 미리 보여주는 pressed preview 상태로 바꾼다.</li>
+          <li><code>IPointerUpHandler</code>: 왼쪽 버튼이면 click 성공 여부가 확정되기 전이므로 현재 논리값 기준의 Normal 또는 Selected enum 상태로 되돌린다.</li>
+          <li><code>IPointerClickHandler</code>: 왼쪽 버튼이면 <code>OuiClick()</code>을 실행하고, 값이 바뀌면 현재 EventSystem 선택 여부에 따라 반대값의 Selected 또는 Normal 상태로 확정한다.</li>
+          <li><code>ISelectHandler</code> / <code>IDeselectHandler</code>: 패드/키보드 포커스 진입은 Highlighted가 아니라 Selected enum 상태로 반영하고, 포커스 해제는 EventSystem 갱신 타이밍에 기대지 않고 Normal 상태로 내린다.</li>
+          <li><code>ISubmitHandler</code>: 가짜 pressed 연출 없이 <code>OuiClick()</code>만 실행한다.</li>
+        </ul>
+        <div class="note amber">
+          <p><code>Submit</code>은 의미 실행만 한다. Unity 기본 Button은 Submit에서 fade 시간만큼 pressed 전환을 만들지만, Toggle은 의미만 실행한다. 라디오는 선택 상태 변경이 본질이므로 강제 pressed 코루틴을 두지 않는다.</p>
+        </div>
+        <h3>현재 코드 상태</h3>
+        <ul>
+          <li>파일: <code>Packages/src/Runtime/MyRadio.cs</code>, <code>Packages/src/Runtime/MyRadioGroup.cs</code></li>
+          <li><code>MyRadio</code> 기반 타입: <code>MonoBehaviour</code></li>
+          <li><code>MyRadio</code> 필수 컴포넌트: 없음. 단, 클릭 판정을 위해 자식 중 하나 이상은 raycast 가능한 <code>Graphic</code>이어야 한다.</li>
+          <li><code>MyRadio.State</code>: <code>OffNormal</code>부터 <code>OnDisabled</code>까지 단일 상태 enum으로 보관한다. 내부 로직은 보조 숫자 축이나 변환 함수 없이 현재 <code>_state</code>와 목표 enum 값을 직접 다룬다.</li>
+          <li><code>_isOn</code>과 <code>_isInteractable</code>은 Inspector에서 초기 선택 여부와 상호작용 가능 여부를 고르는 serialized 값이다. public <code>IsOn</code>과 <code>IsInteractable</code> setter는 상태 표시를 바꾸고, <code>SetState</code>는 enum 상태를 기준으로 두 serialized 값을 다시 동기화한다.</li>
+          <li><code>MyRadio</code>는 <code>ExecuteAlways</code>로 동작해 에디터에서도 <code>_isOn</code>, <code>_isInteractable</code> 변경과 상태 표시 오브젝트 전환을 즉시 맞춘다.</li>
+          <li>상속/인터페이스 순서: Unity 제공 그룹, 로컬 제공 그룹 순서로 배치하고 각 그룹 안에서는 이름 ABC 순서</li>
+          <li>함수 순서: Unity 함수, 상속/인터페이스 함수, 로컬 함수 그룹 순서로 배치한다. 상속/인터페이스 함수 그룹 안에서도 Unity 제공 함수, 로컬 제공 함수 순서로 나누고 각 그룹 안에서는 modifier와 무관하게 함수명 ABC 순서</li>
+          <li>빌드 확인: <code>dotnet build .\oojjrs.oui.csproj -nologo -v minimal</code> 경고 0개, 오류 0개</li>
+        </ul>
+        <h3>MyRadioGroup 책임</h3>
+        <ul>
+          <li>자식 <code>MyRadio</code>를 수집한다.</li>
+          <li><code>SelectionMode</code> 기본값은 <code>Required</code>이며, 항상 하나의 라디오만 켜진 상태를 유지한다.</li>
+          <li><code>Optional</code>은 하나 이하 선택을 허용해 이미 선택된 라디오를 다시 클릭하면 0개 선택 상태로 만든다.</li>
+          <li><code>Multiple</code>은 그룹 내 on/off 제한을 풀고, 각 라디오 클릭을 독립 토글처럼 처리한다.</li>
+          <li>알림이 필요한 선택 변경에서는 개별 라디오를 <code>OuiSetIsOn</code>으로 맞춘다.</li>
+          <li>초기화나 조용한 동기화에서는 개별 라디오를 <code>OuiSetIsOnWithoutNotify</code>로 맞춘다.</li>
+          <li><code>CallbackInterface.OnValueChanged(int index, MyRadio radio)</code>로 그룹 선택 변경을 알린다.</li>
+          <li><code>AllowSwitchOff</code>는 기존 감각을 위한 호환 속성으로 남기며, <code>Required</code>와 <code>Optional</code> 사이를 전환한다.</li>
+          <li>초기 선택은 <code>Required</code>와 <code>Optional</code>에서만 <code>InitializerInterface.InitialIndex</code> 또는 <code>_initialIndex</code>를 따른다. <code>Multiple</code>에서는 초기 인덱스를 사용하지 않는다.</li>
+        </ul>
+        <h3>콜백 결정</h3>
+        <p><code>OuiSetIsOn</code>은 개별 라디오의 notify API이고, <code>IsOn</code> setter는 이 API로 위임한다. <code>OuiSelect</code>는 그룹 콜백을 한 번 호출하고, 실제 on/off 값이 바뀐 개별 <code>MyRadio</code>도 <code>OuiSetIsOn</code>을 통해 콜백을 호출한다. <code>Multiple</code>에서는 콜백 인자로 실제 변경된 라디오의 index와 radio를 넘기며, <code>OuiSetIndexWithoutNotify</code>는 그룹 콜백과 개별 라디오 콜백을 모두 생략하고 시각 상태만 조용히 맞춘다.</p>
+        <h3>구현 메모</h3>
+        <ul>
+          <li>자식 라디오는 <code>GetComponentsInChildren&lt;MyRadio&gt;(true)</code>로 찾되, 중첩된 다른 <code>MyRadioGroup</code> 아래의 라디오는 제외한다.</li>
+          <li><code>MyRadio</code>는 부모 그룹 캐시가 있으므로 <code>OnTransformParentChanged</code>에서 그룹을 다시 찾는다. <code>MyRadioGroup</code>은 자식 목록 캐시가 핵심이므로 <code>OnTransformChildrenChanged</code>에서 <code>OuiRefresh()</code>한다.</li>
+          <li>다른 기존 컨트롤은 부모 의존성을 클릭 시점에 다시 찾거나 같은 GameObject의 콜백만 캐시하므로, 현재 구조에서는 <code>OnTransformParentChanged</code>를 추가하지 않는다.</li>
+          <li><code>MyRadioGroup</code>은 <code>ExecuteAlways</code>로 동작해 에디터에서도 자식 라디오 목록과 선택 표시를 갱신한다.</li>
+          <li><code>OnValidate</code>에서는 모드별로 <code>_initialIndex</code>를 보정한다. <code>Required</code>는 0 이상의 유효 인덱스로 강제하고, <code>Optional</code>은 0개 선택을 뜻하는 -1을 허용하며, <code>Multiple</code>은 초기 인덱스를 쓰지 않으므로 -1로 되돌린다.</li>
+          <li>Editor 코드를 추가하지 않는 범위에서는 <code>_selectionMode</code>와 <code>_initialIndex</code>에 Tooltip을 붙여, <code>Optional</code>의 -1이 선택 없음이라는 사실과 <code>Multiple</code>에서 초기 인덱스를 무시한다는 사실을 Inspector에서 직접 안내한다.</li>
+          <li><code>OnEnable</code>에서는 기존 선택이 유효하면 보존하지만, <code>OnValidate</code>에서는 Inspector에서 바뀐 <code>_initialIndex</code>를 즉시 확인할 수 있도록 초기 선택을 강제로 다시 적용한다.</li>
+          <li>라디오가 하나도 없으면 <code>DON'T HAVE RADIO.</code> 경고를 출력한다.</li>
+        </ul>
+      </details>
+
+      <details>
+        <summary>MyRadio 상태 표시 필드</summary>
+        <p><code>MyRadio</code>는 상태별 표시 GameObject를 배열 인덱스가 아니라 각각의 이름 있는 필드로 가진다. 상태 enum과 표시 필드 이름이 1:1로 대응되므로, 프리팹 제작자는 숫자 순서를 외우지 않고 어떤 상태의 표시물인지 Inspector에서 바로 확인할 수 있다.</p>
+        <table>
+          <thead>
+            <tr>
+              <th>Enum 값</th>
+              <th>Radio 상태 이름</th>
+              <th>조건</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>0</td>
+              <td><code>OffNormal</code></td>
+              <td>꺼짐, 상호작용 가능, 주목/눌림 없음</td>
+            </tr>
+            <tr>
+              <td>1</td>
+              <td><code>OffHighlighted</code></td>
+              <td>꺼짐, hover 상태</td>
+            </tr>
+            <tr>
+              <td>2</td>
+              <td><code>OffToOnPressed</code></td>
+              <td>논리값은 꺼짐, pointer down 동안 켜짐 전환 preview</td>
+            </tr>
+            <tr>
+              <td>3</td>
+              <td><code>OffSelected</code></td>
+              <td>꺼짐, EventSystem 선택 상태</td>
+            </tr>
+            <tr>
+              <td>4</td>
+              <td><code>OffDisabled</code></td>
+              <td>꺼짐, 상호작용 불가</td>
+            </tr>
+            <tr>
+              <td>5</td>
+              <td><code>OnNormal</code></td>
+              <td>켜짐, 상호작용 가능, 주목/눌림 없음</td>
+            </tr>
+            <tr>
+              <td>6</td>
+              <td><code>OnHighlighted</code></td>
+              <td>켜짐, hover 상태</td>
+            </tr>
+            <tr>
+              <td>7</td>
+              <td><code>OnToOffPressed</code></td>
+              <td>논리값은 켜짐, pointer down 동안 꺼짐 전환 preview</td>
+            </tr>
+            <tr>
+              <td>8</td>
+              <td><code>OnSelected</code></td>
+              <td>켜짐, EventSystem 선택 상태</td>
+            </tr>
+            <tr>
+              <td>9</td>
+              <td><code>OnDisabled</code></td>
+              <td>켜짐, 상호작용 불가</td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="decision">
+          <strong><code>MySelector</code> 미사용</strong>
+          <p><code>MySelector</code>는 index 기반 page 표시에는 여전히 유효하지만, <code>MyRadio</code>의 상태는 <code>OffToOnPressed</code>, <code>OnToOffPressed</code>처럼 라디오 전용 의미가 강하다. 배열과 callback을 한 겹 더 두면 제작자가 인덱스 계약을 암기해야 하므로, <code>MyRadio</code>는 상태 표시 GameObject를 직접 가진다.</p>
+        </div>
+        <div class="note danger">
+          <p>현재 UX 리스크는 10개 상태 필드를 모두 직접 연결해야 한다는 점이다. 런타임에서는 전환 대상 상태 필드가 null이면 즉시 경고하고, 제작 단계에서는 문서 암기 대신 상태 오브젝트 자동 생성, 이름 검증, null 슬롯 경고를 제공하는 Editor 보조가 필요하다.</p>
+        </div>
+      </details>
+
+      <details>
+        <summary>MyButton 컴포넌트</summary>
+        <p><code>MyButton</code>은 일반 버튼 입력과 사운드 정책의 기존 기준이다. 하지만 <code>MyRadio</code>가 <code>MyButton</code>을 직접 조합하지는 않는다.</p>
+        <table>
+          <thead>
+            <tr>
+              <th>가져올 수 있는 생각</th>
+              <th>가져오지 않는 구조</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>hover 사운드, click 사운드, per-instance sound override 가능성</td>
+              <td><code>Button</code> 기반 클릭 영역과 Unity 기본 <code>Selectable</code> transition</td>
+            </tr>
+            <tr>
+              <td><code>IsInteractable</code>을 외부에서 제어하는 public property 감각</td>
+              <td>on/off 상태 오브젝트마다 클릭 처리를 붙이는 프리팹 구조</td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="decision">
+          <strong><code>MyButton</code> 조합 미사용</strong>
+          <p>라디오 버튼은 켜짐 상태 자체도 클릭 가능한 표면이어야 한다. <code>MyButton</code>이 클릭 루트를 가져가면 연출 오브젝트와 입력 오브젝트가 갈라져 제작 실수가 늘어난다.</p>
+        </div>
+        <p><code>MyRadio</code>는 <code>MyButton</code>을 요구하지 않고, <code>MyButton</code>의 nested type도 직접 쓰지 않는다. 대신 <code>SoundOverrides</code>, <code>HoverInterface</code>, <code>IsInteractable</code> 계약을 <code>MyRadio</code> 소유로 복제한다. 라디오의 click은 on/off 선택 변경 하나만 의미하며 그 동작이 switch이므로, 별도 <code>ClickSound</code> 정책은 만들지 않는다. 기본 재생은 switch SFX이고, 인스턴스별 대체가 필요할 때만 <code>SoundOverrides.Click</code>을 쓴다. 연출 표시는 상태별 GameObject 필드를 <code>MyRadio</code>가 직접 제어한다.</p>
+      </details>
+
+      <details>
+        <summary>MySwapper 컴포넌트</summary>
+        <p><code>MySwapper</code>는 <code>MySelector</code>와 같은 오브젝트에 붙는 패턴의 선례다. 클릭 입력은 <code>MySwapperButton</code>이 담당하고, <code>MySwapper</code>는 bool 상태를 <code>MySelector</code> index로 바꾸는 얇은 어댑터다.</p>
+        <div class="decision">
+          <strong><code>RequireComponent(typeof(MySelector))</code> 선례</strong>
+          <p><code>MySwapper</code>가 <code>RequireComponent</code>를 쓰는 이유는 콜백 인터페이스 연결이 간단해지기 때문이다. <code>MyRadio</code>는 상태 의미가 라디오에 강하게 묶여 있어 이 패턴을 더 이상 따르지 않는다.</p>
+        </div>
+        <div class="note">
+          <p><code>MyRadio</code>는 <code>MySwapper</code>처럼 별도 버튼 컴포넌트에 클릭을 맡기지 않는다. 라디오는 on/off 연출 표면 전체가 클릭 가능해야 해서 입력 루트와 상태 계산을 같은 컴포넌트가 갖는 편이 낫다.</p>
+        </div>
+      </details>
+
+      <details>
+        <summary>Selectable / MySelectable 컴포넌트</summary>
+        <p><code>Selectable</code>은 패드/키보드 navigation, <code>currentSelectedGameObject</code>, <code>interactable</code> 저장소 측면에서 매력적이었다. 그러나 현재 <code>MyRadio</code> 설계에서는 쓰지 않는다.</p>
+        <div class="decision">
+          <strong><code>Selectable</code> 미사용</strong>
+          <p><code>Selectable</code>을 상속하거나 요구하면 <code>Transition</code>, <code>Target Graphic</code>, <code>Colors</code>, <code>Sprite State</code>, <code>Animation Triggers</code>처럼 이 설계에서 쓰지 않는 연출 필드가 Inspector에 노출된다. <code>MyRadio</code>의 연출 표시는 명명된 GameObject 필드가 전담하므로 혼란이 크다.</p>
+        </div>
+        <div class="note amber">
+          <p>이 결정의 대가는 기본 UGUI navigation 그래프의 자동 이동을 잃을 수 있다는 점이다. <code>SetSelectedGameObject()</code>는 아무 오브젝트나 받을 수 있지만, 방향 이동 탐색은 기본적으로 <code>Selectable</code> 생태계에 기대는 부분이 많다.</p>
+        </div>
+        <p><code>MySelectable</code>은 기존 UGUI <code>Selectable</code>의 select/deselect 콜백을 감싸는 타입이다. <code>MyRadio</code>가 <code>Selectable</code>을 쓰지 않는 동안에는 직접 관계를 만들지 않는다.</p>
+      </details>
+
+      <details>
+        <summary>Editor / Prefab 제작 보조</summary>
+        <p>이 섹션은 런타임 컴포넌트는 아니지만, <code>MyRadio</code>를 실제로 쓰게 만들기 위한 필수 보조 영역이다. 10개 상태 필드를 수동으로 모두 맞추게 하면 UX가 나쁘다.</p>
+        <h3>필요한 기능</h3>
+        <ul>
+          <li><code>MyRadio</code>가 요구하는 상태 이름과 개수를 코드 상수로 가진다.</li>
+          <li>Editor 전용 컨텍스트 메뉴나 커스텀 Inspector에서 10개 상태 오브젝트를 생성한다.</li>
+          <li>생성한 오브젝트를 <code>MyRadio</code>의 명명된 상태 필드에 자동 연결한다.</li>
+          <li>필수 상태 필드 중 null 슬롯이 있으면 Inspector에서 즉시 경고한다. 런타임 전환 중에도 현재 켜야 하는 상태 필드가 null이면 <code>DON'T HAVE RADIO STATE {state}.</code> 경고를 출력한다.</li>
+          <li>상태 오브젝트 이름은 <code>OffNormal</code>, <code>OffHighlighted</code>처럼 인덱스보다 의미가 먼저 보이게 한다.</li>
+        </ul>
+        <div class="note danger">
+          <p>이 보조 기능이 없으면 <code>MyRadio</code>의 런타임 구조가 맞아도 프리팹 제작 경험은 계속 나쁘다. 다음 구현 단계에서는 <code>MyRadioGroup</code>과 함께 최소 setup/validation UX를 검토한다.</p>
+        </div>
+      </details>
+
+      <details>
+        <summary>열린 질문</summary>
+        <ul>
+          <li><code>Selectable</code>을 쓰지 않는 상태에서 패드/키보드 방향 이동을 어떻게 보완할지 정해야 한다.</li>
+          <li><code>MyRadio</code>의 명명된 상태 필드를 Editor에서 자동 구성하려면 context menu로 충분한지, custom inspector까지 갈지 정해야 한다.</li>
+          <li>현재 <code>MyRadio</code>는 <code>Graphic</code>이 없으면 경고하지만, 클릭용 raycast target을 자동 생성하지는 않는다.</li>
+        </ul>
+      </details>
+
+      <details>
+        <summary>변경 기록</summary>
+        <table>
+          <thead>
+            <tr>
+              <th>날짜</th>
+              <th>내용</th>
+              <th>이유</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>2026-06-18</td>
+              <td><code>Design.html</code> 최초 작성</td>
+              <td><code>MyRadio</code> 설계 중 나온 결정과 보류점을 프로젝트 문서로 보존하기 위해 작성했다.</td>
+            </tr>
+            <tr>
+              <td>2026-06-18</td>
+              <td>본문을 컴포넌트별 섹션으로 재구성</td>
+              <td>주제별 분류보다 타입별 책임과 결정 이유를 찾기 쉽게 만들기 위해 구조를 바꿨다.</td>
+            </tr>
+            <tr>
+              <td>2026-06-18</td>
+              <td><code>MyRadio</code>와 <code>MyRadioGroup</code> 섹션 통합</td>
+              <td>두 타입이 하나의 라디오 선택 묶음을 구성하므로, 입력 컴포넌트와 그룹 컴포넌트의 계약을 한 자리에서 읽히게 만들었다.</td>
+            </tr>
+            <tr>
+              <td>2026-06-18</td>
+              <td>상속/인터페이스 정렬 규칙 보강</td>
+              <td>Unity 제공 인터페이스와 로컬 제공 인터페이스를 같은 알파벳 목록에 섞으면 출처별 책임이 흐려지므로, 제공처 그룹을 먼저 나누고 각 그룹 안에서 ABC 정렬하기로 정리했다.</td>
+            </tr>
+            <tr>
+              <td>2026-06-19</td>
+              <td><code>MyRadio</code> 상태 enum 전환</td>
+              <td>hover, pressed, selected, isOn을 별도 bool로 보관하면 상태 우선순위가 코드 곳곳에 흩어지므로, 상태 표시 필드와 1:1로 대응되는 단일 enum 상태로 정리했다.</td>
+            </tr>
+            <tr>
+              <td>2026-06-19</td>
+              <td><code>MyRadio</code> 숫자 보조 상태 제거</td>
+              <td>enum으로 상태를 모았는데 다시 Normal, Highlighted, Selected, Disabled, Pressed preview 축을 숫자로 나누면 설계 의도가 흐려지므로, enum 값 쌍을 직접 선택하는 방식으로 바꿨다.</td>
+            </tr>
+            <tr>
+              <td>2026-06-19</td>
+              <td><code>MyRadio</code> 상태 단일화 보강</td>
+              <td>Disabled가 이미 enum 상태인데 상호작용 여부를 별도 bool 필드로 두면 상태가 두 갈래로 갈라지므로, 처음에는 <code>IsInteractable</code>을 Disabled 상태 여부에서 파생되도록 정리했다. 이후 Inspector 제어가 필요해져 serialized authoring 값과 Disabled 표시 상태를 동기화하는 구조로 확장했다.</td>
+            </tr>
+            <tr>
+              <td>2026-06-19</td>
+              <td>단발성 private helper 제거</td>
+              <td>한 번만 호출되는 private 함수는 이름을 붙이는 이득보다 흐름을 끊는 비용이 크므로, <code>MyRadio</code>와 <code>MyRadioGroup</code>의 단발성 helper를 호출 지점으로 인라인했다.</td>
+            </tr>
+            <tr>
+              <td>2026-06-20</td>
+              <td><code>MyRadio</code> notify API 명시</td>
+              <td>콜백 호출이 <code>IsOn</code> setter에만 숨어 있으면 호출부에서 알림 발생 여부가 보이지 않으므로, <code>OuiSetIsOn</code>을 notify API로 추가하고 <code>IsOn</code>은 그 API에 위임하게 정리했다.</td>
+            </tr>
+            <tr>
+              <td>2026-06-20</td>
+              <td><code>MyRadio</code> 단독 클릭 동작 수정</td>
+              <td>부모 그룹이 없는 <code>MyRadio</code>가 클릭 시 항상 on으로만 고정되면 단독 토글로 쓸 수 없으므로, 그룹이 없을 때는 현재 on/off를 반전하고 그룹이 있을 때만 그룹 정책에 맡기도록 정리했다.</td>
+            </tr>
+            <tr>
+              <td>2026-06-20</td>
+              <td><code>MyRadioGroup.SelectionMode</code> 추가</td>
+              <td>그룹 정책이 단일 선택과 0개 선택 허용만으로는 부족하므로, 기본 1개 선택, 0개 선택 허용, 여러 개 선택을 각각 <code>Required</code>, <code>Optional</code>, <code>Multiple</code>로 분리했다.</td>
+            </tr>
+            <tr>
+              <td>2026-06-20</td>
+              <td><code>MyRadio</code> 버튼 공통 표면 정리</td>
+              <td><code>MyButton</code>을 직접 요구하지 않는 대신 <code>IsInteractable</code>, <code>SoundOverrides</code>, hover 콜백 표면을 <code>MyRadio</code> 소유 타입으로 복제해 버튼 계열 컴포넌트로 쓰는 감각을 맞췄다. <code>ClickSound</code>는 라디오 클릭의 의미가 switch 하나뿐이라 외부 설정으로 열지 않기로 했다.</td>
+            </tr>
+            <tr>
+              <td>2026-06-20</td>
+              <td>부모 변경 훅 적용 범위 정리</td>
+              <td><code>MyRadio</code>는 부모 그룹 캐시를 오래 들고 있으므로 parent changed 훅이 필요하지만, 다른 컨트롤은 클릭 시점 parent 검색이나 같은 오브젝트 콜백 캐시 구조라 같은 훅을 넓히지 않기로 했다.</td>
+            </tr>
+            <tr>
+              <td>2026-06-20</td>
+              <td><code>MyRadio.ClickSound</code> 제거</td>
+              <td>버튼은 클릭 결과가 취소, 확인, 시작처럼 여러 의미로 갈릴 수 있지만 라디오는 on/off 선택 변경만 수행하고 그 switch가 click 동작이다. 따라서 public <code>ClickSound</code>와 <code>ClickSoundEnum</code>은 두지 않고, 기본 switch SFX를 <code>SoundOverrides.Click</code>으로만 대체할 수 있게 했다.</td>
+            </tr>
+            <tr>
+              <td>2026-06-20</td>
+              <td><code>MyRadio</code> Selected 상태 추가</td>
+              <td>패드/키보드 포커스를 hover와 같은 <code>Highlighted</code>로 처리하면 Unity 버튼의 상태 계약과 어긋나므로, Off/On 각각에 <code>Selected</code> 상태를 추가해 상태 표시 계약을 8개에서 10개로 확장했다.</td>
+            </tr>
+            <tr>
+              <td>2026-06-20</td>
+              <td><code>MyRadio</code> pressed preview 명명</td>
+              <td><code>Pressed</code>는 현재 on/off 값이 아니라 click 성공 시 반대값으로 넘어갈 전환 preview이므로, <code>OffPressed</code>와 <code>OnPressed</code> 대신 <code>OffToOnPressed</code>, <code>OnToOffPressed</code>로 명명해 논리값과 연출값을 구분했다.</td>
+            </tr>
+            <tr>
+              <td>2026-06-20</td>
+              <td><code>MyRadio</code> 표시 필드 직접화</td>
+              <td><code>MySelector</code> 배열과 callback을 거치면 라디오 전용 상태명을 Inspector에서 바로 읽기 어렵기 때문에, <code>MyRadio</code>가 <code>OffNormal</code>부터 <code>OnDisabled</code>까지 명명된 GameObject 필드를 직접 켜고 끄도록 정리했다.</td>
+            </tr>
+            <tr>
+              <td>2026-06-20</td>
+              <td><code>MyRadio</code> 상태 표시 누락 경고</td>
+              <td>명명된 상태 필드를 직접 연결하는 구조에서는 누락된 필드가 곧 보이지 않는 상태 전환으로 이어지므로, 페이지 전환 시 현재 켜야 하는 상태 GameObject가 null이면 즉시 경고하도록 했다.</td>
+            </tr>
+            <tr>
+              <td>2026-06-20</td>
+              <td><code>null</code> 비교 기준 정리</td>
+              <td><code>MyRadio</code>와 <code>MyRadioGroup</code>의 참조 비교에서는 <code>default</code> 대신 <code>null</code>을 사용해 의도를 직접 드러내도록 정리했다.</td>
+            </tr>
+            <tr>
+              <td>2026-06-20</td>
+              <td><code>MyRadioGroup</code> 에디터 초기 선택 반영</td>
+              <td><code>ExecuteAlways</code> 환경에서도 Inspector의 <code>_initialIndex</code> 변경이 기존 valid 선택 보존 분기에 막히지 않도록, <code>OnValidate</code>에서는 초기 선택을 강제로 다시 적용하게 했다.</td>
+            </tr>
+            <tr>
+              <td>2026-06-20</td>
+              <td><code>SelectionMode</code> UX 정리</td>
+              <td><code>SingleRequired</code>, <code>SingleOptional</code>, <code>Unlimited</code>는 Inspector에서 모드별 인덱스 의미를 읽기 어렵기 때문에 <code>Required</code>, <code>Optional</code>, <code>Multiple</code>로 바꾸고, <code>_initialIndex</code>는 모드별로 유효한 값만 남도록 보정했다.</td>
+            </tr>
+            <tr>
+              <td>2026-06-20</td>
+              <td><code>MyRadioGroup</code> Tooltip 추가</td>
+              <td>Custom Editor 없이도 <code>Optional</code>의 -1 의미와 <code>Multiple</code>의 초기 인덱스 미사용을 Inspector에서 알 수 있도록 Tooltip으로 최소 안내를 추가했다.</td>
+            </tr>
+            <tr>
+              <td>2026-06-20</td>
+              <td><code>MyRadio.IsInteractable</code> Inspector 제어 추가</td>
+              <td>프리팹 제작자가 초기 disabled 상태를 Inspector에서 직접 고를 수 있어야 하므로, <code>_isInteractable</code> serialized 값을 추가하고 public <code>IsInteractable</code> setter가 Disabled 상태 표시와 동기화하도록 했다.</td>
+            </tr>
+            <tr>
+              <td>2026-06-20</td>
+              <td><code>MyRadio</code> <code>ExecuteAlways</code> 적용</td>
+              <td>Inspector에서 <code>_isInteractable</code>이나 상태 표시 필드를 조정할 때 프리팹 제작 화면에서도 현재 상태 오브젝트가 즉시 갱신되도록 했다.</td>
+            </tr>
+            <tr>
+              <td>2026-06-20</td>
+              <td><code>MyRadio.IsOn</code> Inspector 제어 추가</td>
+              <td>초기 on/off 상태도 프리팹 제작자가 Inspector에서 직접 고를 수 있어야 하므로, <code>_isOn</code> serialized 값을 추가하고 <code>SetState</code>에서 표시 상태와 authoring 값을 함께 동기화하도록 했다.</td>
+            </tr>
+            <tr>
+              <td>2026-06-20</td>
+              <td><code>MyRadio</code> 1차 버전 완료</td>
+              <td><code>MyRadio</code>, <code>MyRadioGroup</code>, 테스트 씬, 예제 프리팹, 패키지 문서, <code>1.7.0</code> 버전 갱신을 묶어 라디오 기능의 첫 릴리스 단위로 정리했다.</td>
+            </tr>
+            <tr>
+              <td>2026-06-19</td>
+              <td>공통 컴포넌트 속성 결정 추가</td>
+              <td>런타임 UI 헬퍼는 같은 GameObject에 같은 타입을 중복 부착하는 사용을 전제로 하지 않으므로, <code>DisallowMultipleComponent</code> 적용 기준과 <code>RequireComponent</code>의 역할을 분리해 기록했다.</td>
+            </tr>
+          </tbody>
+        </table>
+      </details>
+    </div>
+  </main>
+</body>
+</html>

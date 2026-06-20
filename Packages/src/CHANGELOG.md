@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.7.0
+
+- `MyRadio`와 `MyRadioGroup`을 추가해 Unity `Toggle`, `ToggleGroup`, `Selectable`에 기대지 않는 라디오/토글 선택 컨트롤을 제공합니다.
+- `MyRadio`는 off/on 각각의 normal, highlighted, pressed preview, selected, disabled 표시 GameObject를 직접 제어합니다.
+- `MyRadioGroup.SelectionMode`는 `Required`, `Optional`, `Multiple` 정책을 제공하며, 에디터에서도 초기 선택과 자식 라디오 상태를 동기화합니다.
+- `Assets/MyRadioTest.unity` 테스트 씬과 `Assets/MyRadio.prefab` 예제를 추가했습니다.
+
 ## 1.6.1
 
 - 런타임 UI 헬퍼 컴포넌트에 `DisallowMultipleComponent`를 적용해 같은 GameObject에 같은 헬퍼를 중복 부착하지 않도록 했습니다.
