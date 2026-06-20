@@ -50,6 +50,21 @@ namespace oojjrs.oui
             public AudioSource Hover;
         }
 
+        [System.Serializable]
+        public struct StateObjects
+        {
+            public GameObject OffNormal;
+            public GameObject OffHighlighted;
+            public GameObject OffToOnPressed;
+            public GameObject OffSelected;
+            public GameObject OffDisabled;
+            public GameObject OnNormal;
+            public GameObject OnHighlighted;
+            public GameObject OnToOffPressed;
+            public GameObject OnSelected;
+            public GameObject OnDisabled;
+        }
+
         private CallbackInterface[] _callbacks;
         private GroupInterface _group;
         [SerializeField]
@@ -61,25 +76,7 @@ namespace oojjrs.oui
         [SerializeField]
         private bool _isOn;
         [SerializeField]
-        private GameObject _offNormal;
-        [SerializeField]
-        private GameObject _offHighlighted;
-        [SerializeField]
-        private GameObject _offToOnPressed;
-        [SerializeField]
-        private GameObject _offSelected;
-        [SerializeField]
-        private GameObject _offDisabled;
-        [SerializeField]
-        private GameObject _onNormal;
-        [SerializeField]
-        private GameObject _onHighlighted;
-        [SerializeField]
-        private GameObject _onToOffPressed;
-        [SerializeField]
-        private GameObject _onSelected;
-        [SerializeField]
-        private GameObject _onDisabled;
+        private StateObjects _stateObjects;
         [SerializeField]
         private SoundOverrides _soundOverrides;
         private State _state;
@@ -384,49 +381,49 @@ namespace oojjrs.oui
                 _ => false,
             };
 
-            if (((state == State.OffNormal) && (_offNormal == null)) ||
-                ((state == State.OffHighlighted) && (_offHighlighted == null)) ||
-                ((state == State.OffToOnPressed) && (_offToOnPressed == null)) ||
-                ((state == State.OffSelected) && (_offSelected == null)) ||
-                ((state == State.OffDisabled) && (_offDisabled == null)) ||
-                ((state == State.OnNormal) && (_onNormal == null)) ||
-                ((state == State.OnHighlighted) && (_onHighlighted == null)) ||
-                ((state == State.OnToOffPressed) && (_onToOffPressed == null)) ||
-                ((state == State.OnSelected) && (_onSelected == null)) ||
-                ((state == State.OnDisabled) && (_onDisabled == null)))
+            if (((state == State.OffNormal) && (_stateObjects.OffNormal == null)) ||
+                ((state == State.OffHighlighted) && (_stateObjects.OffHighlighted == null)) ||
+                ((state == State.OffToOnPressed) && (_stateObjects.OffToOnPressed == null)) ||
+                ((state == State.OffSelected) && (_stateObjects.OffSelected == null)) ||
+                ((state == State.OffDisabled) && (_stateObjects.OffDisabled == null)) ||
+                ((state == State.OnNormal) && (_stateObjects.OnNormal == null)) ||
+                ((state == State.OnHighlighted) && (_stateObjects.OnHighlighted == null)) ||
+                ((state == State.OnToOffPressed) && (_stateObjects.OnToOffPressed == null)) ||
+                ((state == State.OnSelected) && (_stateObjects.OnSelected == null)) ||
+                ((state == State.OnDisabled) && (_stateObjects.OnDisabled == null)))
             {
                 Debug.LogWarning($"{name}> DON'T HAVE RADIO STATE {state}.");
             }
 
-            if (_offNormal != null)
-                _offNormal.SetActive(state == State.OffNormal);
+            if (_stateObjects.OffNormal != null)
+                _stateObjects.OffNormal.SetActive(state == State.OffNormal);
 
-            if (_offHighlighted != null)
-                _offHighlighted.SetActive(state == State.OffHighlighted);
+            if (_stateObjects.OffHighlighted != null)
+                _stateObjects.OffHighlighted.SetActive(state == State.OffHighlighted);
 
-            if (_offToOnPressed != null)
-                _offToOnPressed.SetActive(state == State.OffToOnPressed);
+            if (_stateObjects.OffToOnPressed != null)
+                _stateObjects.OffToOnPressed.SetActive(state == State.OffToOnPressed);
 
-            if (_offSelected != null)
-                _offSelected.SetActive(state == State.OffSelected);
+            if (_stateObjects.OffSelected != null)
+                _stateObjects.OffSelected.SetActive(state == State.OffSelected);
 
-            if (_offDisabled != null)
-                _offDisabled.SetActive(state == State.OffDisabled);
+            if (_stateObjects.OffDisabled != null)
+                _stateObjects.OffDisabled.SetActive(state == State.OffDisabled);
 
-            if (_onNormal != null)
-                _onNormal.SetActive(state == State.OnNormal);
+            if (_stateObjects.OnNormal != null)
+                _stateObjects.OnNormal.SetActive(state == State.OnNormal);
 
-            if (_onHighlighted != null)
-                _onHighlighted.SetActive(state == State.OnHighlighted);
+            if (_stateObjects.OnHighlighted != null)
+                _stateObjects.OnHighlighted.SetActive(state == State.OnHighlighted);
 
-            if (_onToOffPressed != null)
-                _onToOffPressed.SetActive(state == State.OnToOffPressed);
+            if (_stateObjects.OnToOffPressed != null)
+                _stateObjects.OnToOffPressed.SetActive(state == State.OnToOffPressed);
 
-            if (_onSelected != null)
-                _onSelected.SetActive(state == State.OnSelected);
+            if (_stateObjects.OnSelected != null)
+                _stateObjects.OnSelected.SetActive(state == State.OnSelected);
 
-            if (_onDisabled != null)
-                _onDisabled.SetActive(state == State.OnDisabled);
+            if (_stateObjects.OnDisabled != null)
+                _stateObjects.OnDisabled.SetActive(state == State.OnDisabled);
         }
     }
 }

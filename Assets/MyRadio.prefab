@@ -1070,16 +1070,19 @@ MonoBehaviour:
   m_Name:
   m_EditorClassIdentifier: oojjrs.oui::oojjrs.oui.MyRadio
   _hoverSoundDisabled: 0
-  _offNormal: {fileID: 7845623942704842033}
-  _offHighlighted: {fileID: 7926656378278132388}
-  _offToOnPressed: {fileID: 6278713590133513927}
-  _offSelected: {fileID: 4899993950431754244}
-  _offDisabled: {fileID: 4745397979987096633}
-  _onNormal: {fileID: 1076946963189989854}
-  _onHighlighted: {fileID: 8896458679770660110}
-  _onToOffPressed: {fileID: 5573386513359790095}
-  _onSelected: {fileID: 7355350971265545589}
-  _onDisabled: {fileID: 2389811015508455006}
+  _isInteractable: 1
+  _isOn: 0
+  _stateObjects:
+    OffNormal: {fileID: 7845623942704842033}
+    OffHighlighted: {fileID: 7926656378278132388}
+    OffToOnPressed: {fileID: 6278713590133513927}
+    OffSelected: {fileID: 4899993950431754244}
+    OffDisabled: {fileID: 4745397979987096633}
+    OnNormal: {fileID: 1076946963189989854}
+    OnHighlighted: {fileID: 8896458679770660110}
+    OnToOffPressed: {fileID: 5573386513359790095}
+    OnSelected: {fileID: 7355350971265545589}
+    OnDisabled: {fileID: 2389811015508455006}
   _soundOverrides:
     Click: {fileID: 0}
     Hover: {fileID: 0}

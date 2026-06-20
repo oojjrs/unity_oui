@@ -667,8 +667,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7e3c31d4b3684094ba255e39d9274f24, type: 3}
   m_Name:
   m_EditorClassIdentifier: oojjrs.oui::oojjrs.oui.MyRadioGroup
-  _initialIndex: 1
   _selectionMode: 0
+  _initialIndex: 1
 --- !u!1001 &590262736
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1453,8 +1453,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7e3c31d4b3684094ba255e39d9274f24, type: 3}
   m_Name:
   m_EditorClassIdentifier: oojjrs.oui::oojjrs.oui.MyRadioGroup
-  _initialIndex: 0
   _selectionMode: 0
+  _initialIndex: 0
 --- !u!1001 &908285137
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1645,8 +1645,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7e3c31d4b3684094ba255e39d9274f24, type: 3}
   m_Name:
   m_EditorClassIdentifier: oojjrs.oui::oojjrs.oui.MyRadioGroup
-  _initialIndex: -1
   _selectionMode: 2
+  _initialIndex: -1
 --- !u!1001 &973818879
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2281,7 +2281,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1076946963189989854, guid: 2b39c2e6f1001b5449ecc984c69376aa, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4358964273766143627, guid: 2b39c2e6f1001b5449ecc984c69376aa, type: 3}
       propertyPath: m_Pivot.x
@@ -2369,7 +2369,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7845623942704842033, guid: 2b39c2e6f1001b5449ecc984c69376aa, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -2395,7 +2395,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2389811015508455006, guid: 2b39c2e6f1001b5449ecc984c69376aa, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4358964273766143627, guid: 2b39c2e6f1001b5449ecc984c69376aa, type: 3}
       propertyPath: m_Pivot.x
@@ -2479,7 +2479,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4745397979987096633, guid: 2b39c2e6f1001b5449ecc984c69376aa, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5748275781671078721, guid: 2b39c2e6f1001b5449ecc984c69376aa, type: 3}
       propertyPath: m_Name
@@ -2675,8 +2675,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7e3c31d4b3684094ba255e39d9274f24, type: 3}
   m_Name:
   m_EditorClassIdentifier: oojjrs.oui::oojjrs.oui.MyRadioGroup
-  _initialIndex: -1
   _selectionMode: 1
+  _initialIndex: -1
 --- !u!1001 &1645286497
 PrefabInstance:
   m_ObjectHideFlags: 0
