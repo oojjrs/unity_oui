@@ -280,7 +280,7 @@
     <div class="header-inner">
       <h1>UnityOui</h1>
       <p class="thesis">UGUI 기반 프로젝트에서 반복되는 입력, 선택, 상태 연출을 작고 명확한 컴포넌트로 묶는 패키지다. 이 문서는 기능 주제보다 컴포넌트 단위로 책임, 결정 이유, 보류점을 정리한다.</p>
-      <p class="meta">작성일: 2026-06-18 · 문서 범위: <code>Packages/src/Runtime</code> 컴포넌트 설계, 특히 <code>MyRadio</code>와 관련 컴포넌트</p>
+      <p class="meta">작성일: 2026-06-18 · 문서 갱신: 2026-06-21 20:19 +09:00 · 문서 범위: <code>Packages/src/Runtime</code> 컴포넌트 설계, 특히 <code>MyRadio</code>와 관련 컴포넌트</p>
     </div>
   </header>
 
@@ -295,6 +295,14 @@
           <li>상태 표시: MyRadio 직접 제어</li>
           <li>참고 타입: MyButton / MySwapper</li>
           <li>보류 타입: Selectable</li>
+        </ul>
+        <h3>범주별 구현 기준</h3>
+        <ul class="tag-list">
+          <li>핵심 방향: UGUI 헬퍼 컴포넌트의 책임 분리</li>
+          <li>상호작용과 상태: 클릭, 포커스, hover, submit, on/off 상태</li>
+          <li>규칙과 계산 모델: 상태 enum, 그룹 선택 정책, 사운드/hover 계약</li>
+          <li>UI와 편의 시스템: Inspector 제작 UX, setup 도구, 프리팹 구성</li>
+          <li>미결정과 제외: Selectable 계열처럼 아직 패키지 표면이 불안정한 타입</li>
         </ul>
         <div class="summary">
           <div class="metric">
@@ -317,7 +325,7 @@
       </section>
 
       <details>
-        <summary>공통 컴포넌트 속성</summary>
+        <summary>핵심 방향 - 공통 컴포넌트 속성</summary>
         <p>런타임 UI 헬퍼 컴포넌트는 하나의 GameObject에 같은 헬퍼 타입을 하나만 두는 것을 기준으로 한다. 같은 타입을 여러 개 붙이면 콜백 수집, 상태 캐시, UGUI 래퍼 역할이 서로 겹쳐 Inspector와 런타임 의미가 흐려진다.</p>
         <div class="decision">
           <strong><code>DisallowMultipleComponent</code> 적용</strong>
@@ -329,7 +337,7 @@
       </details>
 
       <details>
-        <summary>MyRadio / MyRadioGroup 컴포넌트</summary>
+        <summary>상호작용과 상태 - MyRadio / MyRadioGroup 컴포넌트</summary>
         <p><code>MyRadio</code>와 <code>MyRadioGroup</code>은 하나의 라디오 선택 묶음을 이룬다. <code>MyRadio</code>는 개별 선택지의 입력과 on/off 상태를 담당하고, <code>MyRadioGroup</code>은 자식 라디오 중 하나만 선택되도록 조율한다.</p>
         <h3>MyRadio 책임</h3>
         <table>
@@ -359,7 +367,7 @@
             <tr>
               <td>그룹 통지</td>
               <td><code>GroupInterface.OnClick(this)</code></td>
-              <td>부모 그룹이 있으면 선택/해제 정책을 그룹에 맡기고, 그룹이 없으면 단독 토글처럼 현재 on/off를 반전한다.</td>
+              <td>그룹이 직접 등록한 라디오이면 선택/해제 정책을 그룹에 맡기고, 등록된 그룹이 없거나 그룹이 해당 라디오를 처리하지 못하면 단독 토글처럼 현재 on/off를 반전한다.</td>
             </tr>
             <tr>
               <td>버튼 공통 기능</td>
@@ -388,6 +396,8 @@
           <li><code>MyRadio</code> 필수 컴포넌트: 없음. 단, 클릭 판정을 위해 자식 중 하나 이상은 raycast 가능한 <code>Graphic</code>이어야 한다.</li>
           <li><code>MyRadio.State</code>: <code>OffNormal</code>부터 <code>OnDisabled</code>까지 단일 상태 enum으로 보관한다. 내부 로직은 보조 숫자 축이나 변환 함수 없이 현재 <code>_state</code>와 목표 enum 값을 직접 다룬다.</li>
           <li><code>_isOn</code>과 <code>_isInteractable</code>은 Inspector에서 초기 선택 여부와 상호작용 가능 여부를 고르는 serialized 값이다. public <code>IsOn</code>과 <code>IsInteractable</code> setter는 상태 표시를 바꾸고, <code>SetState</code>는 enum 상태를 기준으로 두 serialized 값을 다시 동기화한다.</li>
+          <li><code>MyRadioGroup</code>이 <code>_radios</code> 배열을 통해 직접 등록한 라디오는 선택 초기화를 그룹이 소유하므로, <code>MyRadio</code> 자신의 <code>InitializerInterface.InitialValue</code>는 적용하지 않는다. 등록된 그룹이 없는 단독 라디오일 때만 이 초기값을 읽는다.</li>
+          <li>Inspector에 직접 노출되는 <code>Tooltip</code> 문구는 사용자가 바로 읽을 수 있도록 한글을 기본으로 작성한다.</li>
           <li><code>MyRadio</code>는 <code>ExecuteAlways</code>로 동작해 에디터에서도 <code>_isOn</code>, <code>_isInteractable</code> 변경과 상태 표시 오브젝트 전환을 즉시 맞춘다.</li>
           <li>상속/인터페이스 순서: Unity 제공 그룹, 로컬 제공 그룹 순서로 배치하고 각 그룹 안에서는 이름 ABC 순서</li>
           <li>함수 순서: Unity 함수, 상속/인터페이스 함수, 로컬 함수 그룹 순서로 배치한다. 상속/인터페이스 함수 그룹 안에서도 Unity 제공 함수, 로컬 제공 함수 순서로 나누고 각 그룹 안에서는 modifier와 무관하게 함수명 ABC 순서</li>
@@ -395,7 +405,7 @@
         </ul>
         <h3>MyRadioGroup 책임</h3>
         <ul>
-          <li>자식 <code>MyRadio</code>를 수집한다.</li>
+          <li>Inspector의 <code>_radios</code> 배열로 <code>MyRadio</code> 목록을 직접 받는다.</li>
           <li><code>SelectionMode</code> 기본값은 <code>Required</code>이며, 항상 하나의 라디오만 켜진 상태를 유지한다.</li>
           <li><code>Optional</code>은 하나 이하 선택을 허용해 이미 선택된 라디오를 다시 클릭하면 0개 선택 상태로 만든다.</li>
           <li><code>Multiple</code>은 그룹 내 on/off 제한을 풀고, 각 라디오 클릭을 독립 토글처럼 처리한다.</li>
@@ -403,25 +413,26 @@
           <li>초기화나 조용한 동기화에서는 개별 라디오를 <code>OuiSetIsOnWithoutNotify</code>로 맞춘다.</li>
           <li><code>CallbackInterface.OnValueChanged(int index, MyRadio radio)</code>로 그룹 선택 변경을 알린다.</li>
           <li><code>AllowSwitchOff</code>는 기존 감각을 위한 호환 속성으로 남기며, <code>Required</code>와 <code>Optional</code> 사이를 전환한다.</li>
-          <li>초기 선택은 <code>Required</code>와 <code>Optional</code>에서만 <code>InitializerInterface.InitialIndex</code> 또는 <code>_initialIndex</code>를 따른다. <code>Multiple</code>에서는 초기 인덱스를 사용하지 않는다.</li>
+          <li>선택 index는 <code>_index</code> 하나로 관리한다. <code>Required</code>와 <code>Optional</code>에서 Inspector의 <code>_index</code>는 초기 선택값이자 런타임 현재값이며, 외부 <code>InitializerInterface.InitialIndex</code> 값은 <code>Start()</code>에서 한 번만 <code>_index</code>에 적용한다. <code>Multiple</code>에서는 단일 초기 인덱스를 사용하지 않고 첫 번째 on 라디오의 index만 표시한다.</li>
         </ul>
         <h3>콜백 결정</h3>
-        <p><code>OuiSetIsOn</code>은 개별 라디오의 notify API이고, <code>IsOn</code> setter는 이 API로 위임한다. <code>OuiSelect</code>는 그룹 콜백을 한 번 호출하고, 실제 on/off 값이 바뀐 개별 <code>MyRadio</code>도 <code>OuiSetIsOn</code>을 통해 콜백을 호출한다. <code>Multiple</code>에서는 콜백 인자로 실제 변경된 라디오의 index와 radio를 넘기며, <code>OuiSetIndexWithoutNotify</code>는 그룹 콜백과 개별 라디오 콜백을 모두 생략하고 시각 상태만 조용히 맞춘다.</p>
+        <p><code>OuiSetIsOn</code>은 개별 라디오의 notify API이고, <code>IsOn</code> setter는 이 API로 위임한다. <code>OuiSelect</code>는 이미 선택된 index를 다시 요청해도 그룹 콜백을 한 번 호출하고, 실제 on/off 값이 바뀐 개별 <code>MyRadio</code>도 <code>OuiSetIsOn</code>을 통해 콜백을 호출한다. <code>Multiple</code>에서는 콜백 인자로 실제 변경된 라디오의 index와 radio를 넘기며, <code>OuiSetIndexWithoutNotify</code>는 그룹 콜백과 개별 라디오 콜백을 모두 생략하고 시각 상태만 조용히 맞춘다.</p>
         <h3>구현 메모</h3>
         <ul>
-          <li>자식 라디오는 <code>GetComponentsInChildren&lt;MyRadio&gt;(true)</code>로 찾되, 중첩된 다른 <code>MyRadioGroup</code> 아래의 라디오는 제외한다.</li>
-          <li><code>MyRadio</code>는 부모 그룹 캐시가 있으므로 <code>OnTransformParentChanged</code>에서 그룹을 다시 찾는다. <code>MyRadioGroup</code>은 자식 목록 캐시가 핵심이므로 <code>OnTransformChildrenChanged</code>에서 <code>OuiRefresh()</code>한다.</li>
+          <li>라디오 목록은 자식 자동 수집이 아니라 serialized 배열로 결정한다. 배열 순서가 곧 선택 index 순서이며, <code>MySelector</code>의 값 배열과 같은 authoring 감각을 따른다.</li>
+          <li>같은 GameObject의 callback과 initializer 의존성은 <code>MyTab</code>처럼 <code>Awake()</code>에서 한 번만 캐시한다. <code>OnEnable</code>과 <code>OnValidate</code>는 의존성을 다시 찾지 않고, 현재 <code>_radios</code> 배열을 기준으로 그룹 등록과 선택 상태만 갱신한다.</li>
+          <li><code>MyRadio</code>는 부모를 검색해 그룹을 찾지 않는다. <code>MyRadioGroup</code>이 <code>_radios</code> 배열의 각 라디오에 자신을 등록하고, 클릭 시 그룹이 해당 라디오를 처리하지 못하면 <code>MyRadio</code>는 단독 토글로 동작한다.</li>
           <li>다른 기존 컨트롤은 부모 의존성을 클릭 시점에 다시 찾거나 같은 GameObject의 콜백만 캐시하므로, 현재 구조에서는 <code>OnTransformParentChanged</code>를 추가하지 않는다.</li>
-          <li><code>MyRadioGroup</code>은 <code>ExecuteAlways</code>로 동작해 에디터에서도 자식 라디오 목록과 선택 표시를 갱신한다.</li>
-          <li><code>OnValidate</code>에서는 모드별로 <code>_initialIndex</code>를 보정한다. <code>Required</code>는 0 이상의 유효 인덱스로 강제하고, <code>Optional</code>은 0개 선택을 뜻하는 -1을 허용하며, <code>Multiple</code>은 초기 인덱스를 쓰지 않으므로 -1로 되돌린다.</li>
-          <li>Editor 코드를 추가하지 않는 범위에서는 <code>_selectionMode</code>와 <code>_initialIndex</code>에 Tooltip을 붙여, <code>Optional</code>의 -1이 선택 없음이라는 사실과 <code>Multiple</code>에서 초기 인덱스를 무시한다는 사실을 Inspector에서 직접 안내한다.</li>
-          <li><code>OnEnable</code>에서는 기존 선택이 유효하면 보존하지만, <code>OnValidate</code>에서는 Inspector에서 바뀐 <code>_initialIndex</code>를 즉시 확인할 수 있도록 초기 선택을 강제로 다시 적용한다.</li>
+          <li><code>MyRadioGroup</code>은 <code>ExecuteAlways</code>로 동작해 에디터에서도 이미 결정된 라디오 배열 기준으로 선택 표시를 갱신한다.</li>
+          <li><code>OnValidate</code>에서는 모드별로 <code>_index</code>를 보정한다. <code>Required</code>는 0 이상의 유효 인덱스로 강제하고, <code>Optional</code>은 0개 선택을 뜻하는 -1을 허용하며, <code>Multiple</code>은 첫 번째 on 라디오의 index로 갱신한다.</li>
+          <li>Editor 코드를 추가하지 않는 범위에서는 <code>_selectionMode</code>와 <code>_index</code>에 한글 Tooltip을 붙여, <code>Optional</code>의 -1이 선택 없음이라는 사실과 <code>Multiple</code>에서 표시되는 index의 의미를 Inspector에서 직접 안내한다.</li>
+          <li><code>OnEnable</code>에서는 기존 <code>_index</code>가 유효하면 보존하고, 이미 시작된 뒤 다시 활성화된 경우에는 현재 선택을 콜백으로 다시 알린다. <code>OnValidate</code>에서는 Inspector에서 바뀐 <code>_index</code>를 즉시 확인할 수 있도록 현재 선택을 다시 적용하되 외부 초기화 인터페이스는 읽지 않는다.</li>
           <li>라디오가 하나도 없으면 <code>DON'T HAVE RADIO.</code> 경고를 출력한다.</li>
         </ul>
       </details>
 
       <details>
-        <summary>MyRadio 상태 표시 필드</summary>
+        <summary>규칙과 계산 모델 - MyRadio 상태 표시 필드</summary>
         <p><code>MyRadio</code>는 상태별 표시 GameObject를 배열 인덱스가 아니라 <code>StateObjects</code> 묶음 안의 이름 있는 필드로 가진다. 상태 enum과 표시 필드 이름이 1:1로 대응되므로, 프리팹 제작자는 숫자 순서를 외우지 않고 어떤 상태의 표시물인지 Inspector에서 바로 확인할 수 있고, 필요하지 않을 때는 접어서 사운드 설정처럼 숨길 수 있다.</p>
         <table>
           <thead>
@@ -498,7 +509,7 @@
       </details>
 
       <details>
-        <summary>MyButton 컴포넌트</summary>
+        <summary>상호작용과 상태 - MyButton 컴포넌트</summary>
         <p><code>MyButton</code>은 일반 버튼 입력과 사운드 정책의 기존 기준이다. 하지만 <code>MyRadio</code>가 <code>MyButton</code>을 직접 조합하지는 않는다.</p>
         <table>
           <thead>
@@ -526,7 +537,20 @@
       </details>
 
       <details>
-        <summary>MySwapper 컴포넌트</summary>
+        <summary>UI와 편의 시스템 - MyTab 컴포넌트</summary>
+        <p><code>MyTab</code>은 탭 헤더의 단일 선택 상태를 <code>MyRadioGroup</code>에 맡기고, 본문 페이지 전환을 <code>MySelector</code>에 맡기는 얇은 연결 컴포넌트다. 헤더 입력과 선택 표시는 <code>MyRadioGroup</code> 배열에 연결된 <code>MyRadio</code>가 담당하므로 별도 <code>MyTabHeaderButton</code>은 유지하지 않는다.</p>
+        <ul>
+          <li>같은 GameObject의 <code>MyRadioGroup</code>과 <code>MySelector</code>를 <code>RequireComponent</code>로 요구한다.</li>
+          <li><code>RequireComponent</code> 대상 의존성은 누락 시 복구 가능한 선택지가 아니므로 <code>Awake()</code>에서 한 번만 캐시하고 이후 반복 조회하지 않는다.</li>
+          <li>탭 헤더는 <code>Required</code> 라디오 그룹으로 설정해 사용하며, <code>MyTab</code>이 런타임에서 모드를 강제로 덮어쓰지 않는다. 잘못 설정된 경우 <code>Start()</code>에서 경고만 출력한다.</li>
+          <li><code>MyTab</code>은 선택 index를 캐시하지 않는다. 현재 선택값은 필요할 때마다 <code>MyRadioGroup.Index</code>에서 읽고, 본문 <code>MySelector</code>는 그 값에 맞춰 동기화한다. 헤더 라디오 배열과 본문 페이지 배열은 같은 index 순서를 가져야 한다.</li>
+          <li>외부 코드가 초기 탭을 정해야 할 때는 같은 GameObject의 컴포넌트가 <code>MyTab.InitializerInterface.InitialIndex</code>를 구현한다. <code>MyTab</code>은 <code>MyRadioGroup.InitializerInterface</code>를 내부 구현으로 숨기고, 라디오 그룹이 이 값을 <code>Start()</code>에서 한 번만 읽게 한다.</li>
+          <li><code>ExecuteAlways</code>로 동작해 에디터에서도 라디오 그룹의 선택 표시와 본문 페이지가 같은 index를 바라보게 한다. 본문 <code>MySelector</code> 동기화는 <code>MyRadioGroup.CallbackInterface.OnValueChanged</code>에서만 시작한다.</li>
+        </ul>
+      </details>
+
+      <details>
+        <summary>UI와 편의 시스템 - MySwapper 컴포넌트</summary>
         <p><code>MySwapper</code>는 <code>MySelector</code>와 같은 오브젝트에 붙는 패턴의 선례다. 클릭 입력은 <code>MySwapperButton</code>이 담당하고, <code>MySwapper</code>는 bool 상태를 <code>MySelector</code> index로 바꾸는 얇은 어댑터다.</p>
         <div class="decision">
           <strong><code>RequireComponent(typeof(MySelector))</code> 선례</strong>
@@ -538,7 +562,7 @@
       </details>
 
       <details>
-        <summary>Selectable / MySelectable 컴포넌트</summary>
+        <summary>미결정과 제외 - Selectable / MySelectable 컴포넌트</summary>
         <p><code>Selectable</code>은 패드/키보드 navigation, <code>currentSelectedGameObject</code>, <code>interactable</code> 저장소 측면에서 매력적이었다. 그러나 현재 <code>MyRadio</code> 설계에서는 쓰지 않는다.</p>
         <div class="decision">
           <strong><code>Selectable</code> 미사용</strong>
@@ -551,13 +575,14 @@
       </details>
 
       <details>
-        <summary>Editor / Prefab 제작 보조</summary>
+        <summary>UI와 편의 시스템 - Editor / Prefab 제작 보조</summary>
         <p>이 섹션은 런타임 컴포넌트는 아니지만, <code>MyRadio</code>를 실제로 쓰게 만들기 위한 필수 보조 영역이다. 10개 상태 필드를 수동으로 모두 맞추게 하면 UX가 나쁘다.</p>
         <h3>필요한 기능</h3>
         <ul>
           <li><code>MyRadio</code>가 요구하는 상태 이름과 개수를 코드 상수로 가진다.</li>
           <li>Editor 전용 컨텍스트 메뉴나 커스텀 Inspector에서 10개 상태 오브젝트를 생성한다.</li>
           <li>생성한 오브젝트를 <code>MyRadio</code>의 명명된 상태 필드에 자동 연결한다.</li>
+          <li><code>MySelector</code>나 <code>MyRadioGroup</code>에서 자식 오브젝트를 배열로 자동 채우는 기능은 런타임 컴포넌트 본체가 아니라 별도 보조 컴포넌트나 Editor 도구로 제공한다.</li>
           <li>필수 상태 필드 중 null 슬롯이 있으면 Inspector에서 즉시 경고한다. 런타임 전환 중에도 현재 켜야 하는 상태 필드가 null이면 <code>DON'T HAVE RADIO STATE {state}.</code> 경고를 출력한다.</li>
           <li>상태 오브젝트 이름은 <code>OffNormal</code>, <code>OffHighlighted</code>처럼 인덱스보다 의미가 먼저 보이게 한다.</li>
         </ul>
@@ -567,7 +592,7 @@
       </details>
 
       <details>
-        <summary>열린 질문</summary>
+        <summary>미결정과 제외 - 열린 질문</summary>
         <ul>
           <li><code>Selectable</code>을 쓰지 않는 상태에서 패드/키보드 방향 이동을 어떻게 보완할지 정해야 한다.</li>
           <li><code>MyRadio</code>의 명명된 상태 필드를 Editor에서 자동 구성하려면 context menu로 충분한지, custom inspector까지 갈지 정해야 한다.</li>
@@ -684,12 +709,12 @@
             <tr>
               <td>2026-06-20</td>
               <td><code>MyRadioGroup</code> 에디터 초기 선택 반영</td>
-              <td><code>ExecuteAlways</code> 환경에서도 Inspector의 <code>_initialIndex</code> 변경이 기존 valid 선택 보존 분기에 막히지 않도록, <code>OnValidate</code>에서는 초기 선택을 강제로 다시 적용하게 했다.</td>
+              <td><code>ExecuteAlways</code> 환경에서도 Inspector의 선택 index 변경이 기존 valid 선택 보존 분기에 막히지 않도록, <code>OnValidate</code>에서는 현재 선택을 강제로 다시 적용하게 했다.</td>
             </tr>
             <tr>
               <td>2026-06-20</td>
               <td><code>SelectionMode</code> UX 정리</td>
-              <td><code>SingleRequired</code>, <code>SingleOptional</code>, <code>Unlimited</code>는 Inspector에서 모드별 인덱스 의미를 읽기 어렵기 때문에 <code>Required</code>, <code>Optional</code>, <code>Multiple</code>로 바꾸고, <code>_initialIndex</code>는 모드별로 유효한 값만 남도록 보정했다.</td>
+              <td><code>SingleRequired</code>, <code>SingleOptional</code>, <code>Unlimited</code>는 Inspector에서 모드별 인덱스 의미를 읽기 어렵기 때문에 <code>Required</code>, <code>Optional</code>, <code>Multiple</code>로 바꾸고, 선택 index는 모드별로 유효한 값만 남도록 보정했다.</td>
             </tr>
             <tr>
               <td>2026-06-20</td>
@@ -725,6 +750,26 @@
               <td>2026-06-20</td>
               <td><code>1.7.1</code> 패치 릴리스</td>
               <td><code>MyRadio</code>의 <code>StateObjects</code> 접힘 구조를 실제 사용 확인 후 패치 버전으로 분리하고, 예제 프리팹과 테스트 씬 저장 상태를 함께 반영했다.</td>
+            </tr>
+            <tr>
+              <td>2026-06-21</td>
+              <td><code>MyRadioGroup</code> index 단일화</td>
+              <td>탭이 선택값을 라디오 그룹에 위임하는 구조와 맞추기 위해, 라디오 그룹도 별도 초기 인덱스 필드 없이 <code>_index</code> 하나를 Inspector 초기값과 런타임 현재값으로 함께 사용한다. 외부 초기화 인터페이스 값은 <code>Start()</code>에서 한 번만 적용하고, 이후 <code>OnEnable</code>과 <code>OnValidate</code>는 현재 <code>_index</code>를 모드에 맞게 검증해 표시와 콜백만 동기화한다.</td>
+            </tr>
+            <tr>
+              <td>2026-06-21</td>
+              <td><code>1.7.2</code> 패치 릴리스</td>
+              <td><code>MyRadioGroup</code>의 초기화 소유권, 정적 라디오 목록, 재선택 콜백, 한글 Tooltip 기준을 패치 버전으로 분리하고, 그룹 안의 <code>MyRadio</code>는 자체 초기값을 적용하지 않도록 정리했다.</td>
+            </tr>
+            <tr>
+              <td>2026-06-21</td>
+              <td><code>MyRadioGroup</code> 직접 배열 전환</td>
+              <td><code>MySelector</code>처럼 제작자가 Inspector에서 순서와 멤버십을 직접 볼 수 있어야 탭 헤더와 본문 index 계약이 덜 숨는다. 그래서 <code>MyRadioGroup</code>은 자식 자동 수집 대신 <code>_radios</code> 배열을 소속의 기준으로 삼고, 자식 자동 채우기는 추후 별도 보조 컴포넌트나 Editor 도구의 책임으로 분리한다.</td>
+            </tr>
+            <tr>
+              <td>2026-06-20</td>
+              <td><code>MyTab</code> 라디오 헤더 전환</td>
+              <td>탭 헤더는 단일 선택 상태와 선택 표시가 핵심이므로 별도 <code>MyTabHeaderButton</code> 대신 <code>MyRadioGroup</code>과 <code>MySelector</code>를 같은 GameObject에서 연결하는 구조로 정리했다. 탭은 항상 <code>Required</code> 선택이므로 <code>-1</code> index를 쓰지 않고, 현재 선택값은 <code>MyRadioGroup.Index</code>에 위임한다. 코드에서 초기 선택을 주입해야 할 때는 <code>MyTab.InitializerInterface.InitialIndex</code>를 사용하되, 탭이 라디오 그룹 초기화 인터페이스를 내부 구현으로 숨기고 라디오 그룹 콜백만 본문 동기화 루트로 사용한다.</td>
             </tr>
             <tr>
               <td>2026-06-19</td>
