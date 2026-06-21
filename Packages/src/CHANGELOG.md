@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.7.5
+
+- `MyTab`이 선택 진입/이탈 콜백 구현체가 없어도 별도 경고를 출력하지 않도록 정리했습니다.
+- `MyTab`의 라디오 헤더 모드 경고 문구가 `MyRadioGroup.SelectionModeEnum.Required` 값을 직접 가리키도록 정리했습니다.
+
 ## 1.7.4
 
 - `MyRadioGroup`의 라디오 목록을 자식 자동 수집 대신 Inspector의 직접 배열로 받도록 변경했습니다. 배열 순서가 선택 index 순서가 됩니다.

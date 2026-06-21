@@ -61,11 +61,8 @@ namespace oojjrs.oui
 
         private void Start()
         {
-            if ((_callbacks == null) || (_callbacks.Length <= 0))
-                Debug.LogWarning($"{name}> DON'T HAVE CALLBACK FUNCTION.");
-
             if ((_header != null) && (_header.SelectionMode != MyRadioGroup.SelectionModeEnum.Required))
-                Debug.LogWarning($"{name}> {nameof(MyTab)} requires {nameof(MyRadioGroup)}.{nameof(MyRadioGroup.SelectionMode)} to be {nameof(MyRadioGroup.SelectionModeEnum.Required)}.");
+                Debug.LogWarning($"{name}> {nameof(MyTab)} REQUIRES {nameof(MyRadioGroup)}.{nameof(MyRadioGroup.SelectionMode)} TO BE {nameof(MyRadioGroup.SelectionModeEnum.Required)}.");
         }
 
         void MyRadioGroup.CallbackInterface.OnValueChanged(int index, MyRadio radio)
