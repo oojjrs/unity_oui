@@ -154,7 +154,7 @@ namespace oojjrs.oui
             if (GetComponentInChildren<Graphic>() == null)
                 Debug.LogWarning($"{name}> DON'T HAVE RAYCAST GRAPHIC.");
 
-            if (_initializer != null)
+            if ((_group == null) && (_initializer != null))
                 IsOn = _initializer.InitialValue;
         }
 

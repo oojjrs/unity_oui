@@ -35,6 +35,9 @@ csharp_style_unused_value_assignment_preference = discard_variable:suggestion
 # IDE0130: Namespace does not match folder structure
 dotnet_diagnostic.IDE0130.severity = none
 
+# UNT0039: Use RequireComponent attribute when self-invoking GetComponent
+dotnet_diagnostic.UNT0039.severity = none
+
 [*.{cs,vb}]
 #### Naming styles ####
 

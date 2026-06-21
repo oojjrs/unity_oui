@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.7.2
+
+- `MyRadioGroup`이 외부 `InitializerInterface` 값을 `Start()`에서 한 번만 읽고, 이미 선택된 index를 다시 선택해도 그룹 콜백을 호출하도록 정리했습니다.
+- `MyRadioGroup`의 라디오 목록을 `Awake()`에서 한 번 결정하는 정적 목록으로 바꾸고, 외부에서 목록을 다시 수집하는 public API를 제거했습니다.
+- 그룹 안의 `MyRadio`는 자신의 `InitializerInterface`를 적용하지 않고 `MyRadioGroup` 초기화 결과를 따르도록 정리했습니다.
+- Inspector에 노출되는 `MyRadioGroup` 툴팁 문구를 한글로 정리했습니다.
+
 ## 1.7.1
 
 - `MyRadio`의 상태 표시 GameObject를 `StateObjects` 접힘 묶음으로 정리해 Inspector 길이를 줄였습니다.

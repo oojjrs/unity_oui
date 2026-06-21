@@ -668,7 +668,7 @@ MonoBehaviour:
   m_Name:
   m_EditorClassIdentifier: oojjrs.oui::oojjrs.oui.MyRadioGroup
   _selectionMode: 0
-  _initialIndex: 1
+  _index: 1
 --- !u!1001 &590262736
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1454,7 +1454,7 @@ MonoBehaviour:
   m_Name:
   m_EditorClassIdentifier: oojjrs.oui::oojjrs.oui.MyRadioGroup
   _selectionMode: 0
-  _initialIndex: 0
+  _index: 0
 --- !u!1001 &908285137
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1646,7 +1646,7 @@ MonoBehaviour:
   m_Name:
   m_EditorClassIdentifier: oojjrs.oui::oojjrs.oui.MyRadioGroup
   _selectionMode: 2
-  _initialIndex: -1
+  _index: -1
 --- !u!1001 &973818879
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2676,7 +2676,7 @@ MonoBehaviour:
   m_Name:
   m_EditorClassIdentifier: oojjrs.oui::oojjrs.oui.MyRadioGroup
   _selectionMode: 1
-  _initialIndex: -1
+  _index: -1
 --- !u!1001 &1645286497
 PrefabInstance:
   m_ObjectHideFlags: 0

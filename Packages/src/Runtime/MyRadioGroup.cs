@@ -1,5 +1,5 @@
 using System;
-using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace oojjrs.oui
@@ -25,30 +25,30 @@ namespace oojjrs.oui
             int InitialIndex { get; }
         }
 
+        private CallbackInterface[] _callbacks;
+        [Tooltip("현재 선택 인덱스입니다. Optional의 -1은 선택 없음이고 Multiple은 첫 번째 On 라디오 인덱스로 갱신됩니다.")]
+        [SerializeField]
+        private int _index = -1;
+        private InitializerInterface _initializer;
+        private bool _isStarted;
+        private MyRadio[] _radios = Array.Empty<MyRadio>();
         [Tooltip("Required는 항상 하나 선택, Optional은 선택 없음 허용, Multiple은 각 라디오를 독립 on/off로 다룹니다.")]
         [SerializeField]
         private SelectionModeEnum _selectionMode;
-        [Tooltip("Required/Optional 초기 선택 인덱스입니다. Optional의 -1은 선택 없음이고 Multiple은 이 값을 무시합니다.")]
-        [SerializeField]
-        private int _initialIndex = -1;
-        private int _index = -1;
 
-        private CallbackInterface[] Callbacks { get; set; }
-        private InitializerInterface Initializer { get; set; }
-        private MyRadio[] Radios { get; set; }
         public bool AllowSwitchOff
         {
             get => _selectionMode != SelectionModeEnum.Required;
             set => SelectionMode = value ? SelectionModeEnum.Optional : SelectionModeEnum.Required;
         }
-        public int Count => Radios?.Length ?? 0;
+        public int Count => _radios.Length;
         public int Index => _index;
         public MyRadio Radio
         {
             get
             {
-                if ((Radios != null) && (_index >= 0) && (_index < Radios.Length))
-                    return Radios[_index];
+                if ((_index >= 0) && (_index < _radios.Length))
+                    return _radios[_index];
                 else
                     return null;
             }
@@ -58,73 +58,49 @@ namespace oojjrs.oui
             get => _selectionMode;
             set
             {
+                var previousIndex = _index;
+                var previousRadio = Radio;
+
                 _selectionMode = value;
 
-                if (Radios != null)
-                {
-                    if (_selectionMode == SelectionModeEnum.Multiple)
-                        _index = GetFirstOnIndex();
-                    else
-                    {
-                        if (IsIndexValid(_index) == false)
-                            _index = GetInitialIndex();
+                ApplyCurrentIndex(false);
 
-                        Apply(false);
-                    }
-                }
+                if ((previousIndex != _index) || (previousRadio != Radio))
+                    NotifyValueChanged(_index, Radio);
             }
         }
 
         private void Awake()
         {
-            RefreshDependencies();
-            OuiRefresh();
+            _callbacks = GetComponents<CallbackInterface>();
+            _initializer = GetComponent<InitializerInterface>();
+            _radios = GetComponentsInChildren<MyRadio>(true).Where(t => t.GetComponentInParent<MyRadioGroup>() == this).ToArray();
         }
 
         private void OnEnable()
         {
-            RefreshDependencies();
-            OuiRefresh();
-            ApplyInitialIndex(false);
-        }
-
-        private void OnTransformChildrenChanged()
-        {
-            var radio = Radio;
-
-            OuiRefresh();
-
-            if (_selectionMode == SelectionModeEnum.Multiple)
-            {
-                _index = GetFirstOnIndex();
-                return;
-            }
-
-            if (radio != null)
-            {
-                var index = Array.IndexOf(Radios, radio);
-                if (index >= 0)
-                    _index = index;
-            }
-
-            if ((Radios == null) || (_index >= Radios.Length))
-                _index = -1;
-
-            Apply(false);
+            ApplyCurrentIndex(_isStarted);
         }
 
         private void OnValidate()
         {
-            RefreshDependencies();
-            OuiRefresh();
-            NormalizeInitialIndex();
-            ApplyInitialIndex(true);
+            _radios = GetComponentsInChildren<MyRadio>(true).Where(t => t.GetComponentInParent<MyRadioGroup>() == this).ToArray();
+
+            if (_radios.Length > 0)
+                ApplyCurrentIndex(true);
         }
 
         private void Start()
         {
-            if (Radios?.Length <= 0)
+            _isStarted = true;
+
+            if (_radios.Length <= 0)
                 Debug.LogWarning($"{name}> DON'T HAVE RADIO.");
+
+            if ((_selectionMode != SelectionModeEnum.Multiple) && (_initializer != null))
+                SetIndex(GetValidIndex(_initializer.InitialIndex), true);
+            else
+                ApplyCurrentIndex(true);
         }
 
         void MyRadio.GroupInterface.OnClick(MyRadio radio)
@@ -147,49 +123,42 @@ namespace oojjrs.oui
 
         private void Apply(bool notifyRadios)
         {
-            if (Radios == null)
-                return;
-
             if (_selectionMode == SelectionModeEnum.Multiple)
                 return;
 
-            for (int i = 0; i < Radios.Length; ++i)
+            for (int i = 0; i < _radios.Length; ++i)
             {
-                if (Radios[i] == null)
+                if (_radios[i] == null)
                     continue;
 
                 var isOn = i == _index;
                 if (notifyRadios)
-                    Radios[i].OuiSetIsOn(isOn);
+                    _radios[i].OuiSetIsOn(isOn);
                 else
-                    Radios[i].OuiSetIsOnWithoutNotify(isOn);
+                    _radios[i].OuiSetIsOnWithoutNotify(isOn);
             }
         }
 
-        private void ApplyInitialIndex(bool forced)
+        private void ApplyCurrentIndex(bool notify)
         {
             if (_selectionMode == SelectionModeEnum.Multiple)
             {
                 _index = GetFirstOnIndex();
+
+                if (notify)
+                    NotifyValueChanged(_index, Radio);
+
+                return;
             }
-            else if (Initializer != null)
-                OuiSetIndexWithoutNotify(GetInitialIndex());
-            else if (forced)
-                OuiSetIndexWithoutNotify(GetInitialIndex());
-            else if (IsIndexValid(_index))
-                Apply(false);
-            else
-                OuiSetIndexWithoutNotify(GetInitialIndex());
+
+            SetIndex(GetValidIndex(_index), notify);
         }
 
         private int GetFirstOnIndex()
         {
-            if (Radios == null)
-                return -1;
-
-            for (int i = 0; i < Radios.Length; ++i)
+            for (int i = 0; i < _radios.Length; ++i)
             {
-                if ((Radios[i] != null) && Radios[i].IsOn)
+                if ((_radios[i] != null) && _radios[i].IsOn)
                     return i;
             }
 
@@ -201,29 +170,20 @@ namespace oojjrs.oui
             if (radio == null)
                 return -1;
 
-            if (Radios == null)
-                OuiRefresh();
-
-            var index = Array.IndexOf(Radios, radio);
-            if (index >= 0)
-                return index;
-
-            OuiRefresh();
-            index = Array.IndexOf(Radios, radio);
+            var index = Array.IndexOf(_radios, radio);
             if (index < 0)
                 Debug.LogWarning($"{name}> DON'T HAVE RADIO {radio.name}.");
 
             return index;
         }
 
-        private int GetInitialIndex()
+        private int GetValidIndex(int index)
         {
-            if (Radios?.Length <= 0)
+            if (_radios.Length <= 0)
                 return -1;
 
-            var initialIndex = Initializer != null ? Initializer.InitialIndex : _initialIndex;
-            if ((initialIndex >= 0) && (initialIndex < Radios.Length))
-                return initialIndex;
+            if ((index >= 0) && (index < _radios.Length))
+                return index;
 
             if (_selectionMode == SelectionModeEnum.Required)
                 return 0;
@@ -234,63 +194,26 @@ namespace oojjrs.oui
         private bool IsIndexValid(int index)
         {
             if (index == -1)
-                return (_selectionMode != SelectionModeEnum.Required) || (Radios == null) || (Radios.Length <= 0);
+                return (_selectionMode != SelectionModeEnum.Required) || (_radios.Length <= 0);
 
-            return (Radios != null) && (index >= 0) && (index < Radios.Length);
-        }
-
-        private void NormalizeInitialIndex()
-        {
-            if (_selectionMode == SelectionModeEnum.Multiple)
-            {
-                _initialIndex = -1;
-                return;
-            }
-
-            if (Radios?.Length <= 0)
-            {
-                _initialIndex = -1;
-                return;
-            }
-
-            if (_selectionMode == SelectionModeEnum.Required)
-                _initialIndex = Mathf.Clamp(_initialIndex, 0, Radios.Length - 1);
-            else
-                _initialIndex = Mathf.Clamp(_initialIndex, -1, Radios.Length - 1);
+            return (index >= 0) && (index < _radios.Length);
         }
 
         private void NotifyValueChanged(int index, MyRadio radio)
         {
-            if (Callbacks != null)
+            if (_callbacks != null)
             {
-                foreach (var callback in Callbacks)
+                foreach (var callback in _callbacks)
                     callback.OnValueChanged(index, radio);
             }
         }
 
-        public MyRadio GetRadio(int index)
+        public MyRadio OuiGetRadio(int index)
         {
-            if (Radios == null)
-                OuiRefresh();
-
-            if ((Radios != null) && (index >= 0) && (index < Radios.Length))
-                return Radios[index];
+            if ((index >= 0) && (index < _radios.Length))
+                return _radios[index];
             else
                 return null;
-        }
-
-        public void OuiRefresh()
-        {
-            var radios = GetComponentsInChildren<MyRadio>(true);
-            var filtered = new List<MyRadio>();
-
-            foreach (var radio in radios)
-            {
-                if (radio.GetComponentInParent<MyRadioGroup>() == this)
-                    filtered.Add(radio);
-            }
-
-            Radios = filtered.ToArray();
         }
 
         public void OuiSelect(int index)
@@ -310,17 +233,8 @@ namespace oojjrs.oui
             SetIndex(index, false);
         }
 
-        private void RefreshDependencies()
-        {
-            Callbacks = GetComponents<CallbackInterface>();
-            Initializer = GetComponent<InitializerInterface>();
-        }
-
         private void SetIndex(int index, bool notify)
         {
-            if (Radios == null)
-                OuiRefresh();
-
             if (IsIndexValid(index) == false)
             {
                 Debug.LogWarning($"{name}> INVALID RADIO INDEX {index}.");
@@ -331,30 +245,25 @@ namespace oojjrs.oui
             {
                 if (index == -1)
                 {
-                    var changed = false;
-
-                    for (int i = 0; i < Radios.Length; ++i)
+                    for (int i = 0; i < _radios.Length; ++i)
                     {
-                        if ((Radios[i] != null) && Radios[i].IsOn)
+                        if ((_radios[i] != null) && _radios[i].IsOn)
                         {
-                            changed = true;
-
                             if (notify)
-                                Radios[i].OuiSetIsOn(false);
+                                _radios[i].OuiSetIsOn(false);
                             else
-                                Radios[i].OuiSetIsOnWithoutNotify(false);
+                                _radios[i].OuiSetIsOnWithoutNotify(false);
                         }
                     }
 
                     _index = -1;
 
-                    if (changed && notify)
+                    if (notify)
                         NotifyValueChanged(-1, null);
                 }
                 else
                 {
-                    var radio = Radios[index];
-                    var changed = (radio != null) && (radio.IsOn == false);
+                    var radio = _radios[index];
 
                     if (radio != null)
                     {
@@ -366,7 +275,7 @@ namespace oojjrs.oui
 
                     _index = GetFirstOnIndex();
 
-                    if (changed && notify)
+                    if (notify)
                         NotifyValueChanged(index, radio);
                 }
 
@@ -376,6 +285,8 @@ namespace oojjrs.oui
             if (_index == index)
             {
                 Apply(false);
+                if (notify)
+                    NotifyValueChanged(_index, Radio);
                 return;
             }
 
