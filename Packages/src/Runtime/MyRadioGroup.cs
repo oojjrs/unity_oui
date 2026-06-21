@@ -25,10 +25,10 @@ namespace oojjrs.oui
             int InitialIndex { get; }
         }
 
-        [Tooltip("Required: always one selected. Optional: zero or one selected. Multiple: independent on/off radios.")]
+        [Tooltip("Required는 항상 하나 선택, Optional은 선택 없음 허용, Multiple은 각 라디오를 독립 on/off로 다룹니다.")]
         [SerializeField]
         private SelectionModeEnum _selectionMode;
-        [Tooltip("Initial selected radio index for Required/Optional. Optional uses -1 for no selection. Multiple ignores this value.")]
+        [Tooltip("Required/Optional 초기 선택 인덱스입니다. Optional의 -1은 선택 없음이고 Multiple은 이 값을 무시합니다.")]
         [SerializeField]
         private int _initialIndex = -1;
         private int _index = -1;
@@ -266,6 +266,17 @@ namespace oojjrs.oui
                 foreach (var callback in Callbacks)
                     callback.OnValueChanged(index, radio);
             }
+        }
+
+        public MyRadio GetRadio(int index)
+        {
+            if (Radios == null)
+                OuiRefresh();
+
+            if ((Radios != null) && (index >= 0) && (index < Radios.Length))
+                return Radios[index];
+            else
+                return null;
         }
 
         public void OuiRefresh()
