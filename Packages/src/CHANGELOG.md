@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.7.3
+
+- `MyTab`이 `MyTabHeaderButton` 대신 같은 GameObject의 `MyRadioGroup`과 `MySelector`를 연결하도록 변경했습니다.
+- `MyTabHeaderButton`을 제거해 탭 헤더의 입력과 선택 표시를 `MyRadio`가 직접 담당하도록 정리했습니다.
+- `MyTab`에 `ExecuteAlways`와 탭 전용 `InitializerInterface`를 추가하고, 현재 선택 index는 `MyRadioGroup`에 위임하도록 정리했습니다. 탭은 라디오 그룹 초기화 인터페이스를 내부 구현으로 숨기며, 본문 동기화는 라디오 그룹 콜백에서만 시작합니다.
+
 ## 1.7.2
 
 - `MyRadioGroup`이 외부 `InitializerInterface` 값을 `Start()`에서 한 번만 읽고, 이미 선택된 index를 다시 선택해도 그룹 콜백을 호출하도록 정리했습니다.

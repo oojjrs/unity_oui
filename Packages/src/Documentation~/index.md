@@ -51,7 +51,7 @@ public sealed class StartButton : MonoBehaviour, MyButton.CallbackInterface
 
 ## 탭
 
-`MyTab`은 헤더 버튼 목록과 `MySelector`를 연결해 탭 선택 상태를 갱신합니다. 헤더 버튼에는 `MyTabHeaderButton`을 붙이고, 각 버튼은 부모 `MyTab`의 헤더 배열 기준 인덱스로 선택됩니다.
+`MyTab`은 같은 GameObject의 `MyRadioGroup`과 `MySelector`를 연결해 탭 선택 상태를 갱신합니다. 헤더에는 자식 `MyRadio`를 배치하고, 본문 페이지는 `MySelector`의 값 배열 순서와 같은 인덱스로 배치합니다. 탭은 항상 하나가 선택되는 `Required` 라디오 그룹으로 동작하므로 현재 선택 index는 `MyRadioGroup.Index`가 기준입니다. 코드에서 초기 탭을 정해야 할 때는 같은 GameObject의 컴포넌트가 `MyTab.InitializerInterface.InitialIndex`를 구현하며, 탭이 라디오 그룹 초기화 인터페이스를 내부 연결로 숨깁니다. 본문 페이지 동기화는 라디오 그룹 선택 콜백에서 시작됩니다.
 
 `OuiMoveNext()`와 `OuiMovePrevious()`는 현재 선택된 탭 기준으로 다음 또는 이전 interactable 탭을 찾습니다. `allowWrapAround`를 `true`로 넘기면 끝에서 반대편 탭으로 순환합니다.
 

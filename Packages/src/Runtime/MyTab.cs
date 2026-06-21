@@ -4,7 +4,10 @@ using UnityEngine;
 namespace oojjrs.oui
 {
     [DisallowMultipleComponent]
-    public class MyTab : MonoBehaviour
+    [ExecuteAlways]
+    [RequireComponent(typeof(MyRadioGroup))]
+    [RequireComponent(typeof(MySelector))]
+    public class MyTab : MonoBehaviour, MyRadioGroup.CallbackInterface, MyRadioGroup.InitializerInterface, MySelector.CallbackInterface
     {
         public interface CallbackInterface
         {
@@ -12,65 +15,92 @@ namespace oojjrs.oui
             void OnExit();
         }
 
-        [SerializeField]
-        private bool _allowSwitchOff;
+        public interface InitializerInterface
+        {
+            int InitialIndex { get; }
+        }
+
+        private MySelector _body;
         private CallbackInterface[] _callbacks;
-        [SerializeField]
-        private GameObject _header;
-        private int? _index;
-        [SerializeField]
-        private MySelector _selector;
+        private MyRadioGroup _header;
+        private InitializerInterface _initializer;
+
+        int MyRadioGroup.InitializerInterface.InitialIndex => (_initializer != null) ? _initializer.InitialIndex : 0;
 
         private void Awake()
         {
+            _body = GetComponent<MySelector>();
             _callbacks = GetComponents<CallbackInterface>();
+            _header = GetComponent<MyRadioGroup>();
+            _initializer = GetComponent<InitializerInterface>();
         }
 
         private void OnDisable()
         {
-            if (_callbacks != null)
+            if (Application.isPlaying && (MyControl.IsQuitting == false))
             {
-                foreach (var callback in _callbacks)
-                    callback.OnExit();
+                if (_callbacks != null)
+                {
+                    foreach (var callback in _callbacks)
+                        callback.OnExit();
+                }
             }
         }
 
         private void OnEnable()
         {
-            if (_index.HasValue)
-                OuiSelect(_index.Value);
-
-            if (_callbacks != null)
+            if (Application.isPlaying && (MyControl.IsQuitting == false))
             {
-                foreach (var callback in _callbacks)
-                    callback.OnEnter();
+                if (_callbacks != null)
+                {
+                    foreach (var callback in _callbacks)
+                        callback.OnEnter();
+                }
             }
         }
 
         private void Start()
         {
-            if (_callbacks?.Length <= 0)
+            if ((_callbacks == null) || (_callbacks.Length <= 0))
                 Debug.LogWarning($"{name}> DON'T HAVE CALLBACK FUNCTION.");
 
-            if (_header == null)
-                Debug.LogWarning($"{name}> DON'T HAVE TAB HEADER.");
+            if ((_header != null) && (_header.SelectionMode != MyRadioGroup.SelectionModeEnum.Required))
+                Debug.LogWarning($"{name}> {nameof(MyTab)} requires {nameof(MyRadioGroup)}.{nameof(MyRadioGroup.SelectionMode)} to be {nameof(MyRadioGroup.SelectionModeEnum.Required)}.");
+        }
 
-            if (_allowSwitchOff == false)
-                OuiSelect(0);
+        void MyRadioGroup.CallbackInterface.OnValueChanged(int index, MyRadio radio)
+        {
+            if (_body != null)
+                _body.OuiSelect(index);
+        }
+
+        int MySelector.CallbackInterface.GetIndex()
+        {
+            if (_header != null)
+                return _header.Index;
+            else
+                return -1;
+        }
+
+        private bool CanSelectHeader(int index)
+        {
+            if (_header == null)
+                return index >= 0;
+
+            var radio = _header.OuiGetRadio(index);
+            return (radio != null) && radio.IsInteractable;
         }
 
         public void OuiMoveNext(bool allowWrapAround = false)
         {
-            if (_header == null)
+            if ((_header == null) || (_header.Count <= 0))
                 return;
 
-            var headers = _header.GetComponentsInChildren<MyTabHeaderButton>();
-
-            var currentIndex = Math.Clamp(_index ?? -1, -1, headers.Length - 1);
+            var currentIndex = Math.Clamp(_header.Index, 0, _header.Count - 1);
             var startIndex = currentIndex + 1;
-            for (int i = startIndex; i < headers.Length; ++i)
+            for (int i = startIndex; i < _header.Count; ++i)
             {
-                if (headers[i].GetComponent<MyButton>().Interactable)
+                if (CanSelectHeader(i))
                 {
                     OuiSelect(i);
                     return;
@@ -81,7 +111,7 @@ namespace oojjrs.oui
             {
                 for (int i = 0; i < startIndex; ++i)
                 {
-                    if (headers[i].GetComponent<MyButton>().Interactable)
+                    if (CanSelectHeader(i))
                     {
                         OuiSelect(i);
                         return;
@@ -92,16 +122,14 @@ namespace oojjrs.oui
 
         public void OuiMovePrevious(bool allowWrapAround = false)
         {
-            if (_header == null)
+            if ((_header == null) || (_header.Count <= 0))
                 return;
 
-            var headers = _header.GetComponentsInChildren<MyTabHeaderButton>();
-
-            var currentIndex = Math.Clamp(_index ?? headers.Length, 0, headers.Length);
+            var currentIndex = Math.Clamp(_header.Index, 0, _header.Count - 1);
             var startIndex = currentIndex - 1;
             for (int i = startIndex; i >= 0; --i)
             {
-                if (headers[i].GetComponent<MyButton>().Interactable)
+                if (CanSelectHeader(i))
                 {
                     OuiSelect(i);
                     return;
@@ -110,9 +138,9 @@ namespace oojjrs.oui
 
             if (allowWrapAround)
             {
-                for (int i = headers.Length - 1; i > startIndex; --i)
+                for (int i = _header.Count - 1; i > startIndex; --i)
                 {
-                    if (headers[i].GetComponent<MyButton>().Interactable)
+                    if (CanSelectHeader(i))
                     {
                         OuiSelect(i);
                         return;
@@ -123,38 +151,8 @@ namespace oojjrs.oui
 
         public void OuiSelect(int index)
         {
-            _index = index;
-
-            // TODO: 일단 애니메이션 버튼인 경우는 만들지 않겠다.
-            //if (_header != null)
-            //{
-            //    var buttons = _header.GetComponentsInChildren<MyTabHeaderButton>();
-            //    for (int i = 0; i < buttons.Length; ++i)
-            //    {
-            //        var button = buttons[i].GetComponent<MyButton>();
-            //        if (button.Interactable)
-            //        {
-            //            if (i != index)
-            //                button.OuiPlayNormalAnimation();
-            //            else
-            //                button.OuiPlaySelectedAnimation();
-            //        }
-            //    }
-            //}
-
-            if (_selector != null)
-                _selector.OuiSelect(index);
-        }
-
-        internal void OuiSelect(MyTabHeaderButton header)
-        {
-            if (_header == null)
-                return;
-
-            var headers = _header.GetComponentsInChildren<MyTabHeaderButton>();
-            var index = Array.IndexOf(headers, header);
-            if (index >= 0)
-                OuiSelect(index);
+            if (_header != null)
+                _header.OuiSelect(index);
         }
     }
 }
