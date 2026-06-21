@@ -67,7 +67,6 @@ namespace oojjrs.oui
         }
 
         private CallbackInterface[] _callbacks;
-        private GroupInterface _group;
         [SerializeField]
         private bool _hoverSoundDisabled;
         private HoverInterface[] _hovers;
@@ -149,7 +148,8 @@ namespace oojjrs.oui
             if (GetComponentInChildren<Graphic>() == null)
                 Debug.LogWarning($"{name}> DON'T HAVE RAYCAST GRAPHIC.");
 
-            if (((_group == null) || (_group.Contains(this) == false)) && (_initializer != null))
+            var group = GetComponentInParent<GroupInterface>();
+            if (((group == null) || (group.Contains(this) == false)) && (_initializer != null))
                 IsOn = _initializer.InitialValue;
         }
 
@@ -274,7 +274,8 @@ namespace oojjrs.oui
             if (IsInteractable == false)
                 return;
 
-            if ((_group == null) || (_group.OnClick(this) == false))
+            var group = GetComponentInParent<GroupInterface>();
+            if ((group == null) || (group.Contains(this) == false) || (group.OnClick(this) == false))
                 OuiSetIsOn(IsOn == false);
 
             if (_soundOverrides.Click != null)
@@ -343,18 +344,6 @@ namespace oojjrs.oui
         public void OuiUpdate()
         {
             SetState(_state);
-        }
-
-        internal bool BindGroup(GroupInterface group)
-        {
-            if ((_group != null) && (_group != group) && _group.Contains(this))
-            {
-                Debug.LogWarning($"{name}> ALREADY HAS RADIO GROUP.");
-                return false;
-            }
-
-            _group = group;
-            return true;
         }
 
         private void PlaySfxSafety(AudioSource audioSource)

@@ -75,18 +75,15 @@ namespace oojjrs.oui
         {
             _callbacks = GetComponents<CallbackInterface>();
             _initializer = GetComponent<InitializerInterface>();
-            RegisterRadios();
         }
 
         private void OnEnable()
         {
-            RegisterRadios();
             ApplyCurrentIndex(_isStarted);
         }
 
         private void OnValidate()
         {
-            RegisterRadios();
             ApplyCurrentIndex(true);
         }
 
@@ -251,22 +248,6 @@ namespace oojjrs.oui
         public void OuiSetIndexWithoutNotify(int index)
         {
             SetIndex(index, false);
-        }
-
-        private void RegisterRadios()
-        {
-            for (int i = 0; i < _radios.Length; ++i)
-            {
-                var radio = _radios[i];
-                if (radio == null)
-                    continue;
-
-                if (Array.IndexOf(_radios, radio) != i)
-                    Debug.LogWarning($"{name}> DUPLICATE RADIO {radio.name}.");
-
-                if (radio.BindGroup(this) == false)
-                    Debug.LogWarning($"{name}> RADIO {radio.name} ALREADY HAS GROUP.");
-            }
         }
 
         private void SetIndex(int index, bool notify)

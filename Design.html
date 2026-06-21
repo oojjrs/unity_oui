@@ -280,7 +280,7 @@
     <div class="header-inner">
       <h1>UnityOui</h1>
       <p class="thesis">UGUI 기반 프로젝트에서 반복되는 입력, 선택, 상태 연출을 작고 명확한 컴포넌트로 묶는 패키지다. 이 문서는 기능 주제보다 컴포넌트 단위로 책임, 결정 이유, 보류점을 정리한다.</p>
-      <p class="meta">작성일: 2026-06-18 · 문서 갱신: 2026-06-21 20:43 +09:00 · 문서 범위: <code>Packages/src/Runtime</code> 컴포넌트 설계, 특히 <code>MyRadio</code>와 관련 컴포넌트</p>
+      <p class="meta">작성일: 2026-06-18 · 문서 갱신: 2026-06-21 20:59 +09:00 · 문서 범위: <code>Packages/src/Runtime</code> 컴포넌트 설계, 특히 <code>MyRadio</code>와 관련 컴포넌트</p>
     </div>
   </header>
 
@@ -367,7 +367,7 @@
             <tr>
               <td>그룹 통지</td>
               <td><code>GroupInterface.OnClick(this)</code></td>
-              <td>그룹이 직접 등록한 라디오이면 선택/해제 정책을 그룹에 맡기고, 등록된 그룹이 없거나 그룹이 해당 라디오를 처리하지 못하면 단독 토글처럼 현재 on/off를 반전한다.</td>
+              <td>상위 그룹의 <code>_radios</code> 배열에 포함된 라디오이면 선택/해제 정책을 그룹에 맡기고, 그룹이 없거나 배열에 포함되지 않으면 단독 토글처럼 현재 on/off를 반전한다.</td>
             </tr>
             <tr>
               <td>버튼 공통 기능</td>
@@ -396,7 +396,7 @@
           <li><code>MyRadio</code> 필수 컴포넌트: 없음. 단, 클릭 판정을 위해 자식 중 하나 이상은 raycast 가능한 <code>Graphic</code>이어야 한다.</li>
           <li><code>MyRadio.State</code>: <code>OffNormal</code>부터 <code>OnDisabled</code>까지 단일 상태 enum으로 보관한다. 내부 로직은 보조 숫자 축이나 변환 함수 없이 현재 <code>_state</code>와 목표 enum 값을 직접 다룬다.</li>
           <li><code>_isOn</code>과 <code>_isInteractable</code>은 Inspector에서 초기 선택 여부와 상호작용 가능 여부를 고르는 serialized 값이다. public <code>IsOn</code>과 <code>IsInteractable</code> setter는 상태 표시를 바꾸고, <code>SetState</code>는 enum 상태를 기준으로 두 serialized 값을 다시 동기화한다.</li>
-          <li><code>MyRadioGroup</code>이 <code>_radios</code> 배열을 통해 직접 등록한 라디오는 선택 초기화를 그룹이 소유하므로, <code>MyRadio</code> 자신의 <code>InitializerInterface.InitialValue</code>는 적용하지 않는다. 등록된 그룹이 없는 단독 라디오일 때만 이 초기값을 읽는다.</li>
+          <li><code>MyRadioGroup</code>의 <code>_radios</code> 배열에 포함된 라디오는 선택 초기화를 그룹이 소유하므로, <code>MyRadio</code> 자신의 <code>InitializerInterface.InitialValue</code>는 적용하지 않는다. 그룹이 없거나 상위 그룹 배열에 포함되지 않은 단독 라디오일 때만 이 초기값을 읽는다.</li>
           <li>Inspector에 직접 노출되는 <code>Tooltip</code> 문구는 사용자가 바로 읽을 수 있도록 한글을 기본으로 작성한다.</li>
           <li><code>MyRadio</code>는 <code>ExecuteAlways</code>로 동작해 에디터에서도 <code>_isOn</code>, <code>_isInteractable</code> 변경과 상태 표시 오브젝트 전환을 즉시 맞춘다.</li>
           <li>상속/인터페이스 순서: Unity 제공 그룹, 로컬 제공 그룹 순서로 배치하고 각 그룹 안에서는 이름 ABC 순서</li>
@@ -420,9 +420,9 @@
         <h3>구현 메모</h3>
         <ul>
           <li>라디오 목록은 자식 자동 수집이 아니라 serialized 배열로 결정한다. 배열 순서가 곧 선택 index 순서이며, <code>MySelector</code>의 값 배열과 같은 authoring 감각을 따른다.</li>
-          <li>같은 GameObject의 callback과 initializer 의존성은 <code>MyTab</code>처럼 <code>Awake()</code>에서 한 번만 캐시한다. <code>OnEnable</code>과 <code>OnValidate</code>는 의존성을 다시 찾지 않고, 현재 <code>_radios</code> 배열을 기준으로 그룹 등록과 선택 상태만 갱신한다.</li>
-          <li><code>MyRadio</code>는 부모를 검색해 그룹을 찾지 않는다. <code>MyRadioGroup</code>이 <code>_radios</code> 배열의 각 라디오에 자신을 등록하고, 클릭 시 그룹이 해당 라디오를 처리하지 못하면 <code>MyRadio</code>는 단독 토글로 동작한다.</li>
-          <li>다른 기존 컨트롤은 부모 의존성을 클릭 시점에 다시 찾거나 같은 GameObject의 콜백만 캐시하므로, 현재 구조에서는 <code>OnTransformParentChanged</code>를 추가하지 않는다.</li>
+          <li>같은 GameObject의 callback과 initializer 의존성은 <code>MyTab</code>처럼 <code>Awake()</code>에서 한 번만 캐시한다. <code>OnEnable</code>과 <code>OnValidate</code>는 의존성을 다시 찾지 않고, 현재 <code>_radios</code> 배열을 기준으로 선택 상태만 갱신한다.</li>
+          <li><code>MyRadio</code>는 클릭과 <code>Start()</code> 초기화 시점에 상위 <code>GroupInterface</code>를 확인한다. 상위 그룹의 <code>_radios</code> 배열에 자신이 포함된 경우에만 그룹 정책에 위임하고, 포함되지 않으면 단독 토글로 동작한다.</li>
+          <li>그룹은 배열에 든 라디오를 별도로 등록하지 않는다. 따라서 부모 변경 캐시를 유지할 필요가 없고, 현재 구조에서는 <code>OnTransformParentChanged</code>를 추가하지 않는다.</li>
           <li><code>MyRadioGroup</code>은 <code>ExecuteAlways</code>로 동작해 에디터에서도 이미 결정된 라디오 배열 기준으로 선택 표시를 갱신한다.</li>
           <li><code>OnValidate</code>에서는 모드별로 <code>_index</code>를 보정한다. <code>Required</code>는 0 이상의 유효 인덱스로 강제하고, <code>Optional</code>은 0개 선택을 뜻하는 -1을 허용하며, <code>Multiple</code>은 첫 번째 on 라디오의 index로 갱신한다.</li>
           <li>Editor 코드를 추가하지 않는 범위에서는 <code>_selectionMode</code>와 <code>_index</code>에 한글 Tooltip을 붙여, <code>Optional</code>의 -1이 선택 없음이라는 사실과 <code>Multiple</code>에서 표시되는 index의 의미를 Inspector에서 직접 안내한다.</li>
@@ -766,6 +766,11 @@
               <td>2026-06-21</td>
               <td><code>MyRadioGroup</code> 직접 배열 전환</td>
               <td><code>MySelector</code>처럼 제작자가 Inspector에서 순서와 멤버십을 직접 볼 수 있어야 탭 헤더와 본문 index 계약이 덜 숨는다. 그래서 <code>MyRadioGroup</code>은 자식 자동 수집 대신 <code>_radios</code> 배열을 소속의 기준으로 삼고, 자식 자동 채우기는 추후 별도 보조 컴포넌트나 Editor 도구의 책임으로 분리한다.</td>
+            </tr>
+            <tr>
+              <td>2026-06-21</td>
+              <td><code>MyRadioGroup</code> 등록 단계 제거</td>
+              <td><code>_radios</code> 배열 자체가 소속의 기준이므로, 그룹이 각 라디오에 자신을 미리 등록하는 별도 단계는 숨은 상태를 늘릴 뿐이다. <code>MyRadio</code>는 상위 그룹을 찾더라도 배열 포함 여부가 확인될 때만 그룹 정책에 위임하고, 포함되지 않은 라디오는 단독 토글로 남긴다.</td>
             </tr>
             <tr>
               <td>2026-06-20</td>
