@@ -10,15 +10,26 @@ namespace oojjrs.oui
 
         private void OnDisable()
         {
-            if ((_previous != default) && _previous.activeInHierarchy)
-                EventSystem.current.SetSelectedGameObject(_previous);
+            if ((Application.isPlaying == false) || MyControl.IsQuitting)
+                return;
+
+            var eventSystem = EventSystem.current;
+            if ((eventSystem != null) && (_previous != default) && _previous.activeInHierarchy)
+                eventSystem.SetSelectedGameObject(_previous);
         }
 
         private void OnEnable()
         {
-            _previous = EventSystem.current.currentSelectedGameObject;
+            if ((Application.isPlaying == false) || MyControl.IsQuitting)
+                return;
 
-            EventSystem.current.SetSelectedGameObject(gameObject);
+            var eventSystem = EventSystem.current;
+            if (eventSystem == null)
+                return;
+
+            _previous = eventSystem.currentSelectedGameObject;
+
+            eventSystem.SetSelectedGameObject(gameObject);
         }
     }
 }

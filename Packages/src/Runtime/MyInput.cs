@@ -49,9 +49,13 @@ namespace oojjrs.oui
 
         private void OnDisable()
         {
-            if (EventSystem.current?.currentSelectedGameObject == gameObject)
+            if ((Application.isPlaying == false) || MyControl.IsQuitting)
+                return;
+
+            var eventSystem = EventSystem.current;
+            if ((eventSystem != null) && (eventSystem.currentSelectedGameObject == gameObject))
             {
-                EventSystem.current.SetSelectedGameObject(default);
+                eventSystem.SetSelectedGameObject(default);
 
                 MyControl.Texting = false;
             }

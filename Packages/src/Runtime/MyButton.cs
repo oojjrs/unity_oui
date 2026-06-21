@@ -120,6 +120,9 @@ namespace oojjrs.oui
 
         private void OnDisable()
         {
+            if ((Application.isPlaying == false) || MyControl.IsQuitting)
+                return;
+
             if (Cooldowning)
             {
                 Cooldowning = false;

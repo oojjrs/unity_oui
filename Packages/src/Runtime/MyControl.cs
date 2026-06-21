@@ -21,6 +21,21 @@ namespace oojjrs.oui
             public static Sprite Null { get; set; }
         }
 
+        public static bool IsQuitting { get; private set; }
         public static bool Texting { get; internal set; }
+
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+        private static void ResetQuitting()
+        {
+            IsQuitting = false;
+
+            Application.quitting -= OnQuitting;
+            Application.quitting += OnQuitting;
+        }
+
+        private static void OnQuitting()
+        {
+            IsQuitting = true;
+        }
     }
 }
