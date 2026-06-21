@@ -280,7 +280,7 @@
     <div class="header-inner">
       <h1>UnityOui</h1>
       <p class="thesis">UGUI 기반 프로젝트에서 반복되는 입력, 선택, 상태 연출을 작고 명확한 컴포넌트로 묶는 패키지다. 이 문서는 기능 주제보다 컴포넌트 단위로 책임, 결정 이유, 보류점을 정리한다.</p>
-      <p class="meta">작성일: 2026-06-18 · 문서 갱신: 2026-06-21 20:19 +09:00 · 문서 범위: <code>Packages/src/Runtime</code> 컴포넌트 설계, 특히 <code>MyRadio</code>와 관련 컴포넌트</p>
+      <p class="meta">작성일: 2026-06-18 · 문서 갱신: 2026-06-21 20:43 +09:00 · 문서 범위: <code>Packages/src/Runtime</code> 컴포넌트 설계, 특히 <code>MyRadio</code>와 관련 컴포넌트</p>
     </div>
   </header>
 
@@ -545,6 +545,7 @@
           <li>탭 헤더는 <code>Required</code> 라디오 그룹으로 설정해 사용하며, <code>MyTab</code>이 런타임에서 모드를 강제로 덮어쓰지 않는다. 잘못 설정된 경우 <code>Start()</code>에서 경고만 출력한다.</li>
           <li><code>MyTab</code>은 선택 index를 캐시하지 않는다. 현재 선택값은 필요할 때마다 <code>MyRadioGroup.Index</code>에서 읽고, 본문 <code>MySelector</code>는 그 값에 맞춰 동기화한다. 헤더 라디오 배열과 본문 페이지 배열은 같은 index 순서를 가져야 한다.</li>
           <li>외부 코드가 초기 탭을 정해야 할 때는 같은 GameObject의 컴포넌트가 <code>MyTab.InitializerInterface.InitialIndex</code>를 구현한다. <code>MyTab</code>은 <code>MyRadioGroup.InitializerInterface</code>를 내부 구현으로 숨기고, 라디오 그룹이 이 값을 <code>Start()</code>에서 한 번만 읽게 한다.</li>
+          <li>탭 진입/이탈 콜백은 선택 사항이다. 콜백 컴포넌트가 없는 탭도 정상 구성이므로 <code>Start()</code>에서 별도 경고를 출력하지 않는다.</li>
           <li><code>ExecuteAlways</code>로 동작해 에디터에서도 라디오 그룹의 선택 표시와 본문 페이지가 같은 index를 바라보게 한다. 본문 <code>MySelector</code> 동기화는 <code>MyRadioGroup.CallbackInterface.OnValueChanged</code>에서만 시작한다.</li>
         </ul>
       </details>
@@ -770,6 +771,11 @@
               <td>2026-06-20</td>
               <td><code>MyTab</code> 라디오 헤더 전환</td>
               <td>탭 헤더는 단일 선택 상태와 선택 표시가 핵심이므로 별도 <code>MyTabHeaderButton</code> 대신 <code>MyRadioGroup</code>과 <code>MySelector</code>를 같은 GameObject에서 연결하는 구조로 정리했다. 탭은 항상 <code>Required</code> 선택이므로 <code>-1</code> index를 쓰지 않고, 현재 선택값은 <code>MyRadioGroup.Index</code>에 위임한다. 코드에서 초기 선택을 주입해야 할 때는 <code>MyTab.InitializerInterface.InitialIndex</code>를 사용하되, 탭이 라디오 그룹 초기화 인터페이스를 내부 구현으로 숨기고 라디오 그룹 콜백만 본문 동기화 루트로 사용한다.</td>
+            </tr>
+            <tr>
+              <td>2026-06-21</td>
+              <td><code>MyTab</code> 선택 콜백 경고 제거</td>
+              <td>탭 진입/이탈 콜백은 화면 전환 부가 동작을 연결하는 선택적 확장점이므로 구현체가 없어도 오구성이 아니다. 필수 구성 검증은 <code>MyRadioGroup</code>과 <code>MySelector</code> 연결, 그리고 <code>Required</code> 라디오 헤더 설정에 집중한다.</td>
             </tr>
             <tr>
               <td>2026-06-19</td>
