@@ -47,11 +47,11 @@ public sealed class StartButton : MonoBehaviour, MyButton.CallbackInterface
 
 `MyRadio`와 `MyRadioGroup`은 Unity `Toggle`, `ToggleGroup`, `Selectable`에 기대지 않고 라디오 버튼과 토글 묶음을 구성합니다. `MyRadio`는 `IsOn`과 `IsInteractable`을 Inspector에서 설정할 수 있으며, off/on 각각의 normal, highlighted, pressed preview, selected, disabled 상태 GameObject를 접을 수 있는 `StateObjects` 묶음으로 받아 직접 켜고 끕니다. `MyRadio.InitializerInterface`는 단독 라디오에서만 적용되며, 그룹 안의 라디오 선택 초기화는 `MyRadioGroup`이 맡습니다.
 
-`MyRadioGroup.SelectionMode`는 항상 하나를 선택하는 `Required`, 선택 없음도 허용하는 `Optional`, 각 항목을 독립 토글처럼 다루는 `Multiple`을 제공합니다. `Index`는 현재 선택과 Inspector 초기 선택을 함께 맡으며, `Optional`의 `-1`은 선택 없음입니다. `Multiple`에서는 단일 초기 인덱스를 사용하지 않고 첫 번째 on 라디오의 index를 표시합니다. 그룹의 라디오 목록은 `Awake()`에서 자식 `MyRadio`를 한 번 수집해 정적으로 결정되며, 외부에서 목록을 다시 수집하는 API는 제공하지 않습니다.
+`MyRadioGroup.SelectionMode`는 항상 하나를 선택하는 `Required`, 선택 없음도 허용하는 `Optional`, 각 항목을 독립 토글처럼 다루는 `Multiple`을 제공합니다. `Index`는 현재 선택과 Inspector 초기 선택을 함께 맡으며, `Optional`의 `-1`은 선택 없음입니다. `Multiple`에서는 단일 초기 인덱스를 사용하지 않고 첫 번째 on 라디오의 index를 표시합니다. 그룹의 라디오 목록은 Inspector의 배열로 직접 받으며, 배열 순서가 선택 index 순서입니다. 자식 자동 수집은 그룹의 기본 동작이 아니며, 필요하면 별도 보조 컴포넌트나 Editor 도구에서 제공하는 영역으로 둡니다.
 
 ## 탭
 
-`MyTab`은 같은 GameObject의 `MyRadioGroup`과 `MySelector`를 연결해 탭 선택 상태를 갱신합니다. 헤더에는 자식 `MyRadio`를 배치하고, 본문 페이지는 `MySelector`의 값 배열 순서와 같은 인덱스로 배치합니다. 탭은 항상 하나가 선택되는 `Required` 라디오 그룹으로 동작하므로 현재 선택 index는 `MyRadioGroup.Index`가 기준입니다. 코드에서 초기 탭을 정해야 할 때는 같은 GameObject의 컴포넌트가 `MyTab.InitializerInterface.InitialIndex`를 구현하며, 탭이 라디오 그룹 초기화 인터페이스를 내부 연결로 숨깁니다. 본문 페이지 동기화는 라디오 그룹 선택 콜백에서 시작됩니다.
+`MyTab`은 같은 GameObject의 `MyRadioGroup`과 `MySelector`를 연결해 탭 선택 상태를 갱신합니다. 헤더 `MyRadio`는 `MyRadioGroup`의 라디오 배열에 본문 `MySelector` 값 배열과 같은 인덱스 순서로 연결합니다. 탭은 항상 하나가 선택되는 `Required` 라디오 그룹으로 동작하므로 현재 선택 index는 `MyRadioGroup.Index`가 기준입니다. 코드에서 초기 탭을 정해야 할 때는 같은 GameObject의 컴포넌트가 `MyTab.InitializerInterface.InitialIndex`를 구현하며, 탭이 라디오 그룹 초기화 인터페이스를 내부 연결로 숨깁니다. 본문 페이지 동기화는 라디오 그룹 선택 콜백에서 시작됩니다.
 
 `OuiMoveNext()`와 `OuiMovePrevious()`는 현재 선택된 탭 기준으로 다음 또는 이전 interactable 탭을 찾습니다. `allowWrapAround`를 `true`로 넘기면 끝에서 반대편 탭으로 순환합니다.
 

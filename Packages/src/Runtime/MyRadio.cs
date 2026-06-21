@@ -29,7 +29,8 @@ namespace oojjrs.oui
 
         public interface GroupInterface
         {
-            void OnClick(MyRadio radio);
+            bool Contains(MyRadio radio);
+            bool OnClick(MyRadio radio);
         }
 
         public interface HoverInterface
@@ -105,7 +106,6 @@ namespace oojjrs.oui
         private void Awake()
         {
             _callbacks = GetComponents<CallbackInterface>();
-            _group = GetComponentInParent<GroupInterface>();
             _hovers = GetComponents<HoverInterface>();
             _initializer = GetComponent<InitializerInterface>();
         }
@@ -139,11 +139,6 @@ namespace oojjrs.oui
             IsInteractable = _isInteractable;
         }
 
-        private void OnTransformParentChanged()
-        {
-            _group = GetComponentInParent<GroupInterface>();
-        }
-
         private void OnValidate()
         {
             IsInteractable = _isInteractable;
@@ -154,7 +149,7 @@ namespace oojjrs.oui
             if (GetComponentInChildren<Graphic>() == null)
                 Debug.LogWarning($"{name}> DON'T HAVE RAYCAST GRAPHIC.");
 
-            if ((_group == null) && (_initializer != null))
+            if (((_group == null) || (_group.Contains(this) == false)) && (_initializer != null))
                 IsOn = _initializer.InitialValue;
         }
 
@@ -279,9 +274,7 @@ namespace oojjrs.oui
             if (IsInteractable == false)
                 return;
 
-            if (_group != null)
-                _group.OnClick(this);
-            else
+            if ((_group == null) || (_group.OnClick(this) == false))
                 OuiSetIsOn(IsOn == false);
 
             if (_soundOverrides.Click != null)
@@ -350,6 +343,18 @@ namespace oojjrs.oui
         public void OuiUpdate()
         {
             SetState(_state);
+        }
+
+        internal bool BindGroup(GroupInterface group)
+        {
+            if ((_group != null) && (_group != group) && _group.Contains(this))
+            {
+                Debug.LogWarning($"{name}> ALREADY HAS RADIO GROUP.");
+                return false;
+            }
+
+            _group = group;
+            return true;
         }
 
         private void PlaySfxSafety(AudioSource audioSource)

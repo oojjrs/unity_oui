@@ -1,5 +1,4 @@
 using System;
-using System.Linq;
 using UnityEngine;
 
 namespace oojjrs.oui
@@ -31,6 +30,8 @@ namespace oojjrs.oui
         private int _index = -1;
         private InitializerInterface _initializer;
         private bool _isStarted;
+        [Tooltip("그룹에 포함할 라디오 목록입니다. 배열 순서가 선택 index 순서가 되며, 자동 자식 수집은 하지 않습니다.")]
+        [SerializeField]
         private MyRadio[] _radios = Array.Empty<MyRadio>();
         [Tooltip("Required는 항상 하나 선택, Optional은 선택 없음 허용, Multiple은 각 라디오를 독립 on/off로 다룹니다.")]
         [SerializeField]
@@ -47,7 +48,7 @@ namespace oojjrs.oui
         {
             get
             {
-                if ((_index >= 0) && (_index < _radios.Length))
+                if (IsRadioIndexValid(_index))
                     return _radios[_index];
                 else
                     return null;
@@ -74,27 +75,26 @@ namespace oojjrs.oui
         {
             _callbacks = GetComponents<CallbackInterface>();
             _initializer = GetComponent<InitializerInterface>();
-            _radios = GetComponentsInChildren<MyRadio>(true).Where(t => t.GetComponentInParent<MyRadioGroup>() == this).ToArray();
+            RegisterRadios();
         }
 
         private void OnEnable()
         {
+            RegisterRadios();
             ApplyCurrentIndex(_isStarted);
         }
 
         private void OnValidate()
         {
-            _radios = GetComponentsInChildren<MyRadio>(true).Where(t => t.GetComponentInParent<MyRadioGroup>() == this).ToArray();
-
-            if (_radios.Length > 0)
-                ApplyCurrentIndex(true);
+            RegisterRadios();
+            ApplyCurrentIndex(true);
         }
 
         private void Start()
         {
             _isStarted = true;
 
-            if (_radios.Length <= 0)
+            if (GetFirstValidIndex() < 0)
                 Debug.LogWarning($"{name}> DON'T HAVE RADIO.");
 
             if ((_selectionMode != SelectionModeEnum.Multiple) && (_initializer != null))
@@ -103,11 +103,16 @@ namespace oojjrs.oui
                 ApplyCurrentIndex(true);
         }
 
-        void MyRadio.GroupInterface.OnClick(MyRadio radio)
+        bool MyRadio.GroupInterface.Contains(MyRadio radio)
+        {
+            return Array.IndexOf(_radios, radio) >= 0;
+        }
+
+        bool MyRadio.GroupInterface.OnClick(MyRadio radio)
         {
             var index = GetIndex(radio);
             if (index < 0)
-                return;
+                return false;
 
             if (_selectionMode == SelectionModeEnum.Multiple)
             {
@@ -119,6 +124,8 @@ namespace oojjrs.oui
                 OuiSelect(-1);
             else
                 OuiSelect(index);
+
+            return true;
         }
 
         private void Apply(bool notifyRadios)
@@ -165,6 +172,17 @@ namespace oojjrs.oui
             return -1;
         }
 
+        private int GetFirstValidIndex()
+        {
+            for (int i = 0; i < _radios.Length; ++i)
+            {
+                if (_radios[i] != null)
+                    return i;
+            }
+
+            return -1;
+        }
+
         private int GetIndex(MyRadio radio)
         {
             if (radio == null)
@@ -179,14 +197,11 @@ namespace oojjrs.oui
 
         private int GetValidIndex(int index)
         {
-            if (_radios.Length <= 0)
-                return -1;
-
-            if ((index >= 0) && (index < _radios.Length))
+            if (IsRadioIndexValid(index))
                 return index;
 
             if (_selectionMode == SelectionModeEnum.Required)
-                return 0;
+                return GetFirstValidIndex();
             else
                 return -1;
         }
@@ -194,9 +209,14 @@ namespace oojjrs.oui
         private bool IsIndexValid(int index)
         {
             if (index == -1)
-                return (_selectionMode != SelectionModeEnum.Required) || (_radios.Length <= 0);
+                return (_selectionMode != SelectionModeEnum.Required) || (GetFirstValidIndex() < 0);
 
-            return (index >= 0) && (index < _radios.Length);
+            return IsRadioIndexValid(index);
+        }
+
+        private bool IsRadioIndexValid(int index)
+        {
+            return (index >= 0) && (index < _radios.Length) && (_radios[index] != null);
         }
 
         private void NotifyValueChanged(int index, MyRadio radio)
@@ -231,6 +251,22 @@ namespace oojjrs.oui
         public void OuiSetIndexWithoutNotify(int index)
         {
             SetIndex(index, false);
+        }
+
+        private void RegisterRadios()
+        {
+            for (int i = 0; i < _radios.Length; ++i)
+            {
+                var radio = _radios[i];
+                if (radio == null)
+                    continue;
+
+                if (Array.IndexOf(_radios, radio) != i)
+                    Debug.LogWarning($"{name}> DUPLICATE RADIO {radio.name}.");
+
+                if (radio.BindGroup(this) == false)
+                    Debug.LogWarning($"{name}> RADIO {radio.name} ALREADY HAS GROUP.");
+            }
         }
 
         private void SetIndex(int index, bool notify)

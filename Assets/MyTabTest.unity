@@ -593,6 +593,10 @@ MonoBehaviour:
   m_Name:
   m_EditorClassIdentifier: oojjrs.oui::oojjrs.oui.MyRadioGroup
   _index: 0
+  _radios:
+  - {fileID: 11611208635}
+  - {fileID: 11834343421}
+  - {fileID: 10990388838}
   _selectionMode: 0
 --- !u!1 &866701138
 GameObject:
@@ -1143,6 +1147,21 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &11611208635 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7387059051330630339, guid: 2b39c2e6f1001b5449ecc984c69376aa, type: 3}
+  m_PrefabInstance: {fileID: 1611208635}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &11834343421 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7387059051330630339, guid: 2b39c2e6f1001b5449ecc984c69376aa, type: 3}
+  m_PrefabInstance: {fileID: 1834343421}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &10990388838 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7387059051330630339, guid: 2b39c2e6f1001b5449ecc984c69376aa, type: 3}
+  m_PrefabInstance: {fileID: 990388838}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

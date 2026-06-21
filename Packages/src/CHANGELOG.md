@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.7.4
+
+- `MyRadioGroup`의 라디오 목록을 자식 자동 수집 대신 Inspector의 직접 배열로 받도록 변경했습니다. 배열 순서가 선택 index 순서가 됩니다.
+- `MyRadio`는 `MyRadioGroup`이 직접 등록한 경우에만 그룹 선택 정책에 위임하고, 등록된 그룹이 없거나 그룹이 해당 라디오를 처리하지 못하면 단독 토글처럼 동작합니다.
+- `Assets/MyRadioTest.unity`와 `Assets/MyTabTest.unity`의 라디오 그룹에 명시적인 라디오 배열 참조를 추가했습니다.
+
 ## 1.7.3
 
 - `MyTab`이 `MyTabHeaderButton` 대신 같은 GameObject의 `MyRadioGroup`과 `MySelector`를 연결하도록 변경했습니다.
