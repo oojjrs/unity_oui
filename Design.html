@@ -280,7 +280,7 @@
     <div class="header-inner">
       <h1>UnityOui</h1>
       <p class="thesis">UGUI 기반 프로젝트에서 반복되는 입력, 선택, 상태 연출을 작고 명확한 컴포넌트로 묶는 패키지다. 이 문서는 기능 주제보다 컴포넌트 단위로 책임, 결정 이유, 보류점을 정리한다.</p>
-      <p class="meta">작성일: 2026-06-18 · 문서 갱신: 2026-06-22 20:17 +09:00 · 문서 범위: <code>Packages/src/Runtime</code> 컴포넌트 설계, 특히 <code>MyRadio</code>와 관련 컴포넌트</p>
+      <p class="meta">작성일: 2026-06-18 · 문서 갱신: 2026-06-22 20:47 +09:00 · 문서 범위: <code>Packages/src/Runtime</code> 컴포넌트 설계, 특히 <code>MyRadio</code>와 관련 컴포넌트</p>
     </div>
   </header>
 
@@ -396,7 +396,7 @@
           <li><code>MyRadio</code> 필수 컴포넌트: 없음. 단, 클릭 판정을 위해 자식 중 하나 이상은 raycast 가능한 <code>Graphic</code>이어야 한다.</li>
           <li><code>MyRadio.State</code>: <code>OffNormal</code>부터 <code>OnDisabled</code>까지 단일 상태 enum으로 보관한다. 내부 로직은 보조 숫자 축이나 변환 함수 없이 현재 <code>_state</code>와 목표 enum 값을 직접 다룬다.</li>
           <li><code>_isOn</code>과 <code>_isInteractable</code>은 Inspector에서 초기 선택 여부와 상호작용 가능 여부를 고르는 serialized 값이다. public <code>IsOn</code>과 <code>IsInteractable</code> setter는 상태 표시를 바꾸고, <code>SetState</code>는 enum 상태를 기준으로 두 serialized 값을 다시 동기화한다.</li>
-          <li><code>MyRadio</code>는 선택지별 대표 이미지와 텍스트를 serialized <code>MyImage[]</code>, <code>MyText[]</code> 배열 참조로 받는다. 외부 코드는 기존 <code>Sprite</code> 설정으로 연결된 이미지 배열 전체를 갱신할 수 있고, on/off 연출은 계속 <code>StateObjects</code>가 담당한다.</li>
+          <li><code>MyRadio</code>는 선택지별 대표 이미지와 텍스트를 serialized <code>MyImage[]</code>, <code>MyText[]</code> 배열 참조로 받는다. 외부 코드는 <code>Sprite</code>와 <code>Title</code> 설정으로 연결된 이미지·텍스트 배열 전체를 갱신할 수 있고, on/off 연출은 계속 <code>StateObjects</code>가 담당한다.</li>
           <li><code>MyRadioGroup</code>의 <code>_radios</code> 배열에 포함된 라디오는 선택 초기화를 그룹이 소유하므로, <code>MyRadio</code> 자신의 <code>InitializerInterface.InitialValue</code>는 적용하지 않는다. 그룹이 없거나 상위 그룹 배열에 포함되지 않은 단독 라디오일 때만 이 초기값을 읽는다.</li>
           <li>Inspector에 직접 노출되는 <code>Tooltip</code> 문구는 사용자가 바로 읽을 수 있도록 한글을 기본으로 작성한다.</li>
           <li><code>MyRadio</code>는 <code>ExecuteAlways</code>로 동작해 에디터에서도 <code>_isOn</code>, <code>_isInteractable</code> 변경과 상태 표시 오브젝트 전환을 즉시 맞춘다.</li>
@@ -503,6 +503,10 @@
         <div class="decision">
           <strong><code>StateObjects</code> 접힘 그룹</strong>
           <p>10개 상태 표시 오브젝트를 모두 <code>MyRadio</code> 최상위 serialized 필드로 노출하면 실제 사용 시 Inspector가 너무 길어진다. 그래서 새 프리팹 제작 표면은 <code>StateObjects</code> 구조체 하나로 접을 수 있게 만들고, 테스트 프리팹의 기존 참조값은 프리팹 YAML을 확인해 새 구조로 직접 옮겼다.</p>
+        </div>
+        <div class="decision">
+          <strong>배열 래퍼 속성</strong>
+          <p><code>MyRadio</code>의 대표 이미지와 텍스트는 내부적으로 배열에 전달되지만, 외부 사용자는 단일 선택지 컴포넌트처럼 <code>Sprite</code>, <code>Title</code> 속성으로 값을 넣는 감각을 유지한다. <code>MyImage[]</code>나 <code>MyText[]</code> 반복 호출 자체는 배열 extension으로 줄일 수 있지만, C# extension은 새 속성을 추가할 수 없으므로 속성 표면이 필요한 경우에는 <code>MyRadio</code>가 필요한 배열 버전 setter를 직접 제공한다. 배열 값의 getter는 어떤 슬롯을 대표값으로 삼을지 안정적인 계약을 만들 수 없으므로 제공하지 않는다. 다만 <code>MyImage</code>의 모든 속성과 함수를 2중으로 복제하지 않고, 현재 라디오 사용처에서 의미가 분명한 대표 속성만 공개한다.</p>
         </div>
         <div class="note danger">
           <p>현재 UX 리스크는 10개 상태 오브젝트를 여전히 직접 연결해야 한다는 점이다. 다만 Inspector에서는 한 묶음으로 접을 수 있으므로 평상시 화면 점유를 줄인다. 런타임에서는 전환 대상 상태 필드가 null이면 즉시 경고하고, 제작 단계에서는 문서 암기 대신 상태 오브젝트 자동 생성, 이름 검증, null 슬롯 경고를 제공하는 Editor 보조가 필요하다.</p>
@@ -786,7 +790,12 @@
             <tr>
               <td>2026-06-22</td>
               <td><code>MyButton</code> / <code>MyRadio</code> 이미지·텍스트 참조 정리</td>
-              <td><code>MyButton</code>의 이미지 참조를 <code>MyImage</code> 기준으로 맞추고, <code>MyRadio</code>는 상태별 표시 표면을 한 번에 다룰 수 있도록 선택지별 serialized <code>MyImage[]</code>, <code>MyText[]</code> 배열 참조를 갖도록 했다. 라디오는 <code>MyButton</code>을 조합하지 않는 원칙을 유지하되, 새 공개 속성 없이 기존 <code>Sprite</code> 설정만 이미지 배열 전체 갱신에 사용한다.</td>
+              <td><code>MyButton</code>의 이미지 참조를 <code>MyImage</code> 기준으로 맞추고, <code>MyRadio</code>는 상태별 표시 표면을 한 번에 다룰 수 있도록 선택지별 serialized <code>MyImage[]</code>, <code>MyText[]</code> 배열 참조를 갖도록 했다. 배열 extension은 반복 호출은 줄일 수 있지만 속성 자체를 추가할 수 없으므로, 라디오는 <code>MyButton</code>을 조합하지 않는 원칙을 유지하면서 필요한 대표 속성인 <code>Sprite</code>와 <code>Title</code>만 배열 전체 갱신 표면으로 직접 제공한다.</td>
+            </tr>
+            <tr>
+              <td>2026-06-22</td>
+              <td><code>1.7.10</code> 패치 릴리스</td>
+              <td><code>MyRadio.Sprite</code>와 <code>MyRadio.Title</code>은 배열 전체에 값을 적용하는 setter-only 표면이며, 배열 getter는 대표 슬롯 계약을 안정적으로 만들 수 없으므로 제공하지 않는다는 문서 기준을 패키지 문서와 함께 맞췄다.</td>
             </tr>
             <tr>
               <td>2026-06-22</td>

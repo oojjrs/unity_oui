@@ -22,28 +22,6 @@ namespace oojjrs.oui
             OnDisabled = 9,
         }
 
-        public interface CallbackInterface
-        {
-            void OnValueChanged(bool isOn);
-        }
-
-        public interface GroupInterface
-        {
-            bool Contains(MyRadio radio);
-            bool OnClick(MyRadio radio);
-        }
-
-        public interface HoverInterface
-        {
-            void OnHoverEnter();
-            void OnHoverExit();
-        }
-
-        public interface InitializerInterface
-        {
-            bool InitialValue { get; }
-        }
-
         [System.Serializable]
         public struct SoundOverrides
         {
@@ -66,10 +44,32 @@ namespace oojjrs.oui
             public GameObject OnDisabled;
         }
 
+        public interface CallbackInterface
+        {
+            void OnValueChanged(bool isOn);
+        }
+
+        public interface GroupInterface
+        {
+            bool Contains(MyRadio radio);
+            bool OnClick(MyRadio radio);
+        }
+
+        public interface HoverInterface
+        {
+            void OnHoverEnter();
+            void OnHoverExit();
+        }
+
+        public interface InitializerInterface
+        {
+            bool InitialValue { get; }
+        }
+
         private CallbackInterface[] _callbacks;
+        private HoverInterface[] _hovers;
         [SerializeField]
         private bool _hoverSoundDisabled;
-        private HoverInterface[] _hovers;
         [SerializeField]
         private MyImage[] _images;
         private InitializerInterface _initializer;
@@ -78,10 +78,10 @@ namespace oojjrs.oui
         [SerializeField]
         private bool _isOn;
         [SerializeField]
-        private StateObjects _stateObjects;
-        [SerializeField]
         private SoundOverrides _soundOverrides;
         private State _state;
+        [SerializeField]
+        private StateObjects _stateObjects;
         [SerializeField]
         private MyText[] _texts;
 
@@ -107,32 +107,39 @@ namespace oojjrs.oui
         }
         public Sprite Sprite
         {
-            get
-            {
-                if (_images != null)
-                {
-                    foreach (var image in _images)
-                    {
-                        if (image != null)
-                            return image.Sprite;
-                    }
-                }
-
-                return null;
-            }
             set
             {
                 if (_images != null)
                 {
-                    foreach (var image in _images)
+                    if (value != null)
                     {
-                        if (image != null)
+                        foreach (var image in _images)
                         {
-                            if (value != null)
+                            if (image != null)
                                 image.Sprite = value;
-                            else
+                        }
+                    }
+                    else
+                    {
+                        foreach (var image in _images)
+                        {
+                            if (image != null)
                                 image.Sprite = MyControl.Image.Null;
                         }
+                    }
+                }
+            }
+        }
+        public string Title
+        {
+            set
+            {
+                if (_texts != null)
+                {
+                    foreach (var text in _texts)
+                    {
+                        if (text != null)
+                            text.Text = value;
                     }
                 }
             }

@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.7.10
+
+- `MyRadio.Sprite`와 `MyRadio.Title`을 배열 참조 전체에 값을 적용하는 setter-only 접근 표면으로 정리했습니다.
+- 배열 값은 대표 getter 계약을 만들 수 없으므로 읽기 API를 제공하지 않는다는 설계 의도를 문서화했습니다.
+
 ## 1.7.9
 
 - `MyRadioGroup`의 `OnEnable()`과 `Start()` 초기화 경로가 플레이 모드에서만 실행되도록 정리했습니다.
@@ -13,7 +18,7 @@
 ## 1.7.7
 
 - `MyButton`의 이미지 참조를 Unity `Image` 대신 `MyImage` 기준으로 맞추고, 기존 `Sprite` 접근은 `MyImage.Sprite` 경로를 사용하도록 정리했습니다.
-- `MyRadio`에 선택지별 `MyImage`, `MyText` 참조를 추가하고, `Sprite`와 `Text` 접근 표면으로 라디오 아이콘과 라벨을 갱신할 수 있게 했습니다.
+- `MyRadio`에 선택지별 `MyImage`, `MyText` 참조를 추가하고, `Sprite`와 `Title` 접근 표면으로 라디오 아이콘과 라벨을 갱신할 수 있게 했습니다.
 
 ## 1.7.6
 
