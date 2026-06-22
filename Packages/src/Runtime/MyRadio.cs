@@ -71,7 +71,7 @@ namespace oojjrs.oui
         private bool _hoverSoundDisabled;
         private HoverInterface[] _hovers;
         [SerializeField]
-        private MyImage _image;
+        private MyImage[] _images;
         private InitializerInterface _initializer;
         [SerializeField]
         private bool _isInteractable = true;
@@ -83,7 +83,7 @@ namespace oojjrs.oui
         private SoundOverrides _soundOverrides;
         private State _state;
         [SerializeField]
-        private MyText _text;
+        private MyText[] _texts;
 
         public bool IsInteractable
         {
@@ -109,23 +109,34 @@ namespace oojjrs.oui
         {
             get
             {
-                if (_image != null)
-                    return _image.Sprite;
-                else
-                    return null;
+                if (_images != null)
+                {
+                    foreach (var image in _images)
+                    {
+                        if (image != null)
+                            return image.Sprite;
+                    }
+                }
+
+                return null;
             }
             set
             {
-                if (_image != null)
+                if (_images != null)
                 {
-                    if (value != null)
-                        _image.Sprite = value;
-                    else
-                        _image.Sprite = MyControl.Image.Null;
+                    foreach (var image in _images)
+                    {
+                        if (image != null)
+                        {
+                            if (value != null)
+                                image.Sprite = value;
+                            else
+                                image.Sprite = MyControl.Image.Null;
+                        }
+                    }
                 }
             }
         }
-        public MyText Text => _text;
 
         private void Awake()
         {

@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.7.8
+
+- `MyRadio`의 이미지와 텍스트 참조를 단일 `MyImage`, `MyText` 대신 `MyImage[]`, `MyText[]` 배열로 바로잡았습니다.
+- `MyRadio`의 이미지와 텍스트 배열은 serialized 참조로 유지하고, `Sprite` 설정은 연결된 이미지 배열 전체에 적용되도록 했습니다.
+
 ## 1.7.7
 
 - `MyButton`의 이미지 참조를 Unity `Image` 대신 `MyImage` 기준으로 맞추고, 기존 `Sprite` 접근은 `MyImage.Sprite` 경로를 사용하도록 정리했습니다.

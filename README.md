@@ -19,7 +19,7 @@ https://github.com/oojjrs/unity_oui.git?path=/Packages/src
 ## 포함 기능
 
 - `MyButton`: 클릭, 호버, 프레스, 더블 클릭 콜백과 버튼 사운드 재생을 다루며 이미지 갱신 표면은 `MyImage` 기준으로 맞춥니다.
-- `MyRadio`, `MyRadioGroup`: Unity `Toggle`, `ToggleGroup`, `Selectable`에 기대지 않고 상태별 GameObject 표시와 명시 배열 기반 라디오 선택 UI를 구성하며, 라디오별 `Sprite`와 `Text` 참조 표면을 제공합니다.
+- `MyRadio`, `MyRadioGroup`: Unity `Toggle`, `ToggleGroup`, `Selectable`에 기대지 않고 상태별 GameObject 표시와 명시 배열 기반 라디오 선택 UI를 구성하며, 라디오별 이미지와 텍스트는 serialized 배열 참조로 연결합니다.
 - `MyText`, `MyImage`, `MyPortrait`: UGUI 텍스트와 이미지 값을 코드에서 간단히 갱신하고, 필요하면 이미지의 native size를 배율까지 지정해 함께 맞춥니다.
 - `MyList`: 프리팹 기반 리스트 엔트리 생성, 제거, 정렬을 관리합니다.
 - `MyBar`, `MySlider`, `MyToggle`, `MySelector`, `MySwapper`, `MyTab`: 값 기반 UI 상태와 라디오 헤더 기반 탭 선택/초기화 상태를 갱신합니다.
