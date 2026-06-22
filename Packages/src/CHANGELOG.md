@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.7.9
+
+- `MyRadioGroup`의 `OnEnable()`과 `Start()` 초기화 경로가 플레이 모드에서만 실행되도록 정리했습니다.
+- `MyTab`의 `Required` 라디오 헤더 설정 경고가 플레이 모드에서만 출력되도록 정리했습니다.
+
 ## 1.7.8
 
 - `MyRadio`의 이미지와 텍스트 참조를 단일 `MyImage`, `MyText` 대신 `MyImage[]`, `MyText[]` 배열로 바로잡았습니다.

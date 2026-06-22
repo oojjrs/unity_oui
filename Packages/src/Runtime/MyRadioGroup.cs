@@ -79,7 +79,8 @@ namespace oojjrs.oui
 
         private void OnEnable()
         {
-            ApplyCurrentIndex(_isStarted);
+            if (Application.isPlaying)
+                ApplyCurrentIndex(_isStarted);
         }
 
         private void OnValidate()
@@ -89,6 +90,9 @@ namespace oojjrs.oui
 
         private void Start()
         {
+            if (Application.isPlaying == false)
+                return;
+
             _isStarted = true;
 
             if (GetFirstValidIndex() < 0)

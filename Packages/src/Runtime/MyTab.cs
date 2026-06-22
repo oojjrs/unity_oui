@@ -61,8 +61,11 @@ namespace oojjrs.oui
 
         private void Start()
         {
-            if ((_header != null) && (_header.SelectionMode != MyRadioGroup.SelectionModeEnum.Required))
-                Debug.LogWarning($"{name}> {nameof(MyTab)} REQUIRES {nameof(MyRadioGroup)}.{nameof(MyRadioGroup.SelectionMode)} TO BE {nameof(MyRadioGroup.SelectionModeEnum.Required)}.");
+            if (Application.isPlaying)
+            {
+                if ((_header != null) && (_header.SelectionMode != MyRadioGroup.SelectionModeEnum.Required))
+                    Debug.LogWarning($"{name}> {nameof(MyTab)} REQUIRES {nameof(MyRadioGroup)}.{nameof(MyRadioGroup.SelectionMode)} TO BE {nameof(MyRadioGroup.SelectionModeEnum.Required)}.");
+            }
         }
 
         void MyRadioGroup.CallbackInterface.OnValueChanged(int index, MyRadio radio)
