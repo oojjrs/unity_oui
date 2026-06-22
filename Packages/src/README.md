@@ -9,8 +9,8 @@ UGUI 기반 UI에서 자주 반복되는 컴포넌트 제어를 `oojjrs.oui` 네
 
 ## 주요 컴포넌트
 
-- `MyButton`: 버튼 클릭, 호버, 프레스, 더블 클릭, 쿨다운, 애니메이션 트리거, 사운드 오버라이드를 처리합니다.
-- `MyRadio`, `MyRadioGroup`: Unity `Toggle`, `ToggleGroup`, `Selectable`에 기대지 않고 상태별 GameObject 표시와 명시 배열 기반 라디오 선택 UI를 구성합니다.
+- `MyButton`: 버튼 클릭, 호버, 프레스, 더블 클릭, 쿨다운, 애니메이션 트리거, 사운드 오버라이드를 처리하며 이미지 갱신 표면은 `MyImage` 기준으로 맞춥니다.
+- `MyRadio`, `MyRadioGroup`: Unity `Toggle`, `ToggleGroup`, `Selectable`에 기대지 않고 상태별 GameObject 표시와 명시 배열 기반 라디오 선택 UI를 구성하며, 라디오별 `Sprite`와 `Text` 참조 표면을 제공합니다.
 - `MyList`: 값 목록을 프리팹 엔트리로 동기화하고 필요하면 정렬합니다.
 - `MyBar` / `MySlider` / `MyToggle` / `MyTab`: 값 변경 UI, 표시 텍스트, 라디오 헤더 기반 탭 선택과 초기화 콜백을 연결합니다.
 - `MyText` / `MyImage` / `MyPortrait`: 기본 텍스트와 이미지 갱신을 감싸고, `MyImage.SetNativeSizeSprite`로 스프라이트 교체 후 native size를 배율까지 지정해 맞출 수 있습니다.

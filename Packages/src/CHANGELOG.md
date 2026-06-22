@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.7.7
+
+- `MyButton`의 이미지 참조를 Unity `Image` 대신 `MyImage` 기준으로 맞추고, 기존 `Sprite` 접근은 `MyImage.Sprite` 경로를 사용하도록 정리했습니다.
+- `MyRadio`에 선택지별 `MyImage`, `MyText` 참조를 추가하고, `Sprite`와 `Text` 접근 표면으로 라디오 아이콘과 라벨을 갱신할 수 있게 했습니다.
+
 ## 1.7.6
 
 - `MyRadioGroup`의 직접 배열 방식에서 별도 라디오 등록 단계를 제거했습니다.

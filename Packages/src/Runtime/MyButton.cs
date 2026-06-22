@@ -49,7 +49,7 @@ namespace oojjrs.oui
         [SerializeField]
         private Color _textNormalColor = Color.white;
         [SerializeField]
-        private Image _image;
+        private MyImage _image;
         [SerializeField]
         private MyText _text;
         [SerializeField]
@@ -87,7 +87,7 @@ namespace oojjrs.oui
             {
                 if (_image != default)
                 {
-                    return _image.sprite;
+                    return _image.Sprite;
                 }
                 else
                 {
@@ -100,9 +100,9 @@ namespace oojjrs.oui
                 if (_image != default)
                 {
                     if (value != default)
-                        _image.sprite = value;
+                        _image.Sprite = value;
                     else
-                        _image.sprite = MyControl.Image.Null;
+                        _image.Sprite = MyControl.Image.Null;
                 }
                 else
                     Debug.Assert(false, "이미지 컨트롤 없는 버튼이라니까?");
