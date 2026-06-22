@@ -280,7 +280,7 @@
     <div class="header-inner">
       <h1>UnityOui</h1>
       <p class="thesis">UGUI 기반 프로젝트에서 반복되는 입력, 선택, 상태 연출을 작고 명확한 컴포넌트로 묶는 패키지다. 이 문서는 기능 주제보다 컴포넌트 단위로 책임, 결정 이유, 보류점을 정리한다.</p>
-      <p class="meta">작성일: 2026-06-18 · 문서 갱신: 2026-06-21 20:59 +09:00 · 문서 범위: <code>Packages/src/Runtime</code> 컴포넌트 설계, 특히 <code>MyRadio</code>와 관련 컴포넌트</p>
+      <p class="meta">작성일: 2026-06-18 · 문서 갱신: 2026-06-22 19:47 +09:00 · 문서 범위: <code>Packages/src/Runtime</code> 컴포넌트 설계, 특히 <code>MyRadio</code>와 관련 컴포넌트</p>
     </div>
   </header>
 
@@ -396,6 +396,7 @@
           <li><code>MyRadio</code> 필수 컴포넌트: 없음. 단, 클릭 판정을 위해 자식 중 하나 이상은 raycast 가능한 <code>Graphic</code>이어야 한다.</li>
           <li><code>MyRadio.State</code>: <code>OffNormal</code>부터 <code>OnDisabled</code>까지 단일 상태 enum으로 보관한다. 내부 로직은 보조 숫자 축이나 변환 함수 없이 현재 <code>_state</code>와 목표 enum 값을 직접 다룬다.</li>
           <li><code>_isOn</code>과 <code>_isInteractable</code>은 Inspector에서 초기 선택 여부와 상호작용 가능 여부를 고르는 serialized 값이다. public <code>IsOn</code>과 <code>IsInteractable</code> setter는 상태 표시를 바꾸고, <code>SetState</code>는 enum 상태를 기준으로 두 serialized 값을 다시 동기화한다.</li>
+          <li><code>MyRadio</code>는 선택지별 대표 이미지와 텍스트를 <code>MyImage</code>, <code>MyText</code> 참조로 받는다. 외부 코드는 <code>Sprite</code>와 <code>Text</code> 접근 표면으로 아이콘과 라벨을 갱신하고, on/off 연출은 계속 <code>StateObjects</code>가 담당한다.</li>
           <li><code>MyRadioGroup</code>의 <code>_radios</code> 배열에 포함된 라디오는 선택 초기화를 그룹이 소유하므로, <code>MyRadio</code> 자신의 <code>InitializerInterface.InitialValue</code>는 적용하지 않는다. 그룹이 없거나 상위 그룹 배열에 포함되지 않은 단독 라디오일 때만 이 초기값을 읽는다.</li>
           <li>Inspector에 직접 노출되는 <code>Tooltip</code> 문구는 사용자가 바로 읽을 수 있도록 한글을 기본으로 작성한다.</li>
           <li><code>MyRadio</code>는 <code>ExecuteAlways</code>로 동작해 에디터에서도 <code>_isOn</code>, <code>_isInteractable</code> 변경과 상태 표시 오브젝트 전환을 즉시 맞춘다.</li>
@@ -510,7 +511,7 @@
 
       <details>
         <summary>상호작용과 상태 - MyButton 컴포넌트</summary>
-        <p><code>MyButton</code>은 일반 버튼 입력과 사운드 정책의 기존 기준이다. 하지만 <code>MyRadio</code>가 <code>MyButton</code>을 직접 조합하지는 않는다.</p>
+        <p><code>MyButton</code>은 일반 버튼 입력과 사운드 정책의 기존 기준이다. 내부 이미지 참조는 Unity <code>Image</code>가 아니라 <code>MyImage</code> 래퍼를 기준으로 맞춰, 버튼과 라디오가 같은 이미지 갱신 표면을 바라보게 한다. 하지만 <code>MyRadio</code>가 <code>MyButton</code>을 직접 조합하지는 않는다.</p>
         <table>
           <thead>
             <tr>
@@ -781,6 +782,11 @@
               <td>2026-06-21</td>
               <td><code>MyTab</code> 선택 콜백 경고 제거</td>
               <td>탭 진입/이탈 콜백은 화면 전환 부가 동작을 연결하는 선택적 확장점이므로 구현체가 없어도 오구성이 아니다. 필수 구성 검증은 <code>MyRadioGroup</code>과 <code>MySelector</code> 연결, 그리고 <code>Required</code> 라디오 헤더 설정에 집중한다.</td>
+            </tr>
+            <tr>
+              <td>2026-06-22</td>
+              <td><code>MyButton</code> / <code>MyRadio</code> 이미지·텍스트 참조 표면 정리</td>
+              <td><code>MyButton</code>의 이미지 참조를 <code>MyImage</code> 기준으로 맞추고, <code>MyRadio</code>도 선택지별 <code>MyImage</code>, <code>MyText</code> 참조를 갖도록 했다. 라디오는 <code>MyButton</code>을 조합하지 않는 원칙을 유지하되, 아이콘과 라벨을 코드에서 갱신하는 표면은 버튼/이미지 래퍼 감각과 맞춘다.</td>
             </tr>
             <tr>
               <td>2026-06-19</td>
