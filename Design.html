@@ -279,8 +279,7 @@
   <header>
     <div class="header-inner">
       <h1>UnityOui</h1>
-      <p class="thesis">UGUI 기반 프로젝트에서 반복되는 입력, 선택, 상태 연출을 작고 명확한 컴포넌트로 묶는 패키지다. 이 문서는 기능 주제보다 컴포넌트 단위로 책임, 결정 이유, 보류점을 정리한다.</p>
-      <p class="meta">작성일: 2026-06-18 · 문서 갱신: 2026-06-22 20:47 +09:00 · 문서 범위: <code>Packages/src/Runtime</code> 컴포넌트 설계, 특히 <code>MyRadio</code>와 관련 컴포넌트</p>
+      <p class="common-work-guide">참고 지침: <a href="https://oojjrs.github.io/engineering-notes/codex/common-work-guidelines.html" target="_blank" rel="noopener noreferrer">Codex 공통 작업 지침</a> · <a href="https://oojjrs.github.io/engineering-notes/codex/guideline-design-generation.review.html" target="_blank" rel="noopener noreferrer">기획서 작성 기준</a></p>
     </div>
   </header>
 
@@ -295,14 +294,6 @@
           <li>상태 표시: MyRadio 직접 제어</li>
           <li>참고 타입: MyButton / MySwapper</li>
           <li>보류 타입: Selectable</li>
-        </ul>
-        <h3>범주별 구현 기준</h3>
-        <ul class="tag-list">
-          <li>핵심 방향: UGUI 헬퍼 컴포넌트의 책임 분리</li>
-          <li>상호작용과 상태: 클릭, 포커스, hover, submit, on/off 상태</li>
-          <li>규칙과 계산 모델: 상태 enum, 그룹 선택 정책, 사운드/hover 계약</li>
-          <li>UI와 편의 시스템: Inspector 제작 UX, setup 도구, 프리팹 구성</li>
-          <li>미결정과 제외: Selectable 계열처럼 아직 패키지 표면이 불안정한 타입</li>
         </ul>
         <div class="summary">
           <div class="metric">
