@@ -273,6 +273,98 @@
         grid-template-columns: 1fr;
       }
     }
+
+    /* Shared Design.html navigation layout */
+    .design-doc-layout {
+      width: min(1380px, calc(100% - 36px));
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 220px minmax(0, 1fr);
+      gap: 20px;
+      align-items: start;
+    }
+
+    .design-doc-layout > main {
+      width: 100% !important;
+      max-width: none !important;
+      margin-left: 0 !important;
+      margin-right: 0 !important;
+    }
+
+    .design-floating-nav {
+      position: sticky;
+      top: 94px;
+      z-index: 20;
+      max-height: calc(100vh - 112px);
+      overflow-y: auto;
+      margin-top: 24px;
+      padding: 12px;
+      border: 1px solid rgba(120, 135, 155, 0.38);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.92);
+      box-shadow: 0 14px 34px rgba(20, 31, 46, 0.14);
+      backdrop-filter: blur(10px);
+    }
+
+    .design-floating-nav strong {
+      display: block;
+      margin: 0 0 7px;
+      color: inherit;
+      font-size: 12px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      opacity: 0.72;
+    }
+
+    .design-floating-nav a {
+      display: block;
+      padding: 7px 8px;
+      border-radius: 6px;
+      color: inherit;
+      text-decoration: none;
+      font-size: 13px;
+      line-height: 1.35;
+      opacity: 0.82;
+    }
+
+    .design-floating-nav a:hover {
+      background: rgba(60, 110, 180, 0.12);
+      opacity: 1;
+    }
+
+    section,
+    details {
+      scroll-margin-top: 120px;
+    }
+
+    @media (max-width: 980px) {
+      .design-doc-layout {
+        width: min(100% - 24px, 1000px);
+        grid-template-columns: 1fr;
+      }
+
+      .design-floating-nav {
+        position: sticky;
+        top: 64px;
+        display: flex;
+        gap: 4px;
+        margin-top: 12px;
+        overflow-x: auto;
+        overflow-y: hidden;
+        max-height: none;
+      }
+
+      .design-floating-nav strong {
+        flex: 0 0 auto;
+        align-self: center;
+        margin: 0 4px 0 0;
+      }
+
+      .design-floating-nav a {
+        flex: 0 0 auto;
+        white-space: nowrap;
+      }
+    }
   </style>
 </head>
 <body>
@@ -282,10 +374,24 @@
       <p class="common-work-guide">참고 지침: <a href="https://oojjrs.github.io/engineering-notes/codex/common-work-guidelines.html" target="_blank" rel="noopener noreferrer">Codex 공통 작업 지침</a> · <a href="https://oojjrs.github.io/engineering-notes/codex/guideline-design-generation.review.html" target="_blank" rel="noopener noreferrer">기획서 작성 기준</a></p>
     </div>
   </header>
-
+<div class="design-doc-layout">
+  <nav class="design-floating-nav" aria-label="기획서 목차">
+    <strong>목차</strong>
+    <a href="#컴포넌트-맵">컴포넌트 맵</a>
+    <a href="#핵심-방향-공통-컴포넌트-속성">핵심 방향 - 공통 컴포넌트 속성</a>
+    <a href="#상호작용과-상태-myradio-myradiogroup-컴포넌트">상호작용과 상태 - MyRadio / MyRadioGroup...</a>
+    <a href="#규칙과-계산-모델-myradio-상태-표시-필드">규칙과 계산 모델 - MyRadio 상태 표시 필드</a>
+    <a href="#상호작용과-상태-mybutton-컴포넌트">상호작용과 상태 - MyButton 컴포넌트</a>
+    <a href="#ui와-편의-시스템-mytab-컴포넌트">UI와 편의 시스템 - MyTab 컴포넌트</a>
+    <a href="#ui와-편의-시스템-myswapper-컴포넌트">UI와 편의 시스템 - MySwapper 컴포넌트</a>
+    <a href="#미결정과-제외-selectable-myselectable-컴포넌트">미결정과 제외 - Selectable / MySelectabl...</a>
+    <a href="#ui와-편의-시스템-editor-prefab-제작-보조">UI와 편의 시스템 - Editor / Prefab 제작 보조</a>
+    <a href="#미결정과-제외-열린-질문">미결정과 제외 - 열린 질문</a>
+    <a href="#결정-사유">결정 사유</a>
+  </nav>
   <main>
     <div class="grid">
-      <section class="section lead">
+      <section id="컴포넌트-맵" class="section lead">
         <h2>컴포넌트 맵</h2>
         <p><code>MyRadio</code>는 Unity 기본 <code>Toggle</code>, <code>ToggleGroup</code>, <code>Selectable</code>의 연출 구조를 피하고, 상태별로 이름이 붙은 GameObject 필드를 직접 켜고 끄며 라디오 버튼을 표현한다.</p>
         <p>문서 구조는 각 컴포넌트를 기준으로 둔다. 앞으로 특정 타입을 수정할 때 해당 타입 섹션을 먼저 열어 보면 현재 의도와 피해야 할 방향을 확인할 수 있어야 한다.</p>
@@ -315,7 +421,7 @@
         </div>
       </section>
 
-      <details>
+      <details id="핵심-방향-공통-컴포넌트-속성">
         <summary>핵심 방향 - 공통 컴포넌트 속성</summary>
         <p>런타임 UI 헬퍼 컴포넌트는 하나의 GameObject에 같은 헬퍼 타입을 하나만 두는 것을 기준으로 한다. 같은 타입을 여러 개 붙이면 콜백 수집, 상태 캐시, UGUI 래퍼 역할이 서로 겹쳐 Inspector와 런타임 의미가 흐려진다.</p>
         <div class="decision">
@@ -327,7 +433,7 @@
         </div>
       </details>
 
-      <details>
+      <details id="상호작용과-상태-myradio-myradiogroup-컴포넌트">
         <summary>상호작용과 상태 - MyRadio / MyRadioGroup 컴포넌트</summary>
         <p><code>MyRadio</code>와 <code>MyRadioGroup</code>은 하나의 라디오 선택 묶음을 이룬다. <code>MyRadio</code>는 개별 선택지의 입력과 on/off 상태를 담당하고, <code>MyRadioGroup</code>은 자식 라디오 중 하나만 선택되도록 조율한다.</p>
         <h3>MyRadio 책임</h3>
@@ -423,7 +529,7 @@
         </ul>
       </details>
 
-      <details>
+      <details id="규칙과-계산-모델-myradio-상태-표시-필드">
         <summary>규칙과 계산 모델 - MyRadio 상태 표시 필드</summary>
         <p><code>MyRadio</code>는 상태별 표시 GameObject를 배열 인덱스가 아니라 <code>StateObjects</code> 묶음 안의 이름 있는 필드로 가진다. 상태 enum과 표시 필드 이름이 1:1로 대응되므로, 프리팹 제작자는 숫자 순서를 외우지 않고 어떤 상태의 표시물인지 Inspector에서 바로 확인할 수 있고, 필요하지 않을 때는 접어서 사운드 설정처럼 숨길 수 있다.</p>
         <table>
@@ -504,7 +610,7 @@
         </div>
       </details>
 
-      <details>
+      <details id="상호작용과-상태-mybutton-컴포넌트">
         <summary>상호작용과 상태 - MyButton 컴포넌트</summary>
         <p><code>MyButton</code>은 일반 버튼 입력과 사운드 정책의 기존 기준이다. 내부 이미지 참조는 Unity <code>Image</code>가 아니라 <code>MyImage</code> 래퍼를 기준으로 맞춰, 버튼과 라디오가 같은 이미지 갱신 표면을 바라보게 한다. 하지만 <code>MyRadio</code>가 <code>MyButton</code>을 직접 조합하지는 않는다.</p>
         <table>
@@ -532,7 +638,7 @@
         <p><code>MyRadio</code>는 <code>MyButton</code>을 요구하지 않고, <code>MyButton</code>의 nested type도 직접 쓰지 않는다. 대신 <code>SoundOverrides</code>, <code>HoverInterface</code>, <code>IsInteractable</code> 계약을 <code>MyRadio</code> 소유로 복제한다. 라디오의 click은 on/off 선택 변경 하나만 의미하며 그 동작이 switch이므로, 별도 <code>ClickSound</code> 정책은 만들지 않는다. 기본 재생은 switch SFX이고, 인스턴스별 대체가 필요할 때만 <code>SoundOverrides.Click</code>을 쓴다. 연출 표시는 상태별 GameObject 필드를 <code>MyRadio</code>가 직접 제어한다.</p>
       </details>
 
-      <details>
+      <details id="ui와-편의-시스템-mytab-컴포넌트">
         <summary>UI와 편의 시스템 - MyTab 컴포넌트</summary>
         <p><code>MyTab</code>은 탭 헤더의 단일 선택 상태를 <code>MyRadioGroup</code>에 맡기고, 본문 페이지 전환을 <code>MySelector</code>에 맡기는 얇은 연결 컴포넌트다. 헤더 입력과 선택 표시는 <code>MyRadioGroup</code> 배열에 연결된 <code>MyRadio</code>가 담당하므로 별도 <code>MyTabHeaderButton</code>은 유지하지 않는다.</p>
         <ul>
@@ -546,7 +652,7 @@
         </ul>
       </details>
 
-      <details>
+      <details id="ui와-편의-시스템-myswapper-컴포넌트">
         <summary>UI와 편의 시스템 - MySwapper 컴포넌트</summary>
         <p><code>MySwapper</code>는 <code>MySelector</code>와 같은 오브젝트에 붙는 패턴의 선례다. 클릭 입력은 <code>MySwapperButton</code>이 담당하고, <code>MySwapper</code>는 bool 상태를 <code>MySelector</code> index로 바꾸는 얇은 어댑터다.</p>
         <div class="decision">
@@ -558,7 +664,7 @@
         </div>
       </details>
 
-      <details>
+      <details id="미결정과-제외-selectable-myselectable-컴포넌트">
         <summary>미결정과 제외 - Selectable / MySelectable 컴포넌트</summary>
         <p><code>Selectable</code>은 패드/키보드 navigation, <code>currentSelectedGameObject</code>, <code>interactable</code> 저장소 측면에서 매력적이었다. 그러나 현재 <code>MyRadio</code> 설계에서는 쓰지 않는다.</p>
         <div class="decision">
@@ -571,7 +677,7 @@
         <p><code>MySelectable</code>은 기존 UGUI <code>Selectable</code>의 select/deselect 콜백을 감싸는 타입이다. <code>MyRadio</code>가 <code>Selectable</code>을 쓰지 않는 동안에는 직접 관계를 만들지 않는다.</p>
       </details>
 
-      <details>
+      <details id="ui와-편의-시스템-editor-prefab-제작-보조">
         <summary>UI와 편의 시스템 - Editor / Prefab 제작 보조</summary>
         <p>이 섹션은 런타임 컴포넌트는 아니지만, <code>MyRadio</code>를 실제로 쓰게 만들기 위한 필수 보조 영역이다. 10개 상태 필드를 수동으로 모두 맞추게 하면 UX가 나쁘다.</p>
         <h3>필요한 기능</h3>
@@ -588,7 +694,7 @@
         </div>
       </details>
 
-      <details>
+      <details id="미결정과-제외-열린-질문">
         <summary>미결정과 제외 - 열린 질문</summary>
         <ul>
           <li><code>Selectable</code>을 쓰지 않는 상태에서 패드/키보드 방향 이동을 어떻게 보완할지 정해야 한다.</li>
@@ -597,7 +703,7 @@
         </ul>
       </details>
 
-      <details>
+      <details id="결정-사유">
         <summary>결정 사유</summary>
         <table>
           <thead>
@@ -803,5 +909,6 @@
       </details>
     </div>
   </main>
+  </div>
 </body>
 </html>
