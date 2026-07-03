@@ -7,14 +7,14 @@ namespace oojjrs.oui
             void OnDoubleClick();
         }
 
-        private DoubleClickInterface[] DoubleClicks { get; set; }
+        private DoubleClickInterface[] _doubleClicks;
 
         public void OnDoubleClick()
         {
-            if (DoubleClicks != default)
+            if (_doubleClicks != null)
             {
-                foreach (var dc in DoubleClicks)
-                    dc.OnDoubleClick();
+                foreach (var doubleClick in _doubleClicks)
+                    doubleClick.OnDoubleClick();
             }
         }
     }

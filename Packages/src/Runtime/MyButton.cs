@@ -6,6 +6,7 @@ using UnityEngine.UI;
 namespace oojjrs.oui
 {
     [DisallowMultipleComponent]
+    [ExecuteAlways]
     [RequireComponent(typeof(Button))]
     public partial class MyButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {
@@ -17,17 +18,6 @@ namespace oojjrs.oui
             Error,
             Start,
             Switch,
-        }
-
-        public interface CallbackInterface
-        {
-            void OnClick();
-        }
-
-        public interface HoverInterface
-        {
-            void OnHoverEnter();
-            void OnHoverExit();
         }
 
         [System.Serializable]
@@ -42,8 +32,24 @@ namespace oojjrs.oui
             public AudioSource Switch;
         }
 
+        public interface CallbackInterface
+        {
+            void OnClick();
+        }
+
+        public interface HoverInterface
+        {
+            void OnHoverEnter();
+            void OnHoverExit();
+        }
+
+        private CallbackInterface[] _callbacks;
+        private HoverInterface[] _hovers;
         [SerializeField]
         private bool _hoverSoundDisabled;
+        private bool _isCooldowning;
+        private bool _isInteractableBeforeCooldown;
+        private bool _isInteractableCached;
         [SerializeField]
         private Color _textDisableColor = Color.gray;
         [SerializeField]
@@ -55,22 +61,19 @@ namespace oojjrs.oui
         [SerializeField]
         private SoundOverrides _soundOverrides;
 
-        private CallbackInterface[] Callbacks { get; set; }
         public ClickSoundEnum ClickSound { get; set; }
-        private bool Cooldowning { get; set; }
-        private HoverInterface[] Hovers { get; set; }
-        public bool Interactable
+        public bool IsInteractable
         {
             get => GetComponent<Button>().interactable;
             set
             {
                 GetComponent<Button>().interactable = value;
-                InteractableCached = value;
+                _isInteractableCached = value;
 
-                if (_image != default)
+                if (_image != null)
                     _image.gameObject.SetActive(value);
 
-                if (_text != default)
+                if (_text != null)
                 {
                     if (value)
                         _text.Color = _textNormalColor;
@@ -79,43 +82,49 @@ namespace oojjrs.oui
                 }
             }
         }
-        private bool InteractableBeforeCooldown { get; set; }
-        private bool InteractableCached { get; set; }
+        [System.Obsolete("Use IsInteractable instead.")]
+        public bool Interactable
+        {
+            get => IsInteractable;
+            set => IsInteractable = value;
+        }
         public Sprite Sprite
         {
             get
             {
-                if (_image != default)
+                if (_image != null)
                 {
                     return _image.Sprite;
                 }
                 else
                 {
                     Debug.Assert(false, "이미지 컨트롤 없는 버튼인데?");
-                    return default;
+                    return null;
                 }
             }
             set
             {
-                if (_image != default)
+                if (_image != null)
                 {
-                    if (value != default)
+                    if (value != null)
                         _image.Sprite = value;
                     else
                         _image.Sprite = MyControl.Image.Null;
                 }
                 else
+                {
                     Debug.Assert(false, "이미지 컨트롤 없는 버튼이라니까?");
+                }
             }
         }
         public MyText Text => _text;
 
         private void Awake()
         {
-            Callbacks = GetComponents<CallbackInterface>();
-            DoubleClicks = GetComponents<DoubleClickInterface>();
-            Hovers = GetComponents<HoverInterface>();
-            Presses = GetComponents<PressInterface>();
+            _callbacks = GetComponents<CallbackInterface>();
+            _doubleClicks = GetComponents<DoubleClickInterface>();
+            _hovers = GetComponents<HoverInterface>();
+            _presses = GetComponents<PressInterface>();
         }
 
         private void OnDisable()
@@ -123,106 +132,100 @@ namespace oojjrs.oui
             if ((Application.isPlaying == false) || MyControl.IsQuitting)
                 return;
 
-            if (Cooldowning)
+            if (_isCooldowning)
             {
-                Cooldowning = false;
-                Interactable = InteractableBeforeCooldown;
+                _isCooldowning = false;
+                IsInteractable = _isInteractableBeforeCooldown;
             }
+        }
+
+        private void OnEnable()
+        {
+            IsInteractable = IsInteractable;
+        }
+
+        private void OnValidate()
+        {
+            IsInteractable = IsInteractable;
         }
 
         private void Start()
         {
-            if (Callbacks?.Length <= 0)
+            if (Application.isPlaying == false)
+                return;
+
+            if (_callbacks.Length <= 0)
                 Debug.LogWarning($"{name}> DON'T HAVE CALLBACK FUNCTION.");
-
-            // 첫 색상 설정을 위해서 하는 거임.
-            Interactable = Interactable;
-
-#if UNITY_EDITOR
-            _ = StartCoroutine(Func());
-
-            IEnumerator Func()
-            {
-                while (this != default)
-                {
-                    // Button의 설정과 동기화를 보장함 - Inspector 수정에 대응한 것
-                    if (InteractableCached != Interactable)
-                        Interactable = Interactable;
-
-                    yield return default;
-                }
-            }
-#endif
         }
 
         void IPointerEnterHandler.OnPointerEnter(PointerEventData eventData)
         {
-            if (Interactable && (_hoverSoundDisabled == false))
+            if (IsInteractable && (_hoverSoundDisabled == false))
             {
-                if (_soundOverrides.Hover != default)
+                if (_soundOverrides.Hover != null)
                     PlaySfxSafety(_soundOverrides.Hover);
                 else
                     MyControl.Audio.PlayHoverSfx?.Invoke();
             }
 
-            if (Interactable && (Hovers != default))
+            if (IsInteractable && (_hovers != null))
             {
-                foreach (var hover in Hovers)
+                foreach (var hover in _hovers)
                     hover.OnHoverEnter();
             }
         }
 
         void IPointerExitHandler.OnPointerExit(PointerEventData eventData)
         {
-            if (Interactable && (Hovers != default))
+            if (IsInteractable && (_hovers != null))
             {
-                foreach (var hover in Hovers)
+                foreach (var hover in _hovers)
                     hover.OnHoverExit();
             }
         }
 
         public void OnClick()
         {
-            if (Callbacks != default)
+            if (_callbacks != null)
             {
                 ClickSound = ClickSoundEnum.Click;
-                foreach (var callback in Callbacks)
+                foreach (var callback in _callbacks)
                     callback.OnClick();
 
                 switch (ClickSound)
                 {
                     case ClickSoundEnum.Cancel:
-                        if (_soundOverrides.Cancel != default)
+                        if (_soundOverrides.Cancel != null)
                             PlaySfxSafety(_soundOverrides.Cancel);
                         else
                             MyControl.Audio.PlayCancelSfx?.Invoke();
                         break;
                     case ClickSoundEnum.Click:
-                        if (_soundOverrides.Click != default)
+                        if (_soundOverrides.Click != null)
                             PlaySfxSafety(_soundOverrides.Click);
                         else
                             MyControl.Audio.PlayClickSfx?.Invoke();
                         break;
                     case ClickSoundEnum.Confirm:
-                        if (_soundOverrides.Confirm != default)
+                        if (_soundOverrides.Confirm != null)
                             PlaySfxSafety(_soundOverrides.Confirm);
                         else
                             MyControl.Audio.PlayConfirmSfx?.Invoke();
                         break;
                     case ClickSoundEnum.Error:
-                        if (_soundOverrides.Error != default)
+                        if (_soundOverrides.Error != null)
                             PlaySfxSafety(_soundOverrides.Error);
                         else
                             MyControl.Audio.PlayErrorSfx?.Invoke();
                         break;
                     case ClickSoundEnum.Start:
-                        if (_soundOverrides.Start != default)
+                        if (_soundOverrides.Start != null)
                             PlaySfxSafety(_soundOverrides.Start);
                         else
                             MyControl.Audio.PlayStartSfx?.Invoke();
                         break;
                     case ClickSoundEnum.Switch:
-                        if (_soundOverrides.Switch != default)
+                        if (_soundOverrides.Switch != null)
                             PlaySfxSafety(_soundOverrides.Switch);
                         else
                             MyControl.Audio.PlaySwitchSfx?.Invoke();
@@ -233,7 +236,7 @@ namespace oojjrs.oui
             }
             else
             {
-                if (_soundOverrides.Click != default)
+                if (_soundOverrides.Click != null)
                     PlaySfxSafety(_soundOverrides.Click);
                 else
                     MyControl.Audio.PlayClickSfx?.Invoke();
@@ -242,9 +245,9 @@ namespace oojjrs.oui
 
         public void OuiCooldown(float seconds)
         {
-            Cooldowning = true;
-            InteractableBeforeCooldown = Interactable;
-            Interactable = false;
+            _isCooldowning = true;
+            _isInteractableBeforeCooldown = IsInteractable;
+            IsInteractable = false;
 
             _ = StartCoroutine(Func());
 
@@ -253,15 +256,15 @@ namespace oojjrs.oui
                 if (seconds > 0)
                     yield return new WaitForSeconds(seconds);
 
-                Cooldowning = false;
-                Interactable = InteractableBeforeCooldown;
+                _isCooldowning = false;
+                IsInteractable = _isInteractableBeforeCooldown;
             }
         }
 
         public void OuiPlayAnimation(string trigger)
         {
             var animator = GetComponent<Animator>();
-            if (animator != default)
+            if (animator != null)
                 animator.SetTrigger(trigger);
             else
                 Debug.LogWarning($"{name}> I'M NOT ANIMATED BUTTON.");
@@ -269,7 +272,7 @@ namespace oojjrs.oui
 
         private void OuiPlayClick()
         {
-            GetComponent<Button>().OnSubmit(default);
+            GetComponent<Button>().OnSubmit(null);
         }
 
         public void OuiPlayDisabledAnimation()
@@ -299,7 +302,7 @@ namespace oojjrs.oui
 
         private void __OnPointerClick(PointerEventData eventData)
         {
-            if (Interactable)
+            if (IsInteractable)
                 OuiPlayClick();
         }
 

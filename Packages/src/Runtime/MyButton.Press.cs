@@ -13,64 +13,66 @@ namespace oojjrs.oui
             void OnUp();
         }
 
-        private PressInterface[] Presses { get; set; }
-        private Coroutine PressCoroutine { get; set; }
-        private bool Pressing { get; set; }
-        private float PressTime { get; set; }
+        private static readonly WaitForSeconds __waitForSeconds = new(0.2f);
+
+        private Coroutine _pressCoroutine;
+        private PressInterface[] _presses;
+        private bool _pressing;
+        private float _pressTime;
 
         private void Update()
         {
-            if (Presses != default)
+            if (_presses != null)
             {
-                if (Pressing)
+                if (_pressing)
                 {
-                    foreach (var press in Presses)
-                        press.OnPressing(Time.time - PressTime);
+                    foreach (var press in _presses)
+                        press.OnPressing(Time.time - _pressTime);
                 }
             }
         }
 
         void IPointerDownHandler.OnPointerDown(PointerEventData eventData)
         {
-            if (Presses != default)
+            if (_presses != null)
             {
-                if (Interactable && (eventData.button == PointerEventData.InputButton.Left))
+                if (IsInteractable && (eventData.button == PointerEventData.InputButton.Left))
                 {
-                    if (PressCoroutine != default)
-                        StopCoroutine(PressCoroutine);
+                    if (_pressCoroutine != null)
+                        StopCoroutine(_pressCoroutine);
 
-                    PressCoroutine = StartCoroutine(PressStart());
+                    _pressCoroutine = StartCoroutine(PressStart());
                 }
             }
         }
 
         void IPointerUpHandler.OnPointerUp(PointerEventData eventData)
         {
-            if (Presses != default)
+            if (_presses != null)
             {
-                foreach (var press in Presses)
+                foreach (var press in _presses)
                     press.OnUp();
 
-                if (PressCoroutine != default)
+                if (_pressCoroutine != null)
                 {
-                    StopCoroutine(PressCoroutine);
-                    PressCoroutine = default;
+                    StopCoroutine(_pressCoroutine);
+                    _pressCoroutine = null;
                 }
 
-                Pressing = false;
+                _pressing = false;
             }
         }
 
         private IEnumerator PressStart()
         {
-            yield return new WaitForSeconds(0.2f);
+            yield return __waitForSeconds;
 
-            Pressing = true;
-            PressTime = Time.time;
+            _pressing = true;
+            _pressTime = Time.time;
 
-            if (Presses != default)
+            if (_presses != null)
             {
-                foreach (var press in Presses)
+                foreach (var press in _presses)
                     press.OnDown();
             }
         }
