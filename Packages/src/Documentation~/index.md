@@ -18,7 +18,7 @@ https://github.com/oojjrs/unity_oui.git?path=/Packages/src
 
 ## 버튼
 
-`MyButton`은 Unity `Button` 컴포넌트 위에서 클릭 콜백, 호버 콜백, 프레스 콜백, 더블 클릭 콜백, 쿨다운, 애니메이션 트리거, 포커스 기반 hover 사운드와 클릭 사운드 재생을 처리합니다. 버튼의 이미지 참조는 `MyImage` 기준으로 맞춰 `Sprite` 갱신이 다른 이미지 래퍼와 같은 경로를 사용합니다.
+`MyButton`은 Unity `Button` 컴포넌트 위에서 클릭 콜백, 호버 콜백, 프레스 콜백, 더블 클릭 콜백, 쿨다운, 애니메이션 트리거, pointer/focus 기반 hover 사운드와 클릭 사운드 재생을 처리합니다. 버튼의 이미지 참조는 `MyImage` 기준으로 맞춰 `Sprite` 갱신이 다른 이미지 래퍼와 같은 경로를 사용합니다.
 
 콜백을 받을 컴포넌트는 필요한 인터페이스를 구현합니다.
 
@@ -35,7 +35,7 @@ public sealed class StartButton : MonoBehaviour, MyButton.CallbackInterface
 }
 ```
 
-전역 UI 사운드는 `MyControl.Audio`에 연결할 수 있고, 개별 버튼은 인스펙터의 사운드 오버라이드로 별도 `AudioSource`를 사용할 수 있습니다. 포커스 진입 hover 사운드는 click과 같은 프레임에 겹치면 재생하지 않습니다.
+전역 UI 사운드는 `MyControl.Audio`에 연결할 수 있고, 개별 버튼은 인스펙터의 사운드 오버라이드로 별도 `AudioSource`를 사용할 수 있습니다. focus hover 사운드는 click 또는 pointer hover 사운드와 같은 프레임에 겹치면 재생하지 않습니다.
 
 ## 값 표시
 

@@ -80,6 +80,7 @@ namespace oojjrs.oui
         [SerializeField]
         private bool _isOn;
         private int _lastClickFrame = -1;
+        private int _lastHoverSoundFrame = -1;
         [SerializeField]
         private SoundOverrides _soundOverrides;
         private State _state;
@@ -245,6 +246,8 @@ namespace oojjrs.oui
                 else
                     SetState(State.OffHighlighted);
 
+                PlayHoverSfx();
+
                 if (_hovers != null)
                 {
                     foreach (var hover in _hovers)
@@ -400,9 +403,6 @@ namespace oojjrs.oui
             if ((Application.isPlaying == false) || _hoverSoundDisabled)
                 return;
 
-            if (eventData is PointerEventData)
-                return;
-
             if (_focusHoverSoundCoroutine != null)
                 StopCoroutine(_focusHoverSoundCoroutine);
 
@@ -415,7 +415,7 @@ namespace oojjrs.oui
 
             _focusHoverSoundCoroutine = null;
 
-            if ((IsInteractable == false) || (_lastClickFrame == focusFrame))
+            if ((IsInteractable == false) || (_lastClickFrame == focusFrame) || (_lastHoverSoundFrame == focusFrame))
                 yield break;
 
             if ((EventSystem.current != null) && (EventSystem.current.currentSelectedGameObject != gameObject))
@@ -426,6 +426,11 @@ namespace oojjrs.oui
 
         private void PlayHoverSfx()
         {
+            if ((Application.isPlaying == false) || _hoverSoundDisabled || (_lastHoverSoundFrame == Time.frameCount))
+                return;
+
+            _lastHoverSoundFrame = Time.frameCount;
+
             if (_soundOverrides.Hover != null)
                 PlaySfxSafety(_soundOverrides.Hover);
             else
