@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.7.11
+
+- `MyButton`과 `MyRadio`의 hover 사운드를 pointer enter가 아니라 focus 진입 기준으로 재생하도록 정리했습니다.
+- focus와 click이 같은 프레임에 함께 일어나면 hover 사운드를 취소해 click 사운드와 겹치지 않도록 했습니다.
+- `MyToggle`의 별도 hover 사운드 재생을 제거해 `MyButton`과 중복 재생되지 않게 했습니다.
+
 ## 1.7.10
 
 - `MyRadio.Sprite`와 `MyRadio.Title`을 배열 참조 전체에 값을 적용하는 setter-only 접근 표면으로 정리했습니다.

@@ -5,7 +5,7 @@ namespace oojjrs.oui
 {
     [DisallowMultipleComponent]
     [RequireComponent(typeof(MyButton))]
-    public class MyToggle : MonoBehaviour, IPointerEnterHandler, MyButton.CallbackInterface
+    public class MyToggle : MonoBehaviour, MyButton.CallbackInterface
     {
         public interface CallbackInterface
         {
@@ -17,8 +17,6 @@ namespace oojjrs.oui
             bool InitialValue { get; }
         }
 
-        [SerializeField]
-        private bool _hoverSoundDisabled;
         private bool _isOn;
 
         [SerializeField]
@@ -59,12 +57,6 @@ namespace oojjrs.oui
 
             if (Initializer != default)
                 IsOn = Initializer.InitialValue;
-        }
-
-        void IPointerEnterHandler.OnPointerEnter(PointerEventData eventData)
-        {
-            if (Interactable && (_hoverSoundDisabled == false))
-                MyControl.Audio.PlayHoverSfx?.Invoke();
         }
 
         void MyButton.CallbackInterface.OnClick()

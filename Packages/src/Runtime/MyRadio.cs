@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -67,6 +68,7 @@ namespace oojjrs.oui
         }
 
         private CallbackInterface[] _callbacks;
+        private Coroutine _focusHoverSoundCoroutine;
         private HoverInterface[] _hovers;
         [SerializeField]
         private bool _hoverSoundDisabled;
@@ -77,6 +79,7 @@ namespace oojjrs.oui
         private bool _isInteractable = true;
         [SerializeField]
         private bool _isOn;
+        private int _lastClickFrame = -1;
         [SerializeField]
         private SoundOverrides _soundOverrides;
         private State _state;
@@ -154,6 +157,12 @@ namespace oojjrs.oui
 
         private void OnDisable()
         {
+            if (_focusHoverSoundCoroutine != null)
+            {
+                StopCoroutine(_focusHoverSoundCoroutine);
+                _focusHoverSoundCoroutine = null;
+            }
+
             switch (_state)
             {
                 case State.OffDisabled:
@@ -236,14 +245,6 @@ namespace oojjrs.oui
                 else
                     SetState(State.OffHighlighted);
 
-                if (_hoverSoundDisabled == false)
-                {
-                    if (_soundOverrides.Hover != null)
-                        PlaySfxSafety(_soundOverrides.Hover);
-                    else
-                        MyControl.Audio.PlayHoverSfx?.Invoke();
-                }
-
                 if (_hovers != null)
                 {
                     foreach (var hover in _hovers)
@@ -281,6 +282,9 @@ namespace oojjrs.oui
                 else
                     SetState(State.OffSelected);
             }
+
+            if (IsInteractable)
+                PlayFocusHoverSfx(eventData);
         }
 
         void ISubmitHandler.OnSubmit(BaseEventData eventData)
@@ -316,6 +320,8 @@ namespace oojjrs.oui
         {
             if (IsInteractable == false)
                 return;
+
+            _lastClickFrame = Time.frameCount;
 
             var group = GetComponentInParent<GroupInterface>();
             if ((group == null) || (group.Contains(this) == false) || (group.OnClick(this) == false))
@@ -387,6 +393,43 @@ namespace oojjrs.oui
         public void OuiUpdate()
         {
             SetState(_state);
+        }
+
+        private void PlayFocusHoverSfx(BaseEventData eventData)
+        {
+            if ((Application.isPlaying == false) || _hoverSoundDisabled)
+                return;
+
+            if (eventData is PointerEventData)
+                return;
+
+            if (_focusHoverSoundCoroutine != null)
+                StopCoroutine(_focusHoverSoundCoroutine);
+
+            _focusHoverSoundCoroutine = StartCoroutine(PlayFocusHoverSfxCoroutine(Time.frameCount));
+        }
+
+        private IEnumerator PlayFocusHoverSfxCoroutine(int focusFrame)
+        {
+            yield return null;
+
+            _focusHoverSoundCoroutine = null;
+
+            if ((IsInteractable == false) || (_lastClickFrame == focusFrame))
+                yield break;
+
+            if ((EventSystem.current != null) && (EventSystem.current.currentSelectedGameObject != gameObject))
+                yield break;
+
+            PlayHoverSfx();
+        }
+
+        private void PlayHoverSfx()
+        {
+            if (_soundOverrides.Hover != null)
+                PlaySfxSafety(_soundOverrides.Hover);
+            else
+                MyControl.Audio.PlayHoverSfx?.Invoke();
         }
 
         private void PlaySfxSafety(AudioSource audioSource)

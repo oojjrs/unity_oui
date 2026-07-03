@@ -8,7 +8,7 @@ namespace oojjrs.oui
     [DisallowMultipleComponent]
     [ExecuteAlways]
     [RequireComponent(typeof(Button))]
-    public partial class MyButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
+    public partial class MyButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, ISelectHandler
     {
         public enum ClickSoundEnum
         {
@@ -44,12 +44,13 @@ namespace oojjrs.oui
         }
 
         private CallbackInterface[] _callbacks;
+        private Coroutine _focusHoverSoundCoroutine;
         private HoverInterface[] _hovers;
         [SerializeField]
         private bool _hoverSoundDisabled;
         private bool _isCooldowning;
         private bool _isInteractableBeforeCooldown;
-        private bool _isInteractableCached;
+        private int _lastClickFrame = -1;
         [SerializeField]
         private Color _textDisableColor = Color.gray;
         [SerializeField]
@@ -68,7 +69,6 @@ namespace oojjrs.oui
             set
             {
                 GetComponent<Button>().interactable = value;
-                _isInteractableCached = value;
 
                 if (_image != null)
                     _image.gameObject.SetActive(value);
@@ -132,6 +132,12 @@ namespace oojjrs.oui
             if ((Application.isPlaying == false) || MyControl.IsQuitting)
                 return;
 
+            if (_focusHoverSoundCoroutine != null)
+            {
+                StopCoroutine(_focusHoverSoundCoroutine);
+                _focusHoverSoundCoroutine = null;
+            }
+
             if (_isCooldowning)
             {
                 _isCooldowning = false;
@@ -160,14 +166,6 @@ namespace oojjrs.oui
 
         void IPointerEnterHandler.OnPointerEnter(PointerEventData eventData)
         {
-            if (IsInteractable && (_hoverSoundDisabled == false))
-            {
-                if (_soundOverrides.Hover != null)
-                    PlaySfxSafety(_soundOverrides.Hover);
-                else
-                    MyControl.Audio.PlayHoverSfx?.Invoke();
-            }
-
             if (IsInteractable && (_hovers != null))
             {
                 foreach (var hover in _hovers)
@@ -184,8 +182,16 @@ namespace oojjrs.oui
             }
         }
 
+        void ISelectHandler.OnSelect(BaseEventData eventData)
+        {
+            if (IsInteractable)
+                PlayFocusHoverSfx(eventData);
+        }
+
         public void OnClick()
         {
+            _lastClickFrame = Time.frameCount;
+
             if (_callbacks != null)
             {
                 ClickSound = ClickSoundEnum.Click;
@@ -304,6 +310,43 @@ namespace oojjrs.oui
         {
             if (IsInteractable)
                 OuiPlayClick();
+        }
+
+        private void PlayFocusHoverSfx(BaseEventData eventData)
+        {
+            if ((Application.isPlaying == false) || _hoverSoundDisabled)
+                return;
+
+            if (eventData is PointerEventData)
+                return;
+
+            if (_focusHoverSoundCoroutine != null)
+                StopCoroutine(_focusHoverSoundCoroutine);
+
+            _focusHoverSoundCoroutine = StartCoroutine(PlayFocusHoverSfxCoroutine(Time.frameCount));
+        }
+
+        private IEnumerator PlayFocusHoverSfxCoroutine(int focusFrame)
+        {
+            yield return null;
+
+            _focusHoverSoundCoroutine = null;
+
+            if ((IsInteractable == false) || (_lastClickFrame == focusFrame))
+                yield break;
+
+            if ((EventSystem.current != null) && (EventSystem.current.currentSelectedGameObject != gameObject))
+                yield break;
+
+            PlayHoverSfx();
+        }
+
+        private void PlayHoverSfx()
+        {
+            if (_soundOverrides.Hover != null)
+                PlaySfxSafety(_soundOverrides.Hover);
+            else
+                MyControl.Audio.PlayHoverSfx?.Invoke();
         }
 
         private void PlaySfxSafety(AudioSource audioSource)
