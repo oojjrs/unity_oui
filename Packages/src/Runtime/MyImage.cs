@@ -7,6 +7,11 @@ namespace oojjrs.oui
     [RequireComponent(typeof(Image))]
     public class MyImage : MonoBehaviour
     {
+        public Color Color
+        {
+            get => GetComponent<Image>().color;
+            set => GetComponent<Image>().color = value;
+        }
         public Sprite OverrideSprite
         {
             get => GetComponent<Image>().overrideSprite;

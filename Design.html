@@ -719,7 +719,7 @@
 
       <details id="상호작용과-상태-mybutton-컴포넌트">
         <summary>상호작용과 상태 - MyButton 컴포넌트</summary>
-        <p><code>MyButton</code>은 일반 버튼 입력과 사운드 정책의 기존 기준이다. 내부 이미지 참조는 Unity <code>Image</code>가 아니라 <code>MyImage</code> 래퍼를 기준으로 맞춰, 버튼과 라디오가 같은 이미지 갱신 표면을 바라보게 한다. 하지만 <code>MyRadio</code>가 <code>MyButton</code>을 직접 조합하지는 않는다.</p>
+        <p><code>MyButton</code>은 일반 버튼 입력과 사운드 정책의 기존 기준이다. 내부 이미지 참조는 Unity <code>Image</code>가 아니라 <code>MyImage</code> 래퍼를 기준으로 맞춰, 버튼과 라디오가 같은 이미지 갱신 표면을 바라보게 한다. 기본 disabled 동작은 기존처럼 이미지를 숨기며, 버튼별 옵션을 켜면 이미지를 유지한 채 normal/disable 색상으로 전환한다. 텍스트는 계속 normal/disable 색상을 직접 전환한다. 하지만 <code>MyRadio</code>가 <code>MyButton</code>을 직접 조합하지는 않는다.</p>
         <table>
           <thead>
             <tr>
@@ -995,6 +995,11 @@
               <td>2026-06-22</td>
               <td><code>MyButton</code> / <code>MyRadio</code> 이미지·텍스트 참조 정리</td>
               <td><code>MyButton</code>의 이미지 참조를 <code>MyImage</code> 기준으로 맞추고, <code>MyRadio</code>는 상태별 표시 표면을 한 번에 다룰 수 있도록 선택지별 serialized <code>MyImage[]</code>, <code>MyText[]</code> 배열 참조를 갖도록 했다. 배열 extension은 반복 호출은 줄일 수 있지만 속성 자체를 추가할 수 없으므로, 라디오는 <code>MyButton</code>을 조합하지 않는 원칙을 유지하면서 필요한 대표 속성인 <code>Sprite</code>와 <code>Title</code>만 배열 전체 갱신 표면으로 직접 제공한다.</td>
+            </tr>
+            <tr>
+              <td>2026-07-07</td>
+              <td><code>1.7.13</code> 패치 릴리스</td>
+              <td><code>MyButton</code>의 기본 이미지 disabled 동작은 기존처럼 숨김으로 유지하고, 필요한 버튼만 옵션을 켜서 텍스트처럼 색상 전환을 쓰도록 정리했다. 이미지 색상 접근은 <code>MyImage.Color</code> 래퍼로 맞추고, <code>_isImageVisibleWhenDisabled</code>에는 한글 Tooltip을 붙였다.</td>
             </tr>
             <tr>
               <td>2026-07-03</td>

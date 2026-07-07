@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.7.13
+
+- `MyButton`의 기본 disabled 이미지 동작은 기존처럼 숨김으로 유지했습니다.
+- `_isImageVisibleWhenDisabled` 옵션을 켜면 disabled 상태에서도 이미지를 유지하고 normal/disable 색상으로 전환하도록 했습니다.
+- `MyImage.Color` 래퍼를 추가해 버튼 이미지 색상 처리를 `MyText.Color`와 같은 방식으로 다루도록 했습니다.
+
 ## 1.7.12
 
 - `MyButton`과 `MyRadio`의 pointer hover 사운드를 다시 재생하도록 복구했습니다.

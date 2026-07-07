@@ -49,17 +49,25 @@ namespace oojjrs.oui
         [SerializeField]
         private bool _hoverSoundDisabled;
         private bool _isCooldowning;
+        [Tooltip("켜면 비활성 상태에서도 이미지를 숨기지 않고 비활성 색상으로 표시합니다.")]
+        [SerializeField]
+        private bool _isImageVisibleWhenDisabled;
         private bool _isInteractableBeforeCooldown;
         private int _lastClickFrame = -1;
         private int _lastHoverSoundFrame = -1;
         [SerializeField]
+        private MyImage _image;
+        [SerializeField]
+        private Color _imageDisableColor = Color.gray;
+        [SerializeField]
+        private Color _imageNormalColor = Color.white;
+        [SerializeField]
+        private MyText _text;
+        [SerializeField]
         private Color _textDisableColor = Color.gray;
         [SerializeField]
         private Color _textNormalColor = Color.white;
-        [SerializeField]
-        private MyImage _image;
-        [SerializeField]
-        private MyText _text;
+        // abc 컨벤션이 깨졌으나 사용성 때문에 뒤로 미뤄두었다. 아무데서나 따라하지 말 것.
         [SerializeField]
         private SoundOverrides _soundOverrides;
 
@@ -72,7 +80,17 @@ namespace oojjrs.oui
                 GetComponent<Button>().interactable = value;
 
                 if (_image != null)
-                    _image.gameObject.SetActive(value);
+                {
+                    _image.gameObject.SetActive(value || _isImageVisibleWhenDisabled);
+
+                    if (_isImageVisibleWhenDisabled)
+                    {
+                        if (value)
+                            _image.Color = _imageNormalColor;
+                        else
+                            _image.Color = _imageDisableColor;
+                    }
+                }
 
                 if (_text != null)
                 {
