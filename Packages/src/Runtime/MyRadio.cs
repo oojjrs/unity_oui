@@ -50,6 +50,12 @@ namespace oojjrs.oui
             void OnValueChanged(bool isOn);
         }
 
+        public interface FocusInterface
+        {
+            void OnFocusEnter();
+            void OnFocusExit();
+        }
+
         public interface GroupInterface
         {
             bool Contains(MyRadio radio);
@@ -68,6 +74,7 @@ namespace oojjrs.oui
         }
 
         private CallbackInterface[] _callbacks;
+        private FocusInterface[] _focuses;
         private Coroutine _focusHoverSoundCoroutine;
         private HoverInterface[] _hovers;
         [SerializeField]
@@ -75,6 +82,7 @@ namespace oojjrs.oui
         [SerializeField]
         private MyImage[] _images;
         private InitializerInterface _initializer;
+        private bool _isFocused;
         [SerializeField]
         private bool _isInteractable = true;
         [SerializeField]
@@ -102,6 +110,13 @@ namespace oojjrs.oui
                     SetState(State.OnDisabled);
                 else
                     SetState(State.OffDisabled);
+
+                if ((value == false) && Application.isPlaying)
+                {
+                    var eventSystem = EventSystem.current;
+                    if ((eventSystem != null) && (eventSystem.currentSelectedGameObject == gameObject))
+                        eventSystem.SetSelectedGameObject(null);
+                }
             }
         }
         public bool IsOn
@@ -152,12 +167,22 @@ namespace oojjrs.oui
         private void Awake()
         {
             _callbacks = GetComponents<CallbackInterface>();
+            _focuses = GetComponents<FocusInterface>();
             _hovers = GetComponents<HoverInterface>();
             _initializer = GetComponent<InitializerInterface>();
         }
 
         private void OnDisable()
         {
+            if (Application.isPlaying && (MyControl.IsQuitting == false))
+            {
+                var eventSystem = EventSystem.current;
+                if ((eventSystem != null) && (eventSystem.currentSelectedGameObject == gameObject))
+                    eventSystem.SetSelectedGameObject(null);
+
+                ExitFocus();
+            }
+
             if (_focusHoverSoundCoroutine != null)
             {
                 StopCoroutine(_focusHoverSoundCoroutine);
@@ -215,6 +240,8 @@ namespace oojjrs.oui
                 else
                     SetState(State.OffNormal);
             }
+
+            ExitFocus();
         }
 
         void IPointerClickHandler.OnPointerClick(PointerEventData eventData)
@@ -287,13 +314,44 @@ namespace oojjrs.oui
             }
 
             if (IsInteractable)
+            {
                 PlayFocusHoverSfx(eventData);
+                EnterFocus();
+            }
         }
 
         void ISubmitHandler.OnSubmit(BaseEventData eventData)
         {
             if (IsInteractable)
                 OuiClick();
+        }
+
+        private void EnterFocus()
+        {
+            if (_isFocused)
+                return;
+
+            _isFocused = true;
+
+            if (_focuses != null)
+            {
+                foreach (var focus in _focuses)
+                    focus.OnFocusEnter();
+            }
+        }
+
+        private void ExitFocus()
+        {
+            if (_isFocused == false)
+                return;
+
+            _isFocused = false;
+
+            if (_focuses != null)
+            {
+                foreach (var focus in _focuses)
+                    focus.OnFocusExit();
+            }
         }
 
         private State GetDefaultState()

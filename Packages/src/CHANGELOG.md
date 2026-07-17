@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.7.14
+
+- `MyButton`과 `MyRadio`에 동기식 포커스 진입·이탈 콜백을 제공하는 각 타입의 `FocusInterface`를 추가했습니다.
+- 포커스 콜백을 기존 focus hover 사운드의 지연·중복 억제와 분리했습니다.
+- `MySelectable`이 interactable 해제나 비활성화에서도 select/deselect 콜백의 짝을 한 번 유지하도록 보강했습니다.
+
 ## 1.7.13
 
 - `MyButton`의 기본 disabled 이미지 동작은 기존처럼 숨김으로 유지했습니다.

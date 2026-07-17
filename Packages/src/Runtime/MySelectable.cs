@@ -15,6 +15,7 @@ namespace oojjrs.oui
         }
 
         private CallbackInterface[] Callbacks { get; set; }
+        private bool IsSelected { get; set; }
         public bool Interactable
         {
             get => GetComponent<Selectable>().interactable;
@@ -26,6 +27,18 @@ namespace oojjrs.oui
             Callbacks = GetComponents<CallbackInterface>();
         }
 
+        private void OnDisable()
+        {
+            if ((Application.isPlaying == false) || MyControl.IsQuitting)
+                return;
+
+            var eventSystem = EventSystem.current;
+            if ((eventSystem != null) && (eventSystem.currentSelectedGameObject == gameObject))
+                eventSystem.SetSelectedGameObject(null);
+
+            Deselect();
+        }
+
         private void Start()
         {
             if (Callbacks?.Length <= 0)
@@ -34,19 +47,34 @@ namespace oojjrs.oui
 
         void IDeselectHandler.OnDeselect(BaseEventData eventData)
         {
-            if (Interactable && (Callbacks != default))
-            {
-                foreach (var callback in Callbacks)
-                    callback.OnDeselect();
-            }
+            Deselect();
         }
 
         void ISelectHandler.OnSelect(BaseEventData eventData)
         {
-            if (Interactable && (Callbacks != default))
+            if (Interactable && (IsSelected == false))
+            {
+                IsSelected = true;
+
+                if (Callbacks != default)
+                {
+                    foreach (var callback in Callbacks)
+                        callback.OnSelect();
+                }
+            }
+        }
+
+        private void Deselect()
+        {
+            if (IsSelected == false)
+                return;
+
+            IsSelected = false;
+
+            if (Callbacks != default)
             {
                 foreach (var callback in Callbacks)
-                    callback.OnSelect();
+                    callback.OnDeselect();
             }
         }
     }

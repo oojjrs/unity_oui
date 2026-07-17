@@ -8,7 +8,7 @@ namespace oojjrs.oui
     [DisallowMultipleComponent]
     [ExecuteAlways]
     [RequireComponent(typeof(Button))]
-    public partial class MyButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, ISelectHandler
+    public partial class MyButton : MonoBehaviour, IDeselectHandler, IPointerEnterHandler, IPointerExitHandler, ISelectHandler
     {
         public enum ClickSoundEnum
         {
@@ -37,6 +37,12 @@ namespace oojjrs.oui
             void OnClick();
         }
 
+        public interface FocusInterface
+        {
+            void OnFocusEnter();
+            void OnFocusExit();
+        }
+
         public interface HoverInterface
         {
             void OnHoverEnter();
@@ -44,11 +50,13 @@ namespace oojjrs.oui
         }
 
         private CallbackInterface[] _callbacks;
+        private FocusInterface[] _focuses;
         private Coroutine _focusHoverSoundCoroutine;
         private HoverInterface[] _hovers;
         [SerializeField]
         private bool _hoverSoundDisabled;
         private bool _isCooldowning;
+        private bool _isFocused;
         [Tooltip("켜면 비활성 상태에서도 이미지를 숨기지 않고 비활성 색상으로 표시합니다.")]
         [SerializeField]
         private bool _isImageVisibleWhenDisabled;
@@ -142,6 +150,7 @@ namespace oojjrs.oui
         {
             _callbacks = GetComponents<CallbackInterface>();
             _doubleClicks = GetComponents<DoubleClickInterface>();
+            _focuses = GetComponents<FocusInterface>();
             _hovers = GetComponents<HoverInterface>();
             _presses = GetComponents<PressInterface>();
         }
@@ -150,6 +159,12 @@ namespace oojjrs.oui
         {
             if ((Application.isPlaying == false) || MyControl.IsQuitting)
                 return;
+
+            var eventSystem = EventSystem.current;
+            if ((eventSystem != null) && (eventSystem.currentSelectedGameObject == gameObject))
+                eventSystem.SetSelectedGameObject(null);
+
+            ExitFocus();
 
             if (_focusHoverSoundCoroutine != null)
             {
@@ -183,6 +198,11 @@ namespace oojjrs.oui
                 Debug.LogWarning($"{name}> DON'T HAVE CALLBACK FUNCTION.");
         }
 
+        void IDeselectHandler.OnDeselect(BaseEventData eventData)
+        {
+            ExitFocus();
+        }
+
         void IPointerEnterHandler.OnPointerEnter(PointerEventData eventData)
         {
             if (IsInteractable)
@@ -207,7 +227,38 @@ namespace oojjrs.oui
         void ISelectHandler.OnSelect(BaseEventData eventData)
         {
             if (IsInteractable)
+            {
                 PlayFocusHoverSfx(eventData);
+                EnterFocus();
+            }
+        }
+
+        private void EnterFocus()
+        {
+            if (_isFocused)
+                return;
+
+            _isFocused = true;
+
+            if (_focuses != null)
+            {
+                foreach (var focus in _focuses)
+                    focus.OnFocusEnter();
+            }
+        }
+
+        private void ExitFocus()
+        {
+            if (_isFocused == false)
+                return;
+
+            _isFocused = false;
+
+            if (_focuses != null)
+            {
+                foreach (var focus in _focuses)
+                    focus.OnFocusExit();
+            }
         }
 
         public void OnClick()
