@@ -1,506 +1,174 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ko">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>UnityOui 기획 문서</title>
+  <title>UnityOui 기획서</title>
   <style>
     :root {
-      color-scheme: light;
-      --bg: #d8e0e7;
-      --panel: #eef2f5;
-      --panel-strong: #142033;
-      --text: #182231;
-      --muted: #536172;
-      --line: #b7c2cf;
-      --accent: #176c7d;
-      --accent-soft: #d7e8ec;
-      --amber: #8a6508;
-      --amber-soft: #eadfcb;
-      --danger: #9a3d31;
-      --danger-soft: #ead7d3;
-      --code: #132235;
+      color-scheme: dark;
+      --bg: #111315;
+      --panel: #1a1d20;
+      --panel-strong: #22272b;
+      --panel-soft: #171a1d;
+      --panel-raised: #202428;
+      --panel-sunken: #15181b;
+      --text: #ece7dc;
+      --muted: #aaa79f;
+      --line: #363b40;
+      --line-strong: #4a5157;
+      --accent: #d5b169;
+      --accent-strong: #f0cf82;
+      --accent-soft: rgba(213, 177, 105, 0.12);
+      --danger: #d98676;
+      --warning: #d6a45d;
+      --success: #8dbd8a;
+      --nav-width: 280px;
+      --header-height: 68px;
+      --radius: 12px;
+      font-family: "Pretendard", "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif;
     }
 
-    * {
-      box-sizing: border-box;
-    }
-
+    * { box-sizing: border-box; }
+    html, body { width: 100%; height: 100%; margin: 0; }
     body {
-      margin: 0;
+      display: grid;
+      grid-template-rows: var(--header-height) minmax(0, 1fr);
+      overflow: hidden;
       background: var(--bg);
       color: var(--text);
-      font-family: "Segoe UI", "Malgun Gothic", sans-serif;
-      line-height: 1.58;
+      line-height: 1.7;
     }
-
-    header {
-      background: var(--panel-strong);
-      color: #f8fafc;
-      border-bottom: 1px solid #0a1220;
-    }
-
-    main,
-    .header-inner {
-      width: min(1160px, calc(100% - 40px));
-      margin: 0 auto;
-    }
-
-    .header-inner {
-      padding: 42px 0 30px;
-    }
-
-    main {
-      padding: 22px 0 52px;
-    }
-
-    h1,
-    h2,
-    h3 {
-      margin: 0;
-      line-height: 1.25;
-      letter-spacing: 0;
-    }
-
-    h1 {
-      font-size: clamp(46px, 9vw, 92px);
-      font-weight: 820;
-    }
-
-    h2 {
-      margin-bottom: 14px;
-      color: var(--accent);
-      font-size: 24px;
-    }
-
-    h3 {
-      margin: 16px 0 8px;
-      font-size: 17px;
-    }
-
-    p {
-      margin: 0 0 10px;
-    }
-
-    ul,
-    ol {
-      margin: 0;
-      padding-left: 22px;
-    }
-
-    li + li {
-      margin-top: 5px;
-    }
-
-    code {
-      padding: 2px 5px;
-      border-radius: 4px;
-      background: #d7e0e8;
-      color: var(--code);
-      font-family: Consolas, "Cascadia Mono", monospace;
-      font-size: 0.94em;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin: 12px 0;
-      background: #f8fafc;
-    }
-
-    th,
-    td {
-      padding: 9px 10px;
-      border: 1px solid var(--line);
-      text-align: left;
-      vertical-align: top;
-    }
-
-    th {
-      background: #dfe7ef;
-      color: #1b2a3d;
-      font-weight: 760;
-    }
-
-    .meta {
-      margin-top: 10px;
-      color: #b8c5d6;
-      font-size: 14px;
-    }
-
-    .thesis {
-      max-width: 960px;
-      margin-top: 10px;
-      color: #edf3fb;
-      font-size: clamp(20px, 2.5vw, 30px);
-      font-weight: 720;
-      line-height: 1.36;
-    }
-
-    .grid {
-      display: grid;
-      grid-template-columns: minmax(0, 1fr);
-      gap: 14px;
-    }
-
-    .section,
-    details {
-      padding: 22px 24px;
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      background: var(--panel);
-    }
-
-    .section.lead {
-      padding: 30px 34px;
-      background: #172337;
-      color: #f8fafc;
-    }
-
-    .section.lead h2 {
-      color: #f8fafc;
-    }
-
-    .section.lead code {
-      background: #26364e;
-      color: #f8fafc;
-    }
-
-    .summary {
-      display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 10px;
-      margin-top: 20px;
-    }
-
-    .metric {
-      padding: 12px;
-      border: 1px solid #314053;
-      border-radius: 8px;
-      background: #203047;
-    }
-
-    .metric strong {
-      display: block;
-      margin-bottom: 4px;
-      color: #9fb1c7;
-      font-size: 13px;
-    }
-
-    .metric span {
-      display: block;
-      color: #f8fafc;
-      font-weight: 720;
-    }
-
-    summary {
-      cursor: pointer;
-      color: var(--accent);
-      font-size: 22px;
-      font-weight: 780;
-      line-height: 1.35;
-    }
-
-    details > *:not(summary) {
-      margin-top: 12px;
-    }
-
-    .note {
-      margin-top: 12px;
-      padding: 12px 14px;
-      border: 1px solid var(--line);
-      border-left: 4px solid var(--accent);
-      border-radius: 6px;
-      background: var(--accent-soft);
-    }
-
-    .note.amber {
-      border-left-color: var(--amber);
-      background: var(--amber-soft);
-    }
-
-    .note.danger {
-      border-left-color: var(--danger);
-      background: var(--danger-soft);
-    }
-
-    .tag-list {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin: 14px 0 0;
-      padding: 0;
-      list-style: none;
-    }
-
-    .tag-list li {
-      padding: 6px 9px;
-      border: 1px solid #c4ced8;
-      border-radius: 6px;
-      background: #f7f9fb;
-      color: #26364a;
-      font-size: 13px;
-      font-weight: 650;
-    }
-
-    .decision {
-      margin-top: 12px;
-      padding: 12px 14px;
-      border: 1px solid var(--line);
-      border-radius: 7px;
-      background: #f8fafc;
-    }
-
-    .decision strong {
-      display: block;
-      margin-bottom: 4px;
-      color: #1f334c;
-    }
-
-    @media (max-width: 760px) {
-      main,
-      .header-inner {
-        width: min(100% - 24px, 1160px);
-      }
-
-      .section,
-      details,
-      .section.lead {
-        padding: 18px;
-      }
-
-      .summary {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    /* Shared Design.html navigation layout */
-    .design-doc-layout {
-      width: min(1380px, calc(100% - 36px));
-      margin: 0 auto;
-      display: grid;
-      grid-template-columns: 220px minmax(0, 1fr);
-      gap: 20px;
-      align-items: start;
-    }
-
-    .design-doc-layout > main {
-      width: 100% !important;
-      max-width: none !important;
-      margin-left: 0 !important;
-      margin-right: 0 !important;
-    }
-
-    .design-floating-nav {
-      position: sticky;
-      top: 94px;
-      z-index: 20;
-      max-height: calc(100vh - 112px);
-      overflow-y: auto;
-      margin-top: 24px;
-      padding: 12px;
-      border: 1px solid rgba(120, 135, 155, 0.38);
-      border-radius: 8px;
-      background: rgba(255, 255, 255, 0.92);
-      box-shadow: 0 14px 34px rgba(20, 31, 46, 0.14);
-      backdrop-filter: blur(10px);
-    }
-
-    .design-floating-nav strong {
-      display: block;
-      margin: 0 0 7px;
-      color: inherit;
-      font-size: 12px;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      opacity: 0.72;
-    }
-
-    .design-floating-nav a {
-      display: block;
-      padding: 7px 8px;
-      border-radius: 6px;
-      color: inherit;
-      text-decoration: none;
-      font-size: 13px;
-      line-height: 1.35;
-      opacity: 0.82;
-    }
-
-    .design-floating-nav a:hover {
-      background: rgba(60, 110, 180, 0.12);
-      opacity: 1;
-    }
-
-    section,
-    details {
-      scroll-margin-top: 120px;
-    }
-
-    @media (max-width: 980px) {
-      .design-doc-layout {
-        width: min(100% - 24px, 1000px);
-        grid-template-columns: 1fr;
-      }
-
-      .design-floating-nav {
-        position: sticky;
-        top: 64px;
-        display: flex;
-        gap: 4px;
-        margin-top: 12px;
-        overflow-x: auto;
-        overflow-y: hidden;
-        max-height: none;
-      }
-
-      .design-floating-nav strong {
-        flex: 0 0 auto;
-        align-self: center;
-        margin: 0 4px 0 0;
-      }
-
-      .design-floating-nav a {
-        flex: 0 0 auto;
-        white-space: nowrap;
-      }
-    }
-
-    /* Mines-style persistent planning document chrome */
     body > header {
-      position: sticky;
-      top: 0;
-      z-index: 50;
-      padding: 0;
-      box-shadow: 0 10px 28px rgba(15, 23, 42, 0.18);
-    }
-
-    body > header .header-inner,
-    body > header .wrap {
-      width: min(1240px, calc(100% - 40px));
-      margin: 0 auto;
-      padding: 18px 0 16px;
-    }
-
-    body > header > h1,
-    body > header > .guide-links {
-      width: min(1240px, calc(100% - 40px));
-      margin-left: auto;
-      margin-right: auto;
-    }
-
-    body > header > h1 {
-      padding-top: 18px;
-    }
-
-    body > header > .guide-links {
-      padding-bottom: 16px;
-    }
-
-    body > header h1 {
-      margin: 0;
-      font-size: clamp(24px, 2.6vw, 34px);
-      line-height: 1.16;
-      letter-spacing: 0;
-      text-align: center;
-    }
-
-    body > header .guide-links {
+      z-index: 20;
       display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-top: 10px;
-      justify-content: center;
-    }
-
-    body > header .guide-links a {
-      display: inline-flex;
       align-items: center;
-      min-height: 32px;
-      padding: 5px 10px;
-      border: 1px solid rgba(226, 232, 240, 0.36);
-      border-radius: 8px;
-      background: rgba(15, 23, 42, 0.24);
-      color: inherit;
-      font-size: 13px;
-      font-weight: 800;
-      text-decoration: none;
+      min-width: 0;
+      padding: 0 24px;
+      border-bottom: 1px solid var(--line);
+      background: var(--panel-strong);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.24);
+    }
+    .title-lockup { display: flex; align-items: center; gap: 12px; margin: 0; font-size: clamp(1.15rem, 2.4vw, 1.55rem); letter-spacing: -0.02em; }
+    .title-icon-frame { display: grid; width: 38px; height: 38px; overflow: hidden; place-items: center; border: 1px solid var(--line-strong); border-radius: 10px; background: var(--panel-sunken); }
+    .title-app-icon { display: block; width: 100%; height: 100%; object-fit: contain; }
+    .layout { display: grid; grid-template-columns: var(--nav-width) minmax(0, 1fr); min-height: 0; }
+    .side-nav { min-height: 0; overflow: auto; padding: 18px 12px 28px; border-right: 1px solid var(--line); background: var(--panel); scrollbar-color: var(--line-strong) transparent; }
+    .nav-items { display: grid; gap: 5px; margin: 0; padding: 0; list-style: none; }
+    .nav-items a { display: flex; min-height: 42px; align-items: center; padding: 9px 12px; border-left: 3px solid transparent; border-radius: 6px 9px 9px 6px; color: var(--muted); text-decoration: none; transition: color 140ms ease, background 140ms ease, border-color 140ms ease; }
+    .nav-items a:hover, .nav-items a:focus-visible, .nav-items a.is-active { border-left-color: var(--accent); background: var(--accent-soft); color: var(--accent-strong); outline: none; }
+    .nav-label { min-width: 0; overflow-wrap: anywhere; }
+    main { min-width: 0; min-height: 0; overflow: auto; padding: clamp(24px, 4vw, 52px); scrollbar-color: var(--line-strong) transparent; }
+    .page { display: none; width: min(1180px, 100%); margin: 0 auto; }
+    .page.is-active { display: block; animation: page-in 180ms ease-out; }
+    @keyframes page-in { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+    .page > h2 { margin: 0 0 20px; color: var(--accent-strong); font-size: clamp(1.45rem, 3vw, 2rem); letter-spacing: -0.035em; }
+    .page-body { display: grid; gap: 18px; }
+    .section-group { overflow: hidden; border: 1px solid var(--line); border-radius: var(--radius); background: var(--panel); box-shadow: 0 18px 42px rgba(0, 0, 0, 0.18); }
+    .section-group-body { padding: clamp(18px, 3vw, 30px); }
+    .section-group-body > :first-child, .details-body > :first-child { margin-top: 0; }
+    .section-group-body > :last-child, .details-body > :last-child { margin-bottom: 0; }
+    details { overflow: hidden; border: 1px solid var(--line); border-radius: 10px; background: var(--panel-soft); }
+    details > summary { cursor: pointer; padding: 16px 46px 16px 18px; color: var(--text); font-weight: 750; list-style: none; position: relative; }
+    details > summary::-webkit-details-marker { display: none; }
+    details > summary::after { position: absolute; top: 50%; right: 18px; content: "+"; color: var(--accent); font-size: 1.3rem; transform: translateY(-50%); }
+    details[open] > summary { border-bottom: 1px solid var(--line); background: var(--panel-strong); color: var(--accent-strong); }
+    details[open] > summary::after { content: "−"; }
+    .details-body { padding: clamp(18px, 3vw, 28px); }
+    h3 { margin: 28px 0 10px; color: var(--accent-strong); font-size: 1.08rem; }
+    p, ul, ol, table { margin: 0 0 16px; }
+    ul, ol { padding-left: 1.35rem; }
+    li + li { margin-top: 7px; }
+    a { color: var(--accent-strong); }
+    code { padding: 0.12em 0.38em; border: 1px solid rgba(213, 177, 105, 0.2); border-radius: 5px; background: var(--panel-sunken); color: #f2d79e; font-family: "Cascadia Code", Consolas, monospace; font-size: 0.9em; overflow-wrap: anywhere; }
+    .lead { color: #f3efe6; font-size: 1.05rem; }
+    .grid, .summary, .two-col { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+    .decision, .note, .metric { padding: 16px 17px; border: 1px solid var(--line); border-radius: 9px; background: var(--panel-raised); }
+    .decision { border-left: 3px solid var(--accent); }
+    .decision strong, .note strong, .metric strong { display: block; margin-bottom: 7px; color: var(--accent-strong); }
+    .decision.reason { border-left-color: var(--success); }
+    .decision.open, .note.amber { border-left-color: var(--warning); }
+    .note.danger { border-left-color: var(--danger); }
+    .metric span { color: var(--muted); }
+    .tag-list { display: flex; flex-wrap: wrap; gap: 8px; padding: 0; list-style: none; }
+    .tag-list li, .tag { margin: 0; padding: 5px 9px; border: 1px solid rgba(213, 177, 105, 0.34); border-radius: 999px; background: var(--accent-soft); color: var(--accent-strong); font-size: 0.87rem; }
+    .table-wrap { max-width: 100%; overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; background: var(--panel-sunken); }
+    th, td { padding: 11px 12px; border: 1px solid var(--line); text-align: left; vertical-align: top; }
+    th { background: var(--panel-strong); color: var(--accent-strong); font-size: 0.92rem; }
+    tr:nth-child(even) td { background: rgba(255, 255, 255, 0.018); }
+    .tip { position: relative; display: inline-grid; width: 1.25em; height: 1.25em; margin-left: 0.25em; place-items: center; border: 1px solid var(--accent); border-radius: 50%; color: var(--accent-strong); cursor: help; font-size: 0.74em; font-weight: 800; }
+    .tip-text { position: absolute; z-index: 5; bottom: calc(100% + 9px); left: 50%; width: min(300px, 72vw); padding: 10px 12px; border: 1px solid var(--line-strong); border-radius: 8px; background: var(--panel-strong); color: var(--text); font-size: 0.85rem; font-weight: 400; line-height: 1.55; opacity: 0; pointer-events: none; transform: translate(-50%, 5px); transition: opacity 140ms ease, transform 140ms ease; }
+    .tip:hover .tip-text, .tip:focus .tip-text { opacity: 1; transform: translate(-50%, 0); }
+    img { max-width: 100%; }
+    .section-group-body a:has(img) { display: inline-block; border-radius: 8px; outline: 1px solid var(--line); }
+    .section-group-body a:has(img):focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+    .image-lightbox { width: min(94vw, 1400px); height: min(92vh, 1000px); padding: 0; border: 1px solid var(--line-strong); border-radius: 12px; background: var(--panel); color: var(--text); }
+    .image-lightbox::backdrop { background: rgba(4, 5, 6, 0.86); backdrop-filter: blur(5px); }
+    .image-lightbox[open] { display: grid; grid-template-rows: auto minmax(0, 1fr) auto; }
+    .image-lightbox-toolbar, .image-lightbox-actions { display: flex; align-items: center; justify-content: space-between; gap: 14px; padding: 12px 15px; border-bottom: 1px solid var(--line); background: var(--panel-strong); }
+    .image-lightbox-actions { justify-content: flex-end; border-top: 1px solid var(--line); border-bottom: 0; }
+    .image-lightbox-title { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .image-lightbox-close { border: 1px solid var(--line-strong); border-radius: 7px; background: var(--panel-sunken); color: var(--text); cursor: pointer; font-size: 1.35rem; }
+    .image-lightbox-stage { display: grid; min-height: 0; overflow: auto; place-items: center; padding: 18px; background: #0b0d0f; }
+    .image-lightbox-stage img { display: block; max-width: 100%; max-height: 100%; object-fit: contain; }
+    .image-lightbox-original { padding: 7px 11px; border: 1px solid var(--line-strong); border-radius: 7px; text-decoration: none; }
+
+    @media (max-width: 820px) {
+      :root { --header-height: 60px; }
+      html, body { height: auto; min-height: 100%; }
+      body { display: block; overflow: auto; }
+      body > header { position: sticky; top: 0; min-height: var(--header-height); padding: 0 16px; }
+      .layout { display: block; }
+      .side-nav { position: sticky; z-index: 15; top: var(--header-height); overflow-x: auto; padding: 9px 12px; border-right: 0; border-bottom: 1px solid var(--line); }
+      .nav-items { display: flex; width: max-content; max-width: none; gap: 6px; }
+      .nav-items a { min-height: 38px; border-left: 0; border-bottom: 2px solid transparent; white-space: nowrap; }
+      .nav-items a:hover, .nav-items a:focus-visible, .nav-items a.is-active { border-left-color: transparent; border-bottom-color: var(--accent); }
+      main { overflow: visible; padding: 22px 14px 44px; }
+      .grid, .summary, .two-col { grid-template-columns: 1fr; }
+      .section-group-body, .details-body { padding: 16px; }
+      th, td { min-width: 128px; }
     }
 
-    .design-doc-layout {
-      width: min(1240px, calc(100% - 40px));
-      margin: 24px auto 72px;
-      display: block;
+    @media print {
+      html, body { height: auto; overflow: visible; background: white; color: black; }
+      body { display: block; }
+      body > header, .side-nav, .image-lightbox { display: none !important; }
+      main { overflow: visible; padding: 0; }
+      .page { display: block !important; width: 100%; break-after: page; }
+      .section-group, details { box-shadow: none; }
     }
-
-    .design-doc-layout > main {
-      width: 100% !important;
-      max-width: none !important;
-      margin: 0 !important;
-    }
-
-    .design-floating-nav,
-    .side-nav {
-      position: fixed;
-      top: var(--side-nav-top, 124px);
-      left: max(14px, calc((100vw - 1240px) / 2 - 258px));
-      width: 238px;
-      max-height: calc(100vh - var(--side-nav-top, 124px) - var(--side-nav-bottom-gap, 16px));
-      overflow: auto;
-      z-index: 40;
-    }
-
-    section,
-    details {
-      scroll-margin-top: calc(var(--side-nav-top, 124px) + 18px);
-    }
-
-    @media (max-width: 1780px) {
-      .design-floating-nav,
-      .side-nav {
-        display: none;
-      }
-
-      .design-doc-layout {
-        width: min(100% - 24px, 900px);
-      }
-
-      body > header .header-inner,
-      body > header .wrap,
-      body > header > h1,
-      body > header > .guide-links {
-        width: min(100% - 24px, 900px);
-      }
-    }
-
   </style>
 </head>
 <body>
   <header>
-    <div class="header-inner">
-      <h1>UnityOui</h1>
-    </div>
+    <h1 class="title-lockup">
+      <span class="title-text">UnityOui 기획서</span>
+    </h1>
   </header>
-<div class="design-doc-layout">
-  <nav class="design-floating-nav" aria-label="기획서 목차">
-    <strong>목차</strong>
-    <a href="#컴포넌트-맵">컴포넌트 맵</a>
-    <a href="#핵심-방향-공통-컴포넌트-속성">핵심 방향 - 공통 컴포넌트 속성</a>
-    <a href="#상호작용과-상태-myradio-myradiogroup-컴포넌트">상호작용과 상태 - MyRadio / MyRadioGroup...</a>
-    <a href="#규칙과-계산-모델-myradio-상태-표시-필드">규칙과 계산 모델 - MyRadio 상태 표시 필드</a>
-    <a href="#상호작용과-상태-mybutton-컴포넌트">상호작용과 상태 - MyButton 컴포넌트</a>
-    <a href="#ui와-편의-시스템-mytab-컴포넌트">UI와 편의 시스템 - MyTab 컴포넌트</a>
-    <a href="#ui와-편의-시스템-myswapper-컴포넌트">UI와 편의 시스템 - MySwapper 컴포넌트</a>
-    <a href="#미결정과-제외-selectable-myselectable-컴포넌트">미결정과 제외 - Selectable / MySelectabl...</a>
-    <a href="#ui와-편의-시스템-editor-prefab-제작-보조">UI와 편의 시스템 - Editor / Prefab 제작 보조</a>
-    <a href="#미결정과-제외-열린-질문">미결정과 제외 - 열린 질문</a>
-    <a href="#결정-사유">결정 사유</a>
-  </nav>
-  <main>
-    <div class="grid">
-      <section id="컴포넌트-맵" class="section lead">
+  <div class="layout">
+    <nav class="side-nav" aria-label="기획서 항목">
+      <ul class="nav-items">
+        <li><a href="#컴포넌트-맵" data-page-link="컴포넌트-맵" class="is-active"><span class="nav-label">컴포넌트 맵</span></a></li>
+        <li><a href="#핵심-방향-공통-컴포넌트-속성" data-page-link="핵심-방향-공통-컴포넌트-속성"><span class="nav-label">공통 컴포넌트 원칙</span></a></li>
+        <li><a href="#상호작용과-상태-myradio-myradiogroup-컴포넌트" data-page-link="상호작용과-상태-myradio-myradiogroup-컴포넌트"><span class="nav-label">MyRadio / MyRadioGroup</span></a></li>
+        <li><a href="#규칙과-계산-모델-myradio-상태-표시-필드" data-page-link="규칙과-계산-모델-myradio-상태-표시-필드"><span class="nav-label">MyRadio 상태 표시</span></a></li>
+        <li><a href="#상호작용과-상태-mybutton-컴포넌트" data-page-link="상호작용과-상태-mybutton-컴포넌트"><span class="nav-label">MyButton</span></a></li>
+        <li><a href="#ui와-편의-시스템-mytab-컴포넌트" data-page-link="ui와-편의-시스템-mytab-컴포넌트"><span class="nav-label">MyTab</span></a></li>
+        <li><a href="#ui와-편의-시스템-myswapper-컴포넌트" data-page-link="ui와-편의-시스템-myswapper-컴포넌트"><span class="nav-label">MySwapper</span></a></li>
+        <li><a href="#미결정과-제외-selectable-myselectable-컴포넌트" data-page-link="미결정과-제외-selectable-myselectable-컴포넌트"><span class="nav-label">Selectable / MySelectable</span></a></li>
+        <li><a href="#ui와-편의-시스템-editor-prefab-제작-보조" data-page-link="ui와-편의-시스템-editor-prefab-제작-보조"><span class="nav-label">Editor / Prefab 제작 보조</span></a></li>
+        <li><a href="#미결정과-제외-열린-질문" data-page-link="미결정과-제외-열린-질문"><span class="nav-label">열린 질문</span></a></li>
+        <li><a href="#결정-사유" data-page-link="결정-사유"><span class="nav-label">결정 사유</span></a></li>
+      </ul>
+    </nav>
+    <main>
+      <article id="컴포넌트-맵" class="page is-active" data-page="컴포넌트-맵">
         <h2>컴포넌트 맵</h2>
-        <p><code>MyRadio</code>는 Unity 기본 <code>Toggle</code>, <code>ToggleGroup</code>, <code>Selectable</code>의 연출 구조를 피하고, 상태별로 이름이 붙은 GameObject 필드를 직접 켜고 끄며 라디오 버튼을 표현한다.</p>
+        <div class="page-body">
+      <section class="section-group">
+        <div class="section-group-body">
+<p><code>MyRadio</code>는 Unity 기본 <code>Toggle</code>, <code>ToggleGroup</code>, <code>Selectable</code>의 연출 구조를 피하고, 상태별로 이름이 붙은 GameObject 필드를 직접 켜고 끄며 라디오 버튼을 표현한다.</p>
         <p>문서 구조는 각 컴포넌트를 기준으로 둔다. 앞으로 특정 타입을 수정할 때 해당 타입 섹션을 먼저 열어 보면 현재 의도와 피해야 할 방향을 확인할 수 있어야 한다.</p>
         <ul class="tag-list">
           <li>라디오 선택 묶음: MyRadio / MyRadioGroup</li>
@@ -526,11 +194,19 @@
             <span>자동 setup 필요</span>
           </div>
         </div>
+        </div>
       </section>
-
-      <details id="핵심-방향-공통-컴포넌트-속성">
-        <summary>핵심 방향 - 공통 컴포넌트 속성</summary>
-        <p>런타임 UI 헬퍼 컴포넌트는 하나의 GameObject에 같은 헬퍼 타입을 하나만 두는 것을 기준으로 한다. 같은 타입을 여러 개 붙이면 콜백 수집, 상태 캐시, UGUI 래퍼 역할이 서로 겹쳐 Inspector와 런타임 의미가 흐려진다.</p>
+        </div>
+      </article>
+      <article id="핵심-방향-공통-컴포넌트-속성" class="page" data-page="핵심-방향-공통-컴포넌트-속성">
+        <h2>공통 컴포넌트 원칙</h2>
+        <div class="page-body">
+      <section class="section-group">
+        <div class="section-group-body">
+          <details id="핵심-방향-공통-컴포넌트-속성-details">
+            <summary>핵심 방향 - 공통 컴포넌트 속성</summary>
+            <div class="details-body">
+<p>런타임 UI 헬퍼 컴포넌트는 하나의 GameObject에 같은 헬퍼 타입을 하나만 두는 것을 기준으로 한다. 같은 타입을 여러 개 붙이면 콜백 수집, 상태 캐시, UGUI 래퍼 역할이 서로 겹쳐 Inspector와 런타임 의미가 흐려진다.</p>
         <div class="decision">
           <strong><code>DisallowMultipleComponent</code> 적용</strong>
           <p>컨트롤 본체와 얇은 어댑터 컴포넌트에는 <code>DisallowMultipleComponent</code>를 붙여 중복 부착을 막는다. 필수 의존성이 있는 타입은 기존처럼 <code>RequireComponent</code>를 함께 둔다.</p>
@@ -538,11 +214,21 @@
         <div class="note">
           <p><code>RequireComponent</code>는 같은 GameObject의 필수 의존성 표시에만 쓴다. 구조 생성, 자식 오브젝트 구성, 프리팹 스캐폴딩은 이 속성의 책임이 아니므로 별도 Editor 도구나 템플릿 프리팹으로 다룬다.</p>
         </div>
-      </details>
-
-      <details id="상호작용과-상태-myradio-myradiogroup-컴포넌트">
-        <summary>상호작용과 상태 - MyRadio / MyRadioGroup 컴포넌트</summary>
-        <p><code>MyRadio</code>와 <code>MyRadioGroup</code>은 하나의 라디오 선택 묶음을 이룬다. <code>MyRadio</code>는 개별 선택지의 입력과 on/off 상태를 담당하고, <code>MyRadioGroup</code>은 자식 라디오 중 하나만 선택되도록 조율한다.</p>
+            </div>
+          </details>
+        </div>
+      </section>
+        </div>
+      </article>
+      <article id="상호작용과-상태-myradio-myradiogroup-컴포넌트" class="page" data-page="상호작용과-상태-myradio-myradiogroup-컴포넌트">
+        <h2>MyRadio / MyRadioGroup</h2>
+        <div class="page-body">
+      <section class="section-group">
+        <div class="section-group-body">
+          <details id="상호작용과-상태-myradio-myradiogroup-컴포넌트-details">
+            <summary>상호작용과 상태 - MyRadio / MyRadioGroup 컴포넌트</summary>
+            <div class="details-body">
+<p><code>MyRadio</code>와 <code>MyRadioGroup</code>은 하나의 라디오 선택 묶음을 이룬다. <code>MyRadio</code>는 개별 선택지의 입력과 on/off 상태를 담당하고, <code>MyRadioGroup</code>은 자식 라디오 중 하나만 선택되도록 조율한다.</p>
         <h3>MyRadio 책임</h3>
         <table>
           <thead>
@@ -595,7 +281,6 @@
         </div>
         <h3>현재 코드 상태</h3>
         <ul>
-          <li>파일: <code>Packages/src/Runtime/MyRadio.cs</code>, <code>Packages/src/Runtime/MyRadioGroup.cs</code></li>
           <li><code>MyRadio</code> 기반 타입: <code>MonoBehaviour</code></li>
           <li><code>MyRadio</code> 필수 컴포넌트: 없음. 단, 클릭 판정을 위해 자식 중 하나 이상은 raycast 가능한 <code>Graphic</code>이어야 한다.</li>
           <li><code>MyRadio.State</code>: <code>OffNormal</code>부터 <code>OnDisabled</code>까지 단일 상태 enum으로 보관한다. 내부 로직은 보조 숫자 축이나 변환 함수 없이 현재 <code>_state</code>와 목표 enum 값을 직접 다룬다.</li>
@@ -607,7 +292,6 @@
           <li><code>MyRadio.FocusInterface</code>는 선택적 확장점이다. 콜백 구현체가 없어도 경고하지 않으며, interactable 해제나 비활성화로 포커스를 잃을 때도 진입·이탈 짝을 한 번 유지한다.</li>
           <li>상속/인터페이스 순서: Unity 제공 그룹, 로컬 제공 그룹 순서로 배치하고 각 그룹 안에서는 이름 ABC 순서</li>
           <li>함수 순서: Unity 함수, 상속/인터페이스 함수, 로컬 함수 그룹 순서로 배치한다. 상속/인터페이스 함수 그룹 안에서도 Unity 제공 함수, 로컬 제공 함수 순서로 나누고 각 그룹 안에서는 modifier와 무관하게 함수명 ABC 순서</li>
-          <li>빌드 확인: <code>dotnet build .\oojjrs.oui.csproj -nologo -v minimal</code> 경고 0개, 오류 0개</li>
         </ul>
         <h3>MyRadioGroup 책임</h3>
         <ul>
@@ -635,11 +319,21 @@
           <li><code>OnEnable</code>에서는 기존 <code>_index</code>가 유효하면 보존하고, 이미 시작된 뒤 다시 활성화된 경우에는 현재 선택을 콜백으로 다시 알린다. <code>OnValidate</code>에서는 Inspector에서 바뀐 <code>_index</code>를 즉시 확인할 수 있도록 현재 선택을 다시 적용하되 외부 초기화 인터페이스는 읽지 않는다.</li>
           <li>라디오가 하나도 없으면 <code>DON'T HAVE RADIO.</code> 경고를 출력한다.</li>
         </ul>
-      </details>
-
-      <details id="규칙과-계산-모델-myradio-상태-표시-필드">
-        <summary>규칙과 계산 모델 - MyRadio 상태 표시 필드</summary>
-        <p><code>MyRadio</code>는 상태별 표시 GameObject를 배열 인덱스가 아니라 <code>StateObjects</code> 묶음 안의 이름 있는 필드로 가진다. 상태 enum과 표시 필드 이름이 1:1로 대응되므로, 프리팹 제작자는 숫자 순서를 외우지 않고 어떤 상태의 표시물인지 Inspector에서 바로 확인할 수 있고, 필요하지 않을 때는 접어서 사운드 설정처럼 숨길 수 있다.</p>
+            </div>
+          </details>
+        </div>
+      </section>
+        </div>
+      </article>
+      <article id="규칙과-계산-모델-myradio-상태-표시-필드" class="page" data-page="규칙과-계산-모델-myradio-상태-표시-필드">
+        <h2>MyRadio 상태 표시</h2>
+        <div class="page-body">
+      <section class="section-group">
+        <div class="section-group-body">
+          <details id="규칙과-계산-모델-myradio-상태-표시-필드-details">
+            <summary>규칙과 계산 모델 - MyRadio 상태 표시 필드</summary>
+            <div class="details-body">
+<p><code>MyRadio</code>는 상태별 표시 GameObject를 배열 인덱스가 아니라 <code>StateObjects</code> 묶음 안의 이름 있는 필드로 가진다. 상태 enum과 표시 필드 이름이 1:1로 대응되므로, 프리팹 제작자는 숫자 순서를 외우지 않고 어떤 상태의 표시물인지 Inspector에서 바로 확인할 수 있고, 필요하지 않을 때는 접어서 사운드 설정처럼 숨길 수 있다.</p>
         <table>
           <thead>
             <tr>
@@ -716,11 +410,21 @@
         <div class="note danger">
           <p>현재 UX 리스크는 10개 상태 오브젝트를 여전히 직접 연결해야 한다는 점이다. 다만 Inspector에서는 한 묶음으로 접을 수 있으므로 평상시 화면 점유를 줄인다. 런타임에서는 전환 대상 상태 필드가 null이면 즉시 경고하고, 제작 단계에서는 문서 암기 대신 상태 오브젝트 자동 생성, 이름 검증, null 슬롯 경고를 제공하는 Editor 보조가 필요하다.</p>
         </div>
-      </details>
-
-      <details id="상호작용과-상태-mybutton-컴포넌트">
-        <summary>상호작용과 상태 - MyButton 컴포넌트</summary>
-        <p><code>MyButton</code>은 일반 버튼 입력과 사운드 정책의 기존 기준이다. 내부 이미지 참조는 Unity <code>Image</code>가 아니라 <code>MyImage</code> 래퍼를 기준으로 맞춰, 버튼과 라디오가 같은 이미지 갱신 표면을 바라보게 한다. 기본 disabled 동작은 기존처럼 이미지를 숨기며, 버튼별 옵션을 켜면 이미지를 유지한 채 normal/disable 색상으로 전환한다. 텍스트는 계속 normal/disable 색상을 직접 전환한다. 하지만 <code>MyRadio</code>가 <code>MyButton</code>을 직접 조합하지는 않는다.</p>
+            </div>
+          </details>
+        </div>
+      </section>
+        </div>
+      </article>
+      <article id="상호작용과-상태-mybutton-컴포넌트" class="page" data-page="상호작용과-상태-mybutton-컴포넌트">
+        <h2>MyButton</h2>
+        <div class="page-body">
+      <section class="section-group">
+        <div class="section-group-body">
+          <details id="상호작용과-상태-mybutton-컴포넌트-details">
+            <summary>상호작용과 상태 - MyButton 컴포넌트</summary>
+            <div class="details-body">
+<p><code>MyButton</code>은 일반 버튼 입력과 사운드 정책의 기존 기준이다. 내부 이미지 참조는 Unity <code>Image</code>가 아니라 <code>MyImage</code> 래퍼를 기준으로 맞춰, 버튼과 라디오가 같은 이미지 갱신 표면을 바라보게 한다. 기본 disabled 동작은 기존처럼 이미지를 숨기며, 버튼별 옵션을 켜면 이미지를 유지한 채 normal/disable 색상으로 전환한다. 텍스트는 계속 normal/disable 색상을 직접 전환한다. 하지만 <code>MyRadio</code>가 <code>MyButton</code>을 직접 조합하지는 않는다.</p>
         <div class="decision">
           <strong><code>Animator</code> 참조 노출</strong>
           <p><code>MyButton</code>은 외부 연출 연결을 위해 serialized <code>Animator</code> 참조를 받고 public get-only <code>Animator</code> 속성으로 노출한다. 이 참조 표면은 기존 <code>OuiPlayAnimation</code> 계열이 같은 GameObject의 <code>Animator</code>에 trigger를 전달하는 동작과 구분하며, 별도 <code>MyAnimator</code> 타입이나 외부 패키지 의존성은 추가하지 않는다.</p>
@@ -752,11 +456,21 @@
           <strong>포커스 콜백과 사운드 분리</strong>
           <p><code>MyButton.FocusInterface</code>와 <code>MyRadio.FocusInterface</code>는 EventSystem 선택 변경에 맞춰 동기 호출한다. 시작 전이나 재활성화 전에 이미 현재 선택이었다면 현재 상태를 동기화해 진입 콜백을 한 번만 보충한다. 이 동기화는 새 선택 입력이 아니므로 focus hover 사운드를 다시 예약하지 않는다. focus hover 사운드만 다음 프레임에 click/pointer hover 중복을 확인하므로, 사운드가 취소되어도 실제 포커스 콜백은 취소하지 않는다.</p>
         </div>
-      </details>
-
-      <details id="ui와-편의-시스템-mytab-컴포넌트">
-        <summary>UI와 편의 시스템 - MyTab 컴포넌트</summary>
-        <p><code>MyTab</code>은 탭 헤더의 단일 선택 상태를 <code>MyRadioGroup</code>에 맡기고, 본문 페이지 전환을 <code>MySelector</code>에 맡기는 얇은 연결 컴포넌트다. 헤더 입력과 선택 표시는 <code>MyRadioGroup</code> 배열에 연결된 <code>MyRadio</code>가 담당하므로 별도 <code>MyTabHeaderButton</code>은 유지하지 않는다.</p>
+            </div>
+          </details>
+        </div>
+      </section>
+        </div>
+      </article>
+      <article id="ui와-편의-시스템-mytab-컴포넌트" class="page" data-page="ui와-편의-시스템-mytab-컴포넌트">
+        <h2>MyTab</h2>
+        <div class="page-body">
+      <section class="section-group">
+        <div class="section-group-body">
+          <details id="ui와-편의-시스템-mytab-컴포넌트-details">
+            <summary>UI와 편의 시스템 - MyTab 컴포넌트</summary>
+            <div class="details-body">
+<p><code>MyTab</code>은 탭 헤더의 단일 선택 상태를 <code>MyRadioGroup</code>에 맡기고, 본문 페이지 전환을 <code>MySelector</code>에 맡기는 얇은 연결 컴포넌트다. 헤더 입력과 선택 표시는 <code>MyRadioGroup</code> 배열에 연결된 <code>MyRadio</code>가 담당하므로 별도 <code>MyTabHeaderButton</code>은 유지하지 않는다.</p>
         <ul>
           <li>같은 GameObject의 <code>MyRadioGroup</code>과 <code>MySelector</code>를 <code>RequireComponent</code>로 요구한다.</li>
           <li><code>RequireComponent</code> 대상 의존성은 누락 시 복구 가능한 선택지가 아니므로 <code>Awake()</code>에서 한 번만 캐시하고 이후 반복 조회하지 않는다.</li>
@@ -766,11 +480,21 @@
           <li>탭 진입/이탈 콜백은 선택 사항이다. 콜백 컴포넌트가 없는 탭도 정상 구성이므로 <code>Start()</code>에서 별도 경고를 출력하지 않는다.</li>
           <li><code>ExecuteAlways</code>로 동작해 에디터에서도 라디오 그룹의 선택 표시와 본문 페이지가 같은 index를 바라보게 한다. 본문 <code>MySelector</code> 동기화는 <code>MyRadioGroup.CallbackInterface.OnValueChanged</code>에서만 시작한다.</li>
         </ul>
-      </details>
-
-      <details id="ui와-편의-시스템-myswapper-컴포넌트">
-        <summary>UI와 편의 시스템 - MySwapper 컴포넌트</summary>
-        <p><code>MySwapper</code>는 <code>MySelector</code>와 같은 오브젝트에 붙는 패턴의 선례다. 클릭 입력은 <code>MySwapperButton</code>이 담당하고, <code>MySwapper</code>는 bool 상태를 <code>MySelector</code> index로 바꾸는 얇은 어댑터다.</p>
+            </div>
+          </details>
+        </div>
+      </section>
+        </div>
+      </article>
+      <article id="ui와-편의-시스템-myswapper-컴포넌트" class="page" data-page="ui와-편의-시스템-myswapper-컴포넌트">
+        <h2>MySwapper</h2>
+        <div class="page-body">
+      <section class="section-group">
+        <div class="section-group-body">
+          <details id="ui와-편의-시스템-myswapper-컴포넌트-details">
+            <summary>UI와 편의 시스템 - MySwapper 컴포넌트</summary>
+            <div class="details-body">
+<p><code>MySwapper</code>는 <code>MySelector</code>와 같은 오브젝트에 붙는 패턴의 선례다. 클릭 입력은 <code>MySwapperButton</code>이 담당하고, <code>MySwapper</code>는 bool 상태를 <code>MySelector</code> index로 바꾸는 얇은 어댑터다.</p>
         <div class="decision">
           <strong><code>RequireComponent(typeof(MySelector))</code> 선례</strong>
           <p><code>MySwapper</code>가 <code>RequireComponent</code>를 쓰는 이유는 콜백 인터페이스 연결이 간단해지기 때문이다. <code>MyRadio</code>는 상태 의미가 라디오에 강하게 묶여 있어 이 패턴을 더 이상 따르지 않는다.</p>
@@ -778,11 +502,21 @@
         <div class="note">
           <p><code>MyRadio</code>는 <code>MySwapper</code>처럼 별도 버튼 컴포넌트에 클릭을 맡기지 않는다. 라디오는 on/off 연출 표면 전체가 클릭 가능해야 해서 입력 루트와 상태 계산을 같은 컴포넌트가 갖는 편이 낫다.</p>
         </div>
-      </details>
-
-      <details id="미결정과-제외-selectable-myselectable-컴포넌트">
-        <summary>미결정과 제외 - Selectable / MySelectable 컴포넌트</summary>
-        <p><code>Selectable</code>은 패드/키보드 navigation, <code>currentSelectedGameObject</code>, <code>interactable</code> 저장소 측면에서 매력적이었다. 그러나 현재 <code>MyRadio</code> 설계에서는 쓰지 않는다.</p>
+            </div>
+          </details>
+        </div>
+      </section>
+        </div>
+      </article>
+      <article id="미결정과-제외-selectable-myselectable-컴포넌트" class="page" data-page="미결정과-제외-selectable-myselectable-컴포넌트">
+        <h2>Selectable / MySelectable</h2>
+        <div class="page-body">
+      <section class="section-group">
+        <div class="section-group-body">
+          <details id="미결정과-제외-selectable-myselectable-컴포넌트-details">
+            <summary>미결정과 제외 - Selectable / MySelectable 컴포넌트</summary>
+            <div class="details-body">
+<p><code>Selectable</code>은 패드/키보드 navigation, <code>currentSelectedGameObject</code>, <code>interactable</code> 저장소 측면에서 매력적이었다. 그러나 현재 <code>MyRadio</code> 설계에서는 쓰지 않는다.</p>
         <div class="decision">
           <strong><code>Selectable</code> 미사용</strong>
           <p><code>Selectable</code>을 상속하거나 요구하면 <code>Transition</code>, <code>Target Graphic</code>, <code>Colors</code>, <code>Sprite State</code>, <code>Animation Triggers</code>처럼 이 설계에서 쓰지 않는 연출 필드가 Inspector에 노출된다. <code>MyRadio</code>의 연출 표시는 명명된 GameObject 필드가 전담하므로 혼란이 크다.</p>
@@ -791,11 +525,21 @@
           <p>이 결정의 대가는 기본 UGUI navigation 그래프의 자동 이동을 잃을 수 있다는 점이다. <code>SetSelectedGameObject()</code>는 아무 오브젝트나 받을 수 있지만, 방향 이동 탐색은 기본적으로 <code>Selectable</code> 생태계에 기대는 부분이 많다.</p>
         </div>
         <p><code>MySelectable</code>은 기존 UGUI <code>Selectable</code>의 select/deselect 콜백을 감싸는 타입이다. <code>MyInput</code>, <code>MySlider</code>와 다른 UGUI <code>Selectable</code> 기반 컨트롤의 범용 경로로 유지하고, 시작 전에 이미 현재 선택인 경우와 재활성화 시 선택 상태를 동기화한다. interactable 해제나 비활성화에서도 진입한 선택의 deselect 콜백을 한 번 보장한다. <code>MyRadio</code>는 <code>Selectable</code>을 쓰지 않으므로 직접 관계를 만들지 않고 자체 <code>FocusInterface</code>를 사용한다.</p>
-      </details>
-
-      <details id="ui와-편의-시스템-editor-prefab-제작-보조">
-        <summary>UI와 편의 시스템 - Editor / Prefab 제작 보조</summary>
-        <p>이 섹션은 런타임 컴포넌트는 아니지만, <code>MyRadio</code>를 실제로 쓰게 만들기 위한 필수 보조 영역이다. 10개 상태 필드를 수동으로 모두 맞추게 하면 UX가 나쁘다.</p>
+            </div>
+          </details>
+        </div>
+      </section>
+        </div>
+      </article>
+      <article id="ui와-편의-시스템-editor-prefab-제작-보조" class="page" data-page="ui와-편의-시스템-editor-prefab-제작-보조">
+        <h2>Editor / Prefab 제작 보조</h2>
+        <div class="page-body">
+      <section class="section-group">
+        <div class="section-group-body">
+          <details id="ui와-편의-시스템-editor-prefab-제작-보조-details">
+            <summary>UI와 편의 시스템 - Editor / Prefab 제작 보조</summary>
+            <div class="details-body">
+<p>이 섹션은 런타임 컴포넌트는 아니지만, <code>MyRadio</code>를 실제로 쓰게 만들기 위한 필수 보조 영역이다. 10개 상태 필드를 수동으로 모두 맞추게 하면 UX가 나쁘다.</p>
         <h3>필요한 기능</h3>
         <ul>
           <li><code>MyRadio</code>가 요구하는 상태 이름과 개수를 코드 상수로 가진다.</li>
@@ -808,20 +552,40 @@
         <div class="note danger">
           <p>이 보조 기능이 없으면 <code>MyRadio</code>의 런타임 구조가 맞아도 프리팹 제작 경험은 계속 나쁘다. 다음 구현 단계에서는 <code>MyRadioGroup</code>과 함께 최소 setup/validation UX를 검토한다.</p>
         </div>
-      </details>
-
-      <details id="미결정과-제외-열린-질문">
-        <summary>미결정과 제외 - 열린 질문</summary>
-        <ul>
+            </div>
+          </details>
+        </div>
+      </section>
+        </div>
+      </article>
+      <article id="미결정과-제외-열린-질문" class="page" data-page="미결정과-제외-열린-질문">
+        <h2>열린 질문</h2>
+        <div class="page-body">
+      <section class="section-group">
+        <div class="section-group-body">
+          <details id="미결정과-제외-열린-질문-details">
+            <summary>미결정과 제외 - 열린 질문</summary>
+            <div class="details-body">
+<ul>
           <li><code>Selectable</code>을 쓰지 않는 상태에서 패드/키보드 방향 이동을 어떻게 보완할지 정해야 한다.</li>
           <li><code>MyRadio</code>의 명명된 상태 필드를 Editor에서 자동 구성하려면 context menu로 충분한지, custom inspector까지 갈지 정해야 한다.</li>
           <li>현재 <code>MyRadio</code>는 <code>Graphic</code>이 없으면 경고하지만, 클릭용 raycast target을 자동 생성하지는 않는다.</li>
         </ul>
-      </details>
-
-      <details id="결정-사유">
-        <summary>결정 사유</summary>
-        <table>
+            </div>
+          </details>
+        </div>
+      </section>
+        </div>
+      </article>
+      <article id="결정-사유" class="page" data-page="결정-사유">
+        <h2>결정 사유</h2>
+        <div class="page-body">
+      <section class="section-group">
+        <div class="section-group-body">
+          <details id="결정-사유-details">
+            <summary>결정 사유</summary>
+            <div class="details-body">
+<table>
           <thead>
             <tr>
               <th>날짜</th>
@@ -844,16 +608,6 @@
               <td>2026-07-17</td>
               <td><code>1.7.14</code> 포커스 콜백 릴리스</td>
               <td><code>MyButton</code>과 <code>MyRadio</code>에 각 타입 소유의 <code>FocusInterface</code>를 추가하고, 실제 포커스 콜백은 사운드 지연·중복 억제와 분리했다. UGUI <code>Selectable</code>의 범용 콜백은 기존 <code>MySelectable</code>을 유지하되 interactable 해제와 비활성화에서도 select/deselect 짝을 보장하도록 보강했다.</td>
-            </tr>
-            <tr>
-              <td>2026-06-18</td>
-              <td><code>Design.html</code> 기준 정리</td>
-              <td><code>MyRadio</code> 설계 중 나온 결정과 보류점을 프로젝트 문서로 보존하기 위해 작성했다.</td>
-            </tr>
-            <tr>
-              <td>2026-06-18</td>
-              <td>본문을 컴포넌트별 섹션으로 재구성</td>
-              <td>주제별 분류보다 타입별 책임과 결정 이유를 찾기 쉽게 만들기 위해 구조를 바꿨다.</td>
             </tr>
             <tr>
               <td>2026-06-18</td>
@@ -1052,46 +806,90 @@
             </tr>
           </tbody>
         </table>
-      </details>
-    </div>
-  </main>
+            </div>
+          </details>
+        </div>
+      </section>
+        </div>
+      </article>
+    </main>
   </div>
-
+  <dialog id="imageLightbox" class="image-lightbox" aria-label="원본 이미지 보기">
+    <div class="image-lightbox-toolbar">
+      <span id="imageLightboxTitle" class="image-lightbox-title"></span>
+      <button type="button" class="image-lightbox-close" aria-label="닫기">&times;</button>
+    </div>
+    <div class="image-lightbox-stage"><img id="imageLightboxImage" alt=""></div>
+    <div class="image-lightbox-actions"><a id="imageLightboxOriginal" class="image-lightbox-original" target="_blank" rel="noopener noreferrer">원본 열기</a></div>
+  </dialog>
   <script>
     (() => {
-      // Mines-style persistent planning document nav offset
-      let offsetFrame = 0;
-      const floatingNav = document.querySelector(".side-nav, .design-floating-nav");
-      const header = document.querySelector("body > header");
-      const navGap = 16;
+      const pages = Array.from(document.querySelectorAll("[data-page]"));
+      const links = Array.from(document.querySelectorAll("[data-page-link]"));
+      const main = document.querySelector("main");
+      const pageIds = new Set(pages.map(page => page.dataset.page));
+      const firstPageId = pages[0]?.dataset.page;
 
-      const updateFloatingNavOffset = () => {
-        if (!floatingNav || !header) {
-          return;
-        }
-
-        const headerBottom = header.getBoundingClientRect().bottom;
-        const top = Math.max(navGap, Math.ceil(headerBottom + navGap));
-        floatingNav.style.setProperty("--side-nav-top", `${top}px`);
-        floatingNav.style.setProperty("--side-nav-bottom-gap", `${navGap}px`);
+      const resolvePageId = value => {
+        if (pageIds.has(value)) return value;
+        return document.getElementById(value)?.closest("[data-page]")?.dataset.page || firstPageId;
       };
 
-      const scheduleFloatingNavOffset = () => {
-        if (offsetFrame) {
-          return;
-        }
-
-        offsetFrame = window.requestAnimationFrame(() => {
-          offsetFrame = 0;
-          updateFloatingNavOffset();
-        });
+      const showPage = (value, scrollToTop) => {
+        const pageId = resolvePageId(value);
+        if (!pageId) return;
+        pages.forEach(page => page.classList.toggle("is-active", page.dataset.page === pageId));
+        links.forEach(link => link.classList.toggle("is-active", link.dataset.pageLink === pageId));
+        if (scrollToTop) main?.scrollTo({ top: 0, left: 0, behavior: "auto" });
       };
 
-      window.addEventListener("scroll", scheduleFloatingNavOffset, { passive: true });
-      window.addEventListener("resize", scheduleFloatingNavOffset);
-      updateFloatingNavOffset();
+      links.forEach(link => link.addEventListener("click", event => {
+        event.preventDefault();
+        const pageId = link.dataset.pageLink;
+        history.pushState(null, "", "#" + pageId);
+        showPage(pageId, true);
+      }));
+
+      window.addEventListener("popstate", () => showPage(decodeURIComponent(location.hash.slice(1)), true));
+      showPage(decodeURIComponent(location.hash.slice(1)), false);
     })();
   </script>
+  <script>
+    (() => {
+      const dialog = document.getElementById("imageLightbox");
+      if (!dialog || typeof dialog.showModal !== "function") return;
 
+      const image = document.getElementById("imageLightboxImage");
+      const title = document.getElementById("imageLightboxTitle");
+      const original = document.getElementById("imageLightboxOriginal");
+      const closeButton = dialog.querySelector(".image-lightbox-close");
+      const imagePattern = /\.(avif|bmp|gif|jpe?g|png|svg|webp)([?#].*)?$/i;
+
+      const closeLightbox = () => { if (dialog.open) dialog.close(); };
+      document.addEventListener("click", event => {
+        if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+        const link = event.target.closest("a[href]");
+        if (!link || !link.querySelector("img")) return;
+        const href = link.getAttribute("href");
+        if (!href || !imagePattern.test(href)) return;
+        event.preventDefault();
+        const source = event.target.closest("img") || link.querySelector("img");
+        const label = source.getAttribute("alt")?.trim() || decodeURIComponent(href.split(/[?#]/)[0].split("/").pop()) || "이미지";
+        image.src = href;
+        image.alt = label;
+        title.textContent = label;
+        original.href = href;
+        dialog.showModal();
+      });
+      closeButton?.addEventListener("click", closeLightbox);
+      dialog.addEventListener("click", event => { if (event.target === dialog) closeLightbox(); });
+      dialog.addEventListener("close", () => {
+        image.removeAttribute("src");
+        image.alt = "";
+        title.textContent = "";
+        original.removeAttribute("href");
+      });
+    })();
+  </script>
 </body>
 </html>
