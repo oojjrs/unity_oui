@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.7.15
+
+- `MyButton`에 serialized `Animator` 참조와 public get-only `Animator` 속성을 추가했습니다.
+- 외부에서 읽는 `Animator` 참조와 기존 `OuiPlayAnimation` 계열의 동일 GameObject trigger 경로를 구분해 문서화했습니다.
+
 ## 1.7.14
 
 - `MyButton`과 `MyRadio`에 동기식 포커스 진입·이탈 콜백을 제공하는 각 타입의 `FocusInterface`를 추가했습니다.

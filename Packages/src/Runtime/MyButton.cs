@@ -49,6 +49,8 @@ namespace oojjrs.oui
             void OnHoverExit();
         }
 
+        [SerializeField]
+        private Animator _animator;
         private CallbackInterface[] _callbacks;
         private FocusInterface[] _focuses;
         private Coroutine _focusHoverSoundCoroutine;
@@ -79,6 +81,7 @@ namespace oojjrs.oui
         [SerializeField]
         private SoundOverrides _soundOverrides;
 
+        public Animator Animator => _animator;
         public ClickSoundEnum ClickSound { get; set; }
         public bool IsInteractable
         {

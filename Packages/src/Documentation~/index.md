@@ -18,7 +18,7 @@ https://github.com/oojjrs/unity_oui.git?path=/Packages/src
 
 ## 버튼
 
-`MyButton`은 Unity `Button` 컴포넌트 위에서 클릭 콜백, 포커스 진입·이탈 콜백, 호버 콜백, 프레스 콜백, 더블 클릭 콜백, 쿨다운, 애니메이션 트리거, pointer/focus 기반 hover 사운드와 클릭 사운드 재생을 처리합니다. 버튼의 이미지 참조는 `MyImage` 기준으로 맞춰 `Sprite` 갱신이 다른 이미지 래퍼와 같은 경로를 사용합니다.
+`MyButton`은 Unity `Button` 컴포넌트 위에서 클릭 콜백, 포커스 진입·이탈 콜백, 호버 콜백, 프레스 콜백, 더블 클릭 콜백, 쿨다운, 애니메이션 트리거, pointer/focus 기반 hover 사운드와 클릭 사운드 재생을 처리합니다. 버튼의 이미지 참조는 `MyImage` 기준으로 맞춰 `Sprite` 갱신이 다른 이미지 래퍼와 같은 경로를 사용합니다. Inspector에서 연결한 `Animator`는 public get-only `Animator` 속성으로 읽을 수 있으며, 이 참조는 기존 `OuiPlayAnimation` 계열이 같은 GameObject의 `Animator`를 사용하는 trigger 경로와 구분됩니다.
 
 콜백을 받을 컴포넌트는 필요한 인터페이스를 구현합니다.
 
