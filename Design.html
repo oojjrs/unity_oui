@@ -587,7 +587,7 @@
           <li><code>IPointerDownHandler</code>: 왼쪽 버튼이면 현재 EventSystem 선택 오브젝트로 지정한 뒤 현재 값의 반대값을 미리 보여주는 pressed preview 상태로 바꾼다.</li>
           <li><code>IPointerUpHandler</code>: 왼쪽 버튼이면 click 성공 여부가 확정되기 전이므로 현재 논리값 기준의 Normal 또는 Selected enum 상태로 되돌린다.</li>
           <li><code>IPointerClickHandler</code>: 왼쪽 버튼이면 <code>OuiClick()</code>을 실행하고, 값이 바뀌면 현재 EventSystem 선택 여부에 따라 반대값의 Selected 또는 Normal 상태로 확정한다.</li>
-          <li><code>ISelectHandler</code> / <code>IDeselectHandler</code>: 포인터와 패드/키보드의 EventSystem 선택을 포커스 진입·이탈로 보고 <code>FocusInterface</code> 콜백을 즉시 호출한다. 라디오는 진입 콜백보다 먼저 Selected enum 상태를 반영한다. focus hover 사운드는 별도로 예약 재생하며, 같은 프레임에 click이 실행되거나 pointer hover 사운드가 이미 재생되면 취소한다. 포커스 해제는 EventSystem 갱신 타이밍에 기대지 않고 Normal 상태로 내린다.</li>
+          <li><code>ISelectHandler</code> / <code>IDeselectHandler</code>: 포인터와 패드/키보드의 EventSystem 선택을 포커스 진입·이탈로 보고 <code>FocusInterface</code> 콜백을 즉시 호출한다. 컴포넌트 시작 전에 이미 현재 선택이었다면 <code>Start()</code>에서 진입 콜백을 한 번 보충한다. 라디오는 진입 콜백보다 먼저 Selected enum 상태를 반영한다. focus hover 사운드는 별도로 예약 재생하며, 같은 프레임에 click이 실행되거나 pointer hover 사운드가 이미 재생되면 취소한다. 포커스 해제는 EventSystem 갱신 타이밍에 기대지 않고 Normal 상태로 내린다.</li>
           <li><code>ISubmitHandler</code>: 가짜 pressed 연출 없이 <code>OuiClick()</code>만 실행한다.</li>
         </ul>
         <div class="note amber">
@@ -750,7 +750,7 @@
         <p><code>MyRadio</code>는 <code>MyButton</code>을 요구하지 않고, <code>MyButton</code>의 nested type도 직접 쓰지 않는다. 대신 <code>SoundOverrides</code>, <code>FocusInterface</code>, <code>HoverInterface</code>, <code>IsInteractable</code> 계약을 <code>MyRadio</code> 소유로 복제한다. 라디오의 click은 on/off 선택 변경 하나만 의미하며 그 동작이 switch이므로, 별도 <code>ClickSound</code> 정책은 만들지 않는다. 기본 재생은 switch SFX이고, 인스턴스별 대체가 필요할 때만 <code>SoundOverrides.Click</code>을 쓴다. 연출 표시는 상태별 GameObject 필드를 <code>MyRadio</code>가 직접 제어한다.</p>
         <div class="decision">
           <strong>포커스 콜백과 사운드 분리</strong>
-          <p><code>MyButton.FocusInterface</code>와 <code>MyRadio.FocusInterface</code>는 EventSystem 선택 변경에 맞춰 동기 호출한다. focus hover 사운드만 다음 프레임에 click/pointer hover 중복을 확인하므로, 사운드가 취소되어도 실제 포커스 콜백은 취소하지 않는다.</p>
+          <p><code>MyButton.FocusInterface</code>와 <code>MyRadio.FocusInterface</code>는 EventSystem 선택 변경에 맞춰 동기 호출한다. 시작 전이나 재활성화 전에 이미 현재 선택이었다면 현재 상태를 동기화해 진입 콜백을 한 번만 보충한다. 이 동기화는 새 선택 입력이 아니므로 focus hover 사운드를 다시 예약하지 않는다. focus hover 사운드만 다음 프레임에 click/pointer hover 중복을 확인하므로, 사운드가 취소되어도 실제 포커스 콜백은 취소하지 않는다.</p>
         </div>
       </details>
 
@@ -790,7 +790,7 @@
         <div class="note amber">
           <p>이 결정의 대가는 기본 UGUI navigation 그래프의 자동 이동을 잃을 수 있다는 점이다. <code>SetSelectedGameObject()</code>는 아무 오브젝트나 받을 수 있지만, 방향 이동 탐색은 기본적으로 <code>Selectable</code> 생태계에 기대는 부분이 많다.</p>
         </div>
-        <p><code>MySelectable</code>은 기존 UGUI <code>Selectable</code>의 select/deselect 콜백을 감싸는 타입이다. <code>MyInput</code>, <code>MySlider</code>와 다른 UGUI <code>Selectable</code> 기반 컨트롤의 범용 경로로 유지하고, interactable 해제나 비활성화에서도 진입한 선택의 deselect 콜백을 한 번 보장한다. <code>MyRadio</code>는 <code>Selectable</code>을 쓰지 않으므로 직접 관계를 만들지 않고 자체 <code>FocusInterface</code>를 사용한다.</p>
+        <p><code>MySelectable</code>은 기존 UGUI <code>Selectable</code>의 select/deselect 콜백을 감싸는 타입이다. <code>MyInput</code>, <code>MySlider</code>와 다른 UGUI <code>Selectable</code> 기반 컨트롤의 범용 경로로 유지하고, 시작 전에 이미 현재 선택인 경우와 재활성화 시 선택 상태를 동기화한다. interactable 해제나 비활성화에서도 진입한 선택의 deselect 콜백을 한 번 보장한다. <code>MyRadio</code>는 <code>Selectable</code>을 쓰지 않으므로 직접 관계를 만들지 않고 자체 <code>FocusInterface</code>를 사용한다.</p>
       </details>
 
       <details id="ui와-편의-시스템-editor-prefab-제작-보조">
@@ -830,6 +830,11 @@
             </tr>
           </thead>
           <tbody>
+            <tr>
+              <td>2026-07-17</td>
+              <td><code>1.7.16</code> 초기 포커스 동기화 패치</td>
+              <td>EventSystem은 이미 선택된 같은 오브젝트에 <code>OnSelect</code>를 다시 보내지 않으므로, <code>MyButton</code>, <code>MyRadio</code>, <code>MySelectable</code>이 시작·재활성화 시 현재 선택을 동기화한다. 실제 <code>OnSelect</code>와 겹쳐도 진입 콜백은 한 번만 호출하고, 상태 보충 과정에서는 focus hover 사운드를 다시 재생하지 않는다.</td>
+            </tr>
             <tr>
               <td>2026-07-17</td>
               <td><code>1.7.15</code> <code>Animator</code> 참조 노출 릴리스</td>

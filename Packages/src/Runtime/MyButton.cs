@@ -59,6 +59,7 @@ namespace oojjrs.oui
         private bool _hoverSoundDisabled;
         private bool _isCooldowning;
         private bool _isFocused;
+        private bool _isStarted;
         [Tooltip("켜면 비활성 상태에서도 이미지를 숨기지 않고 비활성 색상으로 표시합니다.")]
         [SerializeField]
         private bool _isImageVisibleWhenDisabled;
@@ -185,6 +186,9 @@ namespace oojjrs.oui
         private void OnEnable()
         {
             IsInteractable = IsInteractable;
+
+            if (Application.isPlaying && _isStarted)
+                SynchronizeFocus();
         }
 
         private void OnValidate()
@@ -199,6 +203,9 @@ namespace oojjrs.oui
 
             if (_callbacks.Length <= 0)
                 Debug.LogWarning($"{name}> DON'T HAVE CALLBACK FUNCTION.");
+
+            _isStarted = true;
+            SynchronizeFocus();
         }
 
         void IDeselectHandler.OnDeselect(BaseEventData eventData)
@@ -238,7 +245,7 @@ namespace oojjrs.oui
 
         private void EnterFocus()
         {
-            if (_isFocused)
+            if ((_isStarted == false) || _isFocused)
                 return;
 
             _isFocused = true;
@@ -262,6 +269,15 @@ namespace oojjrs.oui
                 foreach (var focus in _focuses)
                     focus.OnFocusExit();
             }
+        }
+
+        private void SynchronizeFocus()
+        {
+            var eventSystem = EventSystem.current;
+            if (IsInteractable && (eventSystem != null) && (eventSystem.currentSelectedGameObject == gameObject))
+                EnterFocus();
+            else
+                ExitFocus();
         }
 
         public void OnClick()

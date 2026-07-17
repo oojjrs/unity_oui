@@ -45,9 +45,9 @@ public sealed class StartButton : MonoBehaviour, MyButton.CallbackInterface, MyB
 }
 ```
 
-전역 UI 사운드는 `MyControl.Audio`에 연결할 수 있고, 개별 버튼은 인스펙터의 사운드 오버라이드로 별도 `AudioSource`를 사용할 수 있습니다. focus hover 사운드는 click 또는 pointer hover 사운드와 같은 프레임에 겹치면 재생하지 않습니다. `FocusInterface` 콜백은 이 사운드 예약과 분리되어 EventSystem 선택 변경 시 즉시 호출됩니다.
+전역 UI 사운드는 `MyControl.Audio`에 연결할 수 있고, 개별 버튼은 인스펙터의 사운드 오버라이드로 별도 `AudioSource`를 사용할 수 있습니다. focus hover 사운드는 click 또는 pointer hover 사운드와 같은 프레임에 겹치면 재생하지 않습니다. `FocusInterface` 콜백은 이 사운드 예약과 분리되어 EventSystem 선택 변경 시 즉시 호출됩니다. 컴포넌트가 시작되기 전에 이미 EventSystem의 현재 선택이었다면 시작 시 진입 콜백을 한 번 보충하며, 이 초기 동기화는 focus hover 사운드를 다시 재생하지 않습니다.
 
-`MyRadio`는 `Selectable`을 요구하지 않으므로 자체 `MyRadio.FocusInterface`를 제공합니다. `MyInput`, `MySlider`처럼 UGUI `Selectable` 기반 컨트롤은 같은 GameObject에 `MySelectable`을 붙여 `OnSelect()`와 `OnDeselect()` 콜백을 사용할 수 있습니다.
+`MyRadio`는 `Selectable`을 요구하지 않으므로 자체 `MyRadio.FocusInterface`를 제공합니다. `MyInput`, `MySlider`처럼 UGUI `Selectable` 기반 컨트롤은 같은 GameObject에 `MySelectable`을 붙여 `OnSelect()`와 `OnDeselect()` 콜백을 사용할 수 있으며, `MySelectable`도 시작 시 이미 선택된 상태를 같은 방식으로 동기화합니다.
 
 ## 값 표시
 

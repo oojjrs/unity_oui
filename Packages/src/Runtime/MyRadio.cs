@@ -83,6 +83,7 @@ namespace oojjrs.oui
         private MyImage[] _images;
         private InitializerInterface _initializer;
         private bool _isFocused;
+        private bool _isStarted;
         [SerializeField]
         private bool _isInteractable = true;
         [SerializeField]
@@ -214,6 +215,9 @@ namespace oojjrs.oui
         private void OnEnable()
         {
             IsInteractable = _isInteractable;
+
+            if (Application.isPlaying && _isStarted)
+                SynchronizeFocus();
         }
 
         private void OnValidate()
@@ -229,6 +233,12 @@ namespace oojjrs.oui
             var group = GetComponentInParent<GroupInterface>();
             if (((group == null) || (group.Contains(this) == false)) && (_initializer != null))
                 IsOn = _initializer.InitialValue;
+
+            if (Application.isPlaying)
+            {
+                _isStarted = true;
+                SynchronizeFocus();
+            }
         }
 
         void IDeselectHandler.OnDeselect(BaseEventData eventData)
@@ -328,7 +338,7 @@ namespace oojjrs.oui
 
         private void EnterFocus()
         {
-            if (_isFocused)
+            if ((_isStarted == false) || _isFocused)
                 return;
 
             _isFocused = true;
@@ -351,6 +361,27 @@ namespace oojjrs.oui
             {
                 foreach (var focus in _focuses)
                     focus.OnFocusExit();
+            }
+        }
+
+        private void SynchronizeFocus()
+        {
+            var eventSystem = EventSystem.current;
+            if (IsInteractable && (eventSystem != null) && (eventSystem.currentSelectedGameObject == gameObject))
+            {
+                if ((_state != State.OffToOnPressed) && (_state != State.OnToOffPressed))
+                {
+                    if (IsOn)
+                        SetState(State.OnSelected);
+                    else
+                        SetState(State.OffSelected);
+                }
+
+                EnterFocus();
+            }
+            else
+            {
+                ExitFocus();
             }
         }
 

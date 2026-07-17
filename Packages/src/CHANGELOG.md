@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.7.16
+
+- `MyButton`, `MyRadio`, `MySelectable`이 시작 전에 이미 EventSystem의 현재 선택인 경우 시작 시 포커스 진입 콜백을 한 번 보충하도록 했습니다.
+- 초기 선택 동기화와 실제 `OnSelect`가 겹쳐도 진입 콜백을 중복 호출하지 않고, 동기화 과정에서는 focus hover 사운드를 다시 재생하지 않습니다.
+
 ## 1.7.15
 
 - `MyButton`에 serialized `Animator` 참조와 public get-only `Animator` 속성을 추가했습니다.

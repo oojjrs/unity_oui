@@ -16,6 +16,7 @@ namespace oojjrs.oui
 
         private CallbackInterface[] Callbacks { get; set; }
         private bool IsSelected { get; set; }
+        private bool IsStarted { get; set; }
         public bool Interactable
         {
             get => GetComponent<Selectable>().interactable;
@@ -39,10 +40,19 @@ namespace oojjrs.oui
             Deselect();
         }
 
+        private void OnEnable()
+        {
+            if (Application.isPlaying && IsStarted)
+                SynchronizeSelection();
+        }
+
         private void Start()
         {
             if (Callbacks?.Length <= 0)
                 Debug.LogWarning($"{name}> DON'T HAVE CALLBACK FUNCTION.");
+
+            IsStarted = true;
+            SynchronizeSelection();
         }
 
         void IDeselectHandler.OnDeselect(BaseEventData eventData)
@@ -52,16 +62,8 @@ namespace oojjrs.oui
 
         void ISelectHandler.OnSelect(BaseEventData eventData)
         {
-            if (Interactable && (IsSelected == false))
-            {
-                IsSelected = true;
-
-                if (Callbacks != default)
-                {
-                    foreach (var callback in Callbacks)
-                        callback.OnSelect();
-                }
-            }
+            if (Interactable)
+                Select();
         }
 
         private void Deselect()
@@ -76,6 +78,29 @@ namespace oojjrs.oui
                 foreach (var callback in Callbacks)
                     callback.OnDeselect();
             }
+        }
+
+        private void Select()
+        {
+            if ((IsStarted == false) || IsSelected)
+                return;
+
+            IsSelected = true;
+
+            if (Callbacks != default)
+            {
+                foreach (var callback in Callbacks)
+                    callback.OnSelect();
+            }
+        }
+
+        private void SynchronizeSelection()
+        {
+            var eventSystem = EventSystem.current;
+            if (Interactable && (eventSystem != null) && (eventSystem.currentSelectedGameObject == gameObject))
+                Select();
+            else
+                Deselect();
         }
     }
 }
