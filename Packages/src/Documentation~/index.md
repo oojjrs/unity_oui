@@ -49,6 +49,10 @@ public sealed class StartButton : MonoBehaviour, MyButton.CallbackInterface, MyB
 
 `MyRadio`는 `Selectable`을 요구하지 않으므로 자체 `MyRadio.FocusInterface`를 제공합니다. `MyInput`, `MySlider`처럼 UGUI `Selectable` 기반 컨트롤은 같은 GameObject에 `MySelectable`을 붙여 `OnSelect()`와 `OnDeselect()` 콜백을 사용할 수 있으며, `MySelectable`도 시작 시 이미 선택된 상태를 같은 방식으로 동기화합니다.
 
+## 현재 선택 객체 감지
+
+`MyCurrentGameObjectDetector`는 매 프레임 `EventSystem.currentSelectedGameObject`를 확인하고 값이 바뀌었을 때만 같은 GameObject의 `CallbackInterface.Update(previousGameObject, currentGameObject)`를 호출합니다. 선택 해제로 `null`이 되거나 `null`에서 새 객체가 선택되는 전환도 전달하며, 특정 `Selectable`이나 게임별 포커스 정책에는 관여하지 않습니다. `_debugLog`를 켜면 이전·현재 객체 이름을 Unity Console에서 확인할 수 있습니다.
+
 ## 값 표시
 
 `MyText`, `MyImage`, `MyPortrait`는 UGUI `Text`와 `Image` 갱신을 간단한 프로퍼티로 감쌉니다. `MyImage.SetNativeSizeSprite(sprite, nativeSizeScale)`는 `sprite`를 설정한 뒤 `SetNativeSize()`를 호출하고 `nativeSizeScale` 배율을 적용합니다. `1f`는 100%, `0.5f`는 50%, `2f`는 200% 크기입니다. 단순히 값을 읽거나 크기 조정 없이 교체할 때는 기존 `Sprite`, `OverrideSprite` 프로퍼티를 사용합니다.
