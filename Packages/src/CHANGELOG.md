@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.8.1
+
+- `OuiFree()` 또는 비활성화 전까지 유지되는 인자 없는 `MyButton.OuiLock()`을 추가했습니다.
+- 인자 없는 Lock은 별도 감시 코루틴을 실행하지 않고 내부 singleton 조건으로 상태만 유지합니다.
+
 ## 1.8.0
 
 - `MyButton.LockInterface`와 `OuiLock()` / `OuiFree()`를 추가해 `Button.interactable`과 분리된 행동 잠금을 제공했습니다.

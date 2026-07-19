@@ -54,6 +54,13 @@ namespace oojjrs.oui
             bool KeepWaiting { get; }
         }
 
+        private sealed class InfiniteLock : LockInterface
+        {
+            bool LockInterface.KeepWaiting => true;
+        }
+
+        private static readonly InfiniteLock __infiniteLock = new();
+
         [SerializeField]
         private Animator _animator;
         private CallbackInterface[] _callbacks;
@@ -388,6 +395,11 @@ namespace oojjrs.oui
             }
         }
 
+        public void OuiLock()
+        {
+            OuiLock(__infiniteLock);
+        }
+
         public void OuiLock(LockInterface condition)
         {
             if ((condition == null) || ((condition is Object unityObject) && (unityObject == null)))
@@ -406,7 +418,10 @@ namespace oojjrs.oui
 
             _lock = condition;
             lockVersion = _lockVersion;
-            _lockCoroutine = StartCoroutine(WatchLockCoroutine(condition, lockVersion));
+
+            if (object.ReferenceEquals(condition, __infiniteLock) == false)
+                _lockCoroutine = StartCoroutine(WatchLockCoroutine(condition, lockVersion));
+
             BlockPressForLock();
         }
 
