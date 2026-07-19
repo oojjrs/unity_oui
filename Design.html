@@ -429,6 +429,17 @@
           <strong><code>Animator</code> 참조 노출</strong>
           <p><code>MyButton</code>은 외부 연출 연결을 위해 serialized <code>Animator</code> 참조를 받고 public get-only <code>Animator</code> 속성으로 노출한다. 이 참조 표면은 기존 <code>OuiPlayAnimation</code> 계열이 같은 GameObject의 <code>Animator</code>에 trigger를 전달하는 동작과 구분하며, 별도 <code>MyAnimator</code> 타입이나 외부 패키지 의존성은 추가하지 않는다.</p>
         </div>
+        <div class="decision">
+          <strong><code>LockInterface</code> 행동 게이트</strong>
+          <p><code>OuiLock(LockInterface condition)</code>은 <code>Button.interactable</code>을 바꾸지 않고 클릭, 더블 클릭, 프레스 행동만 잠근다. 따라서 hover, focus, pressed 표현은 유지되고 행동 콜백과 클릭 사운드만 실행되지 않는다. 잠금 중에만 코루틴으로 <code>KeepWaiting</code>을 확인하며, 값이 <code>false</code>가 되면 자동으로 해제한다. 즉시 해제할 때는 <code>OuiFree()</code>를 사용한다.</p>
+        </div>
+        <div class="decision">
+          <strong>비활성화 경계에서 Lock 초기화</strong>
+          <p>Lock은 화면과 요청의 현재 활성 수명에 속하는 일시 상태로 본다. <code>OnDisable()</code>에서 감시 코루틴과 조건 참조를 지우고, <code>OnEnable()</code>에서는 이전 조건을 복구하지 않는다. 다시 잠가야 하는 소유자는 재활성화 시점에 새 조건으로 <code>OuiLock()</code>을 호출한다.</p>
+        </div>
+        <div class="note amber">
+          <p>Lock은 <code>MyButton.CallbackInterface</code>, <code>DoubleClickInterface</code>, <code>PressInterface</code>와 <code>MyToggle</code>의 자식 클릭 전달 경로를 막는다. Unity <code>Button.onClick</code>에 직접 등록한 별도 listener는 이 계약 밖이므로, 잠금이 필요한 행동은 MyButton 인터페이스 경로로 연결한다.</p>
+        </div>
         <table>
           <thead>
             <tr>
@@ -594,6 +605,11 @@
             </tr>
           </thead>
           <tbody>
+            <tr>
+              <td>2026-07-18</td>
+              <td><code>1.8.0</code> <code>MyButton</code> Lock/Free 행동 게이트</td>
+              <td><code>Button.interactable</code>을 끄면 disabled 표현까지 바뀌므로, 시각 상태를 유지한 채 행동만 막는 <code>LockInterface</code>, <code>OuiLock()</code>, <code>OuiFree()</code>를 추가했다. 클릭, 더블 클릭, 프레스와 <code>MyToggle</code> 우회 입력을 같은 계약으로 묶고, 조건 완료나 비활성화 시 자동 해제해 오래된 외부 상태를 다음 활성 수명으로 넘기지 않는다.</td>
+            </tr>
             <tr>
               <td>2026-07-17</td>
               <td><code>1.7.16</code> 초기 포커스 동기화 패치</td>

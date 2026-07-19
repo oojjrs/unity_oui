@@ -1,5 +1,17 @@
 # Changelog
 
+## 1.8.0
+
+- `MyButton.LockInterface`와 `OuiLock()` / `OuiFree()`를 추가해 `Button.interactable`과 분리된 행동 잠금을 제공했습니다.
+- Lock 중에는 hover, focus, pressed 표현을 유지하면서 클릭, 더블 클릭, 프레스 콜백과 클릭 사운드를 차단합니다.
+- `KeepWaiting` 조건이 끝나면 자동으로 해제하고, 수동 해제와 Lock 교체, 조건 구현체 파괴를 안전하게 처리합니다.
+- 비활성화 시 Lock을 초기화하고, `MyToggle`의 자식 클릭 전달 경로도 MyButton Lock을 따르도록 했습니다.
+
+## 1.7.17
+
+- `MyCurrentGameObjectDetector`를 추가해 `EventSystem.currentSelectedGameObject` 변경 시 이전 선택과 현재 선택을 콜백으로 전달하도록 했습니다.
+- 선택 객체 감지기 사용법을 README와 패키지 문서에 추가했습니다.
+
 ## 1.7.16
 
 - `MyButton`, `MyRadio`, `MySelectable`이 시작 전에 이미 EventSystem의 현재 선택인 경우 시작 시 포커스 진입 콜백을 한 번 보충하도록 했습니다.

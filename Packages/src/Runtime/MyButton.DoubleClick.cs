@@ -11,6 +11,9 @@ namespace oojjrs.oui
 
         public void OnDoubleClick()
         {
+            if (IsLocked)
+                return;
+
             if (_doubleClicks != null)
             {
                 foreach (var doubleClick in _doubleClicks)

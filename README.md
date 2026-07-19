@@ -18,7 +18,7 @@ https://github.com/oojjrs/unity_oui.git?path=/Packages/src
 
 ## 포함 기능
 
-- `MyButton`: 클릭, 포커스 진입·이탈, pointer/focus 기반 hover 사운드, 호버, 프레스, 더블 클릭 콜백과 버튼 사운드 재생을 다루며, 시작 전에 이미 선택된 포커스도 한 번 동기화합니다. Inspector에서 받은 `Animator`를 읽기 전용 속성으로 노출하고 이미지 갱신 표면은 `MyImage` 기준으로 맞춥니다. 기본 disabled 이미지는 숨기고, 옵션을 켜면 이미지를 유지한 채 disabled 색상으로 표시합니다.
+- `MyButton`: 클릭, 포커스 진입·이탈, pointer/focus 기반 hover 사운드, 호버, 프레스, 더블 클릭 콜백과 버튼 사운드 재생을 다루며, 시작 전에 이미 선택된 포커스도 한 번 동기화합니다. `OuiLock()`과 `OuiFree()`는 버튼의 interactable 표현을 유지한 채 행동 콜백을 일시적으로 잠급니다. Inspector에서 받은 `Animator`를 읽기 전용 속성으로 노출하고 이미지 갱신 표면은 `MyImage` 기준으로 맞춥니다. 기본 disabled 이미지는 숨기고, 옵션을 켜면 이미지를 유지한 채 disabled 색상으로 표시합니다.
 - `MyRadio`, `MyRadioGroup`: Unity `Toggle`, `ToggleGroup`, `Selectable`에 기대지 않고 상태별 GameObject 표시와 명시 배열 기반 라디오 선택 UI를 구성하며, 개별 라디오는 초기 선택 동기화를 포함한 포커스 진입·이탈 콜백을 제공합니다. 라디오별 이미지와 텍스트는 serialized 배열 참조와 setter-only `Sprite`/`Title` 표면으로 연결합니다.
 - `MySelectable`: Unity `Selectable` 기반 컨트롤의 select/deselect 콜백을 연결하고, 초기 선택과 interactable 해제·비활성화에서도 콜백 짝을 한 번 유지합니다.
 - `MyCurrentGameObjectDetector`: `EventSystem.currentSelectedGameObject`의 변경을 감지해 같은 GameObject의 콜백 구현체에 이전 선택과 현재 선택을 전달합니다.

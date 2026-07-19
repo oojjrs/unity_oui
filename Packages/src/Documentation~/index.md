@@ -20,6 +20,24 @@ https://github.com/oojjrs/unity_oui.git?path=/Packages/src
 
 `MyButton`은 Unity `Button` 컴포넌트 위에서 클릭 콜백, 포커스 진입·이탈 콜백, 호버 콜백, 프레스 콜백, 더블 클릭 콜백, 쿨다운, 애니메이션 트리거, pointer/focus 기반 hover 사운드와 클릭 사운드 재생을 처리합니다. 버튼의 이미지 참조는 `MyImage` 기준으로 맞춰 `Sprite` 갱신이 다른 이미지 래퍼와 같은 경로를 사용합니다. Inspector에서 연결한 `Animator`는 public get-only `Animator` 속성으로 읽을 수 있으며, 이 참조는 기존 `OuiPlayAnimation` 계열이 같은 GameObject의 `Animator`를 사용하는 trigger 경로와 구분됩니다.
 
+`OuiLock(LockInterface condition)`은 `Button.interactable`을 바꾸지 않고 클릭, 더블 클릭, 프레스 행동을 잠급니다. 따라서 hover, focus, pressed 전환과 시각 표현은 유지되지만 `MyButton`이 소유한 행동 콜백과 클릭 사운드는 실행되지 않습니다. `condition.KeepWaiting`이 `true`인 동안만 잠금이 유지되고 `false`가 되면 자동으로 해제됩니다. 즉시 해제하려면 `OuiFree()`를 호출합니다. Lock은 비활성화 경계를 넘기지 않으며 `OnDisable()`에서 초기화됩니다.
+
+조건을 제공할 컴포넌트는 `LockInterface`를 구현합니다.
+
+```csharp
+using oojjrs.oui;
+using UnityEngine;
+
+public sealed class RequestLock : MonoBehaviour, MyButton.LockInterface
+{
+    public bool IsRequesting { get; set; }
+
+    bool MyButton.LockInterface.KeepWaiting => IsRequesting;
+}
+```
+
+요청을 시작할 때 `button.OuiLock(requestLock)`을 호출하면 `IsRequesting`이 `false`가 된 뒤 자동으로 해제됩니다. 한 번에 하나의 조건만 유지하며, 새 `OuiLock()` 호출은 이전 조건을 교체합니다. Unity `Button.onClick`에 직접 등록한 별도 listener는 `MyButton` 행동 게이트의 대상이 아니므로, 잠금이 필요한 동작은 `MyButton.CallbackInterface`와 관련 행동 인터페이스로 연결합니다.
+
 콜백을 받을 컴포넌트는 필요한 인터페이스를 구현합니다.
 
 ```csharp

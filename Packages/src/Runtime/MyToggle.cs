@@ -100,7 +100,8 @@ namespace oojjrs.oui
 
         private void __OnPointerClick(PointerEventData eventData)
         {
-            (this as MyButton.CallbackInterface).OnClick();
+            if (GetComponent<MyButton>().IsLocked == false)
+                (this as MyButton.CallbackInterface).OnClick();
         }
     }
 }

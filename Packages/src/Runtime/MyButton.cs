@@ -49,6 +49,11 @@ namespace oojjrs.oui
             void OnHoverExit();
         }
 
+        public interface LockInterface
+        {
+            bool KeepWaiting { get; }
+        }
+
         [SerializeField]
         private Animator _animator;
         private CallbackInterface[] _callbacks;
@@ -57,6 +62,12 @@ namespace oojjrs.oui
         private HoverInterface[] _hovers;
         [SerializeField]
         private bool _hoverSoundDisabled;
+        [SerializeField]
+        private MyImage _image;
+        [SerializeField]
+        private Color _imageDisableColor = Color.gray;
+        [SerializeField]
+        private Color _imageNormalColor = Color.white;
         private bool _isCooldowning;
         private bool _isFocused;
         private bool _isStarted;
@@ -66,24 +77,26 @@ namespace oojjrs.oui
         private bool _isInteractableBeforeCooldown;
         private int _lastClickFrame = -1;
         private int _lastHoverSoundFrame = -1;
+        private LockInterface _lock;
+        private Coroutine _lockCoroutine;
+        private int _lockVersion;
         [SerializeField]
-        private MyImage _image;
-        [SerializeField]
-        private Color _imageDisableColor = Color.gray;
-        [SerializeField]
-        private Color _imageNormalColor = Color.white;
+        private SoundOverrides _soundOverrides;
         [SerializeField]
         private MyText _text;
         [SerializeField]
         private Color _textDisableColor = Color.gray;
         [SerializeField]
         private Color _textNormalColor = Color.white;
-        // abc 컨벤션이 깨졌으나 사용성 때문에 뒤로 미뤄두었다. 아무데서나 따라하지 말 것.
-        [SerializeField]
-        private SoundOverrides _soundOverrides;
 
         public Animator Animator => _animator;
         public ClickSoundEnum ClickSound { get; set; }
+        [System.Obsolete("Use IsInteractable instead.")]
+        public bool Interactable
+        {
+            get => IsInteractable;
+            set => IsInteractable = value;
+        }
         public bool IsInteractable
         {
             get => GetComponent<Button>().interactable;
@@ -113,12 +126,7 @@ namespace oojjrs.oui
                 }
             }
         }
-        [System.Obsolete("Use IsInteractable instead.")]
-        public bool Interactable
-        {
-            get => IsInteractable;
-            set => IsInteractable = value;
-        }
+        public bool IsLocked => _lock != null;
         public Sprite Sprite
         {
             get
@@ -161,6 +169,11 @@ namespace oojjrs.oui
 
         private void OnDisable()
         {
+            var notifyPress = (Application.isPlaying) && (MyControl.IsQuitting == false) && (_pressing);
+
+            OuiFree();
+            ReleasePress(false, notifyPress);
+
             if ((Application.isPlaying == false) || MyControl.IsQuitting)
                 return;
 
@@ -243,6 +256,16 @@ namespace oojjrs.oui
             }
         }
 
+        private void CompleteLock(LockInterface condition, int lockVersion)
+        {
+            if ((_lockVersion == lockVersion) && (object.ReferenceEquals(_lock, condition)))
+            {
+                ++_lockVersion;
+                _lock = null;
+                _lockCoroutine = null;
+            }
+        }
+
         private void EnterFocus()
         {
             if ((_isStarted == false) || _isFocused)
@@ -271,18 +294,12 @@ namespace oojjrs.oui
             }
         }
 
-        private void SynchronizeFocus()
-        {
-            var eventSystem = EventSystem.current;
-            if (IsInteractable && (eventSystem != null) && (eventSystem.currentSelectedGameObject == gameObject))
-                EnterFocus();
-            else
-                ExitFocus();
-        }
-
         public void OnClick()
         {
             _lastClickFrame = Time.frameCount;
+
+            if (IsLocked)
+                return;
 
             if (_callbacks != null)
             {
@@ -357,6 +374,40 @@ namespace oojjrs.oui
                 _isCooldowning = false;
                 IsInteractable = _isInteractableBeforeCooldown;
             }
+        }
+
+        public void OuiFree()
+        {
+            ++_lockVersion;
+            _lock = null;
+
+            if (_lockCoroutine != null)
+            {
+                StopCoroutine(_lockCoroutine);
+                _lockCoroutine = null;
+            }
+        }
+
+        public void OuiLock(LockInterface condition)
+        {
+            if ((condition == null) || ((condition is Object unityObject) && (unityObject == null)))
+                throw new System.ArgumentNullException(nameof(condition));
+
+            var lockVersion = _lockVersion;
+            var keepWaiting = condition.KeepWaiting;
+
+            if (_lockVersion != lockVersion)
+                return;
+
+            OuiFree();
+
+            if ((Application.isPlaying == false) || (isActiveAndEnabled == false) || (keepWaiting == false))
+                return;
+
+            _lock = condition;
+            lockVersion = _lockVersion;
+            _lockCoroutine = StartCoroutine(WatchLockCoroutine(condition, lockVersion));
+            BlockPressForLock();
         }
 
         public void OuiPlayAnimation(string trigger)
@@ -456,6 +507,42 @@ namespace oojjrs.oui
 
                 Destroy(instance.gameObject, instance.clip.length);
             }
+        }
+
+        private void SynchronizeFocus()
+        {
+            var eventSystem = EventSystem.current;
+            if (IsInteractable && (eventSystem != null) && (eventSystem.currentSelectedGameObject == gameObject))
+                EnterFocus();
+            else
+                ExitFocus();
+        }
+
+        private IEnumerator WatchLockCoroutine(LockInterface condition, int lockVersion)
+        {
+            while ((_lockVersion == lockVersion) && (object.ReferenceEquals(_lock, condition)))
+            {
+                yield return null;
+
+                if ((_lockVersion != lockVersion) || (object.ReferenceEquals(_lock, condition) == false) || ((condition is Object unityObject) && (unityObject == null)))
+                    break;
+
+                bool keepWaiting;
+                try
+                {
+                    keepWaiting = condition.KeepWaiting;
+                }
+                catch
+                {
+                    CompleteLock(condition, lockVersion);
+                    throw;
+                }
+
+                if (keepWaiting == false)
+                    break;
+            }
+
+            CompleteLock(condition, lockVersion);
         }
     }
 }
