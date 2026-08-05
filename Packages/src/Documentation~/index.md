@@ -18,9 +18,11 @@ https://github.com/oojjrs/unity_oui.git?path=/Packages/src
 
 ## 버튼
 
-`MyButton`은 Unity `Button` 컴포넌트 위에서 클릭 콜백, 포커스 진입·이탈 콜백, 호버 콜백, 프레스 콜백, 더블 클릭 콜백, 쿨다운, 애니메이션 트리거, pointer/focus 기반 hover 사운드와 클릭 사운드 재생을 처리합니다. 버튼의 이미지 참조는 `MyImage` 기준으로 맞춰 `Sprite` 갱신이 다른 이미지 래퍼와 같은 경로를 사용합니다. Inspector에서 연결한 `Animator`는 public get-only `Animator` 속성으로 읽을 수 있으며, 이 참조는 기존 `OuiPlayAnimation` 계열이 같은 GameObject의 `Animator`를 사용하는 trigger 경로와 구분됩니다.
+`MyButton`은 Unity `Button` 컴포넌트 위에서 클릭 콜백, 포커스 진입·이탈 콜백, 호버 콜백, 즉시 프레스 콜백, 지연 홀드 콜백, 더블 클릭 콜백, 쿨다운, 애니메이션 트리거, pointer/focus 기반 hover 사운드와 클릭 사운드 재생을 처리합니다. 버튼의 이미지 참조는 `MyImage` 기준으로 맞춰 `Sprite` 갱신이 다른 이미지 래퍼와 같은 경로를 사용합니다. Inspector에서 연결한 `Animator`는 public get-only `Animator` 속성으로 읽을 수 있으며, 이 참조는 기존 `OuiPlayAnimation` 계열이 같은 GameObject의 `Animator`를 사용하는 trigger 경로와 구분됩니다.
 
-`OuiLock()`은 `Button.interactable`을 바꾸지 않고 클릭, 더블 클릭, 프레스 행동을 잠급니다. 따라서 hover, focus, pressed 전환과 시각 표현은 유지되지만 `MyButton`이 소유한 행동 콜백과 클릭 사운드는 실행되지 않습니다. 인자 없는 `OuiLock()`은 `OuiFree()`를 호출하거나 오브젝트가 비활성화될 때까지 유지됩니다. 조건부 잠금이 필요하면 `OuiLock(LockInterface condition)`을 사용하며, `condition.KeepWaiting`이 `false`가 되면 자동으로 해제됩니다. Lock은 비활성화 경계를 넘기지 않으며 `OnDisable()`에서 초기화됩니다.
+`PressInterface`는 유효한 왼쪽 pointer down 즉시 `OnPressStarted()`를 호출하고, 누르는 동안 `OnPressing(float elapsedSeconds)`, pointer up에서 `OnPressEnded()`를 호출합니다. `HoldInterface`는 같은 입력을 0.2초 동안 유지했을 때만 `OnHoldStarted()`를 호출하고, 이후 `OnHolding(float elapsedSeconds)`, pointer up에서 `OnHoldEnded()`를 호출합니다. 0.2초 전에 놓으면 Hold 콜백은 발생하지 않습니다. 두 인터페이스를 함께 구현하면 Press Started, Pressing, Hold Started, Holding, Hold Ended, Press Ended 순서로 진행되며 Hold 경과 시간은 0.2초 임계시간을 제외하고 Hold가 시작된 시점부터 계산합니다.
+
+`OuiLock()`은 `Button.interactable`을 바꾸지 않고 클릭, 더블 클릭, 프레스와 홀드 행동을 잠급니다. 따라서 hover, focus, pressed 전환과 시각 표현은 유지되지만 `MyButton`이 소유한 행동 콜백과 클릭 사운드는 실행되지 않습니다. 프레스나 홀드 도중 잠기면 시작된 Hold를 먼저 끝내고 Press를 끝낸 뒤 실제 pointer up의 중복 종료 콜백을 막습니다. 인자 없는 `OuiLock()`은 `OuiFree()`를 호출하거나 오브젝트가 비활성화될 때까지 유지됩니다. 조건부 잠금이 필요하면 `OuiLock(LockInterface condition)`을 사용하며, `condition.KeepWaiting`이 `false`가 되면 자동으로 해제됩니다. Lock은 비활성화 경계를 넘기지 않으며 `OnDisable()`에서 초기화됩니다.
 
 조건을 제공할 컴포넌트는 `LockInterface`를 구현합니다.
 

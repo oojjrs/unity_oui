@@ -170,13 +170,14 @@ namespace oojjrs.oui
             _callbacks = GetComponents<CallbackInterface>();
             _doubleClicks = GetComponents<DoubleClickInterface>();
             _focuses = GetComponents<FocusInterface>();
+            _holds = GetComponents<HoldInterface>();
             _hovers = GetComponents<HoverInterface>();
             _presses = GetComponents<PressInterface>();
         }
 
         private void OnDisable()
         {
-            var notifyPress = (Application.isPlaying) && (MyControl.IsQuitting == false) && (_pressing);
+            var notifyPress = (Application.isPlaying) && (MyControl.IsQuitting == false) && (_isPressing);
 
             OuiFree();
             ReleasePress(false, notifyPress);

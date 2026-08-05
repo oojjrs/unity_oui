@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.9.0
+
+- `MyButton.PressInterface`가 pointer down 즉시 `OnPressStarted()`를 호출하고, 누르는 동안 `OnPressing()`, pointer up에서 `OnPressEnded()`를 호출하도록 입력 계약을 바로잡았습니다.
+- 기존 0.2초 지연 프레스 동작은 `HoldInterface`의 `OnHoldStarted()`, `OnHolding()`, `OnHoldEnded()`로 분리했습니다.
+- 짧게 누르면 Hold 콜백을 호출하지 않고, Hold가 시작된 입력은 Hold Ended와 Press Ended 순서로 종료하도록 정리했습니다.
+- Lock과 비활성화에서 시작된 콜백의 종료 짝을 한 번 보장하고, 오른쪽 pointer up과 선행 down 없는 pointer up을 무시하도록 보강했습니다.
+
 ## 1.8.1
 
 - `OuiFree()` 또는 비활성화 전까지 유지되는 인자 없는 `MyButton.OuiLock()`을 추가했습니다.

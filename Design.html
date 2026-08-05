@@ -426,6 +426,10 @@
             <div class="details-body">
 <p><code>MyButton</code>은 일반 버튼 입력과 사운드 정책의 기존 기준이다. 내부 이미지 참조는 Unity <code>Image</code>가 아니라 <code>MyImage</code> 래퍼를 기준으로 맞춰, 버튼과 라디오가 같은 이미지 갱신 표면을 바라보게 한다. 기본 disabled 동작은 기존처럼 이미지를 숨기며, 버튼별 옵션을 켜면 이미지를 유지한 채 normal/disable 색상으로 전환한다. 텍스트는 계속 normal/disable 색상을 직접 전환한다. 하지만 <code>MyRadio</code>가 <code>MyButton</code>을 직접 조합하지는 않는다.</p>
         <div class="decision">
+          <strong><code>PressInterface</code>와 <code>HoldInterface</code> 분리</strong>
+          <p>일반 프레스는 pointer down 즉시 시작하고, 일정 시간 유지해야 동작하는 입력은 별도 Hold 계약으로 분리한다. <code>PressInterface</code>는 즉시 Started, 매 프레임 Pressing, pointer up의 Ended를 전달한다. <code>HoldInterface</code>는 0.2초를 유지한 뒤 Started와 Holding을 시작하며, Hold 경과 시간은 임계시간을 제외한다. 짧게 누르면 Hold 콜백은 발생하지 않고, 긴 입력은 Hold Ended 뒤 Press Ended 순서로 닫힌다. 일반 click은 별도 <code>CallbackInterface</code> 계약을 유지한다.</p>
+        </div>
+        <div class="decision">
           <strong><code>Animator</code> 참조 노출</strong>
           <p><code>MyButton</code>은 외부 연출 연결을 위해 serialized <code>Animator</code> 참조를 받고 public get-only <code>Animator</code> 속성으로 노출한다. 이 참조 표면은 기존 <code>OuiPlayAnimation</code> 계열이 같은 GameObject의 <code>Animator</code>에 trigger를 전달하는 동작과 구분하며, 별도 <code>MyAnimator</code> 타입이나 외부 패키지 의존성은 추가하지 않는다.</p>
         </div>
@@ -438,7 +442,7 @@
           <p>Lock은 화면과 요청의 현재 활성 수명에 속하는 일시 상태로 본다. <code>OnDisable()</code>에서 감시 코루틴과 조건 참조를 지우고, <code>OnEnable()</code>에서는 이전 조건을 복구하지 않는다. 다시 잠가야 하는 소유자는 재활성화 시점에 새 조건으로 <code>OuiLock()</code>을 호출한다.</p>
         </div>
         <div class="note amber">
-          <p>Lock은 <code>MyButton.CallbackInterface</code>, <code>DoubleClickInterface</code>, <code>PressInterface</code>와 <code>MyToggle</code>의 자식 클릭 전달 경로를 막는다. Unity <code>Button.onClick</code>에 직접 등록한 별도 listener는 이 계약 밖이므로, 잠금이 필요한 행동은 MyButton 인터페이스 경로로 연결한다.</p>
+          <p>Lock은 <code>MyButton.CallbackInterface</code>, <code>DoubleClickInterface</code>, <code>HoldInterface</code>, <code>PressInterface</code>와 <code>MyToggle</code>의 자식 클릭 전달 경로를 막는다. Unity <code>Button.onClick</code>에 직접 등록한 별도 listener는 이 계약 밖이므로, 잠금이 필요한 행동은 MyButton 인터페이스 경로로 연결한다.</p>
         </div>
         <table>
           <thead>
@@ -605,6 +609,11 @@
             </tr>
           </thead>
           <tbody>
+            <tr>
+              <td>2026-08-05</td>
+              <td><code>1.9.0</code> <code>MyButton</code> Press/Hold 입력 분리</td>
+              <td>Rebellion의 인트로 스킵을 위해 만든 0.2초 지연 입력이 일반 <code>PressInterface</code> 이름으로 남아 빠른 pointer down 콜백을 제공하지 못했다. Press는 즉시 입력 수명으로 바로잡고, 기존 지연 시작과 진행 시간은 <code>HoldInterface</code>로 분리해 두 동작을 같은 버튼에서 함께 사용할 수 있게 했다.</td>
+            </tr>
             <tr>
               <td>2026-07-19</td>
               <td><code>1.8.1</code> 인자 없는 <code>OuiLock()</code></td>

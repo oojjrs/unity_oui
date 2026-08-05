@@ -6,33 +6,56 @@ namespace oojjrs.oui
 {
     public partial class MyButton : IPointerDownHandler, IPointerUpHandler
     {
-        public interface PressInterface
+        public interface HoldInterface
         {
-            void OnDown();
-            void OnPressing(float time);
-            void OnUp();
+            void OnHoldStarted();
+            void OnHolding(float elapsedSeconds);
+            void OnHoldEnded();
         }
 
-        private static readonly WaitForSeconds __waitForSeconds = new(0.2f);
+        public interface PressInterface
+        {
+            void OnPressStarted();
+            void OnPressing(float elapsedSeconds);
+            void OnPressEnded();
+        }
 
+        private static readonly WaitForSeconds __holdStartDelay = new(0.2f);
+
+        private Coroutine _holdStartCoroutine;
+        private HoldInterface[] _holds;
+        private int _holdStartedCount;
+        private float _holdStartedTime;
+        private bool _isHolding;
         private bool _isPressBlockedUntilPointerUp;
-        private Coroutine _pressCoroutine;
+        private bool _isPressing;
         private PressInterface[] _presses;
-        private bool _pressing;
-        private float _pressTime;
+        private int _pressStartedCount;
+        private float _pressStartedTime;
 
         private void Update()
         {
-            if ((_presses != null) && (IsLocked == false))
+            if (IsLocked == false)
             {
-                if (_pressing)
+                if ((_isPressing) && (_presses != null))
                 {
                     foreach (var press in _presses)
                     {
-                        if ((_pressing == false) || IsLocked)
+                        if ((_isPressing == false) || IsLocked)
                             break;
 
-                        press.OnPressing(Time.time - _pressTime);
+                        press.OnPressing(Time.time - _pressStartedTime);
+                    }
+                }
+
+                if ((_isHolding) && (_holds != null))
+                {
+                    foreach (var hold in _holds)
+                    {
+                        if ((_isHolding == false) || IsLocked)
+                            break;
+
+                        hold.OnHolding(Time.time - _holdStartedTime);
                     }
                 }
             }
@@ -40,27 +63,40 @@ namespace oojjrs.oui
 
         void IPointerDownHandler.OnPointerDown(PointerEventData eventData)
         {
-            if (_presses != null)
+            if (eventData.button == PointerEventData.InputButton.Left)
             {
                 if (IsLocked)
                 {
                     _isPressBlockedUntilPointerUp = true;
                 }
-                else if ((IsInteractable) && (eventData.button == PointerEventData.InputButton.Left))
+                else if ((IsInteractable) && (_isPressing == false))
                 {
                     _isPressBlockedUntilPointerUp = false;
+                    _isPressing = true;
+                    _pressStartedCount = 0;
+                    _pressStartedTime = Time.time;
 
-                    if (_pressCoroutine != null)
-                        StopCoroutine(_pressCoroutine);
+                    if (_presses != null)
+                    {
+                        foreach (var press in _presses)
+                        {
+                            if ((_isPressing == false) || IsLocked)
+                                break;
 
-                    _pressCoroutine = StartCoroutine(PressStartCoroutine());
+                            ++_pressStartedCount;
+                            press.OnPressStarted();
+                        }
+                    }
+
+                    if ((_isPressing) && (IsLocked == false) && (_holds != null) && (_holds.Length > 0))
+                        _holdStartCoroutine = StartCoroutine(StartHoldCoroutine());
                 }
             }
         }
 
         void IPointerUpHandler.OnPointerUp(PointerEventData eventData)
         {
-            if (_presses != null)
+            if (eventData.button == PointerEventData.InputButton.Left)
             {
                 if ((_isPressBlockedUntilPointerUp == false) && (IsLocked == false))
                     ReleasePress(false, true);
@@ -71,46 +107,63 @@ namespace oojjrs.oui
 
         private void BlockPressForLock()
         {
-            ReleasePress(true, _pressing);
-        }
-
-        private IEnumerator PressStartCoroutine()
-        {
-            yield return __waitForSeconds;
-
-            _pressCoroutine = null;
-            _pressing = true;
-            _pressTime = Time.time;
-
-            if (_presses != null)
-            {
-                foreach (var press in _presses)
-                {
-                    if ((_pressing == false) || IsLocked)
-                        break;
-
-                    press.OnDown();
-                }
-            }
+            ReleasePress(true, true);
         }
 
         private void ReleasePress(bool blockPointerUp, bool notify)
         {
-            var hadPress = (_pressCoroutine != null) || (_pressing) || (_isPressBlockedUntilPointerUp);
+            var hadPress = (_holdStartCoroutine != null) || (_isHolding) || (_isPressBlockedUntilPointerUp) || (_isPressing);
+            var notifyHoldEndedCount = (notify) && (_isHolding) ? _holdStartedCount : 0;
+            var notifyPressEndedCount = (notify) && (_isPressing) ? _pressStartedCount : 0;
 
-            if (_pressCoroutine != null)
+            if (_holdStartCoroutine != null)
             {
-                StopCoroutine(_pressCoroutine);
-                _pressCoroutine = null;
+                StopCoroutine(_holdStartCoroutine);
+                _holdStartCoroutine = null;
             }
 
+            _isHolding = false;
+            _holdStartedCount = 0;
             _isPressBlockedUntilPointerUp = (blockPointerUp) && (hadPress);
-            _pressing = false;
+            _isPressing = false;
+            _pressStartedCount = 0;
 
-            if ((notify) && (_presses != null))
+            if (_holds != null)
             {
-                foreach (var press in _presses)
-                    press.OnUp();
+                for (var index = 0; index < notifyHoldEndedCount; ++index)
+                    _holds[index].OnHoldEnded();
+            }
+
+            if (_presses != null)
+            {
+                for (var index = 0; index < notifyPressEndedCount; ++index)
+                    _presses[index].OnPressEnded();
+            }
+        }
+
+        private IEnumerator StartHoldCoroutine()
+        {
+            yield return __holdStartDelay;
+
+            _holdStartCoroutine = null;
+
+            if ((_isPressing == false) || IsLocked)
+                yield break;
+
+            _isHolding = true;
+            _holdStartedCount = 0;
+            _holdStartedTime = Time.time;
+
+            if (_holds != null)
+            {
+                foreach (var hold in _holds)
+                {
+                    if ((_isHolding == false) || IsLocked)
+                        break;
+
+                    ++_holdStartedCount;
+                    hold.OnHoldStarted();
+                }
             }
         }
     }
