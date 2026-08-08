@@ -81,6 +81,8 @@ public sealed class StartButton : MonoBehaviour, MyButton.CallbackInterface, MyB
 
 `MySlider.OnLeftButtonClick()`과 `OnRightButtonClick()`은 별도의 좌우 `Button.onClick`에 연결하는 진입점입니다. 정수 Slider는 5씩, 연속 Slider는 전체 범위의 5%씩 이동합니다. `RightToLeft` 방향에서는 화면의 좌우에 맞춰 증감 방향을 뒤집고, 최솟값 또는 최댓값 경계에서는 값 변경 콜백을 다시 호출하지 않습니다.
 
+Inspector의 선택적인 Click Audio Source에 `AudioSource`를 연결하면 좌우 콜백이 유효하게 호출되거나 Thumb에서 왼쪽 포인터를 누를 때 재생합니다. 값이 범위 경계에 있어 이동하지 않는 좌우 클릭도 재생하며, 트랙 클릭과 Thumb 드래그 중에는 반복 재생하지 않습니다. 비워 두면 오디오 없이 기존 이동 동작만 사용합니다.
+
 ## 라디오
 
 `MyRadio`와 `MyRadioGroup`은 Unity `Toggle`, `ToggleGroup`, `Selectable`에 기대지 않고 라디오 버튼과 토글 묶음을 구성합니다. `MyRadio`는 `IsOn`과 `IsInteractable`을 Inspector에서 설정할 수 있으며, off/on 각각의 normal, highlighted, pressed preview, selected, disabled 상태 GameObject를 접을 수 있는 `StateObjects` 묶음으로 받아 직접 켜고 끕니다. 라디오별 아이콘과 라벨은 serialized `MyImage[]`, `MyText[]` 배열 참조로 연결하고, 코드는 setter-only `Sprite`와 `Title`로 연결된 이미지·텍스트 배열 전체를 갱신할 수 있습니다. 배열 값은 어떤 슬롯을 대표값으로 읽을지 안정적인 계약을 만들 수 없으므로 getter를 제공하지 않습니다. `MyRadio.InitializerInterface`는 단독 라디오에서만 적용되며, `MyRadioGroup`의 배열에 포함된 라디오 선택 초기화는 그룹이 맡습니다.

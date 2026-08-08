@@ -1,11 +1,12 @@
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 namespace oojjrs.oui
 {
     [DisallowMultipleComponent]
     [RequireComponent(typeof(Slider))]
-    public class MySlider : MonoBehaviour
+    public class MySlider : MonoBehaviour, IPointerDownHandler
     {
         private const float ContinuousStepRatio = 0.05f;
         private const float WholeNumberStep = 5f;
@@ -25,6 +26,8 @@ namespace oojjrs.oui
             string ToText(float value);
         }
 
+        [SerializeField]
+        private AudioSource _clickAudioSource;
         [SerializeField]
         private MyText _text;
         private int _valueChangedVersion;
@@ -74,11 +77,24 @@ namespace oojjrs.oui
             Started = true;
         }
 
+        void IPointerDownHandler.OnPointerDown(PointerEventData eventData)
+        {
+            var slider = GetComponent<Slider>();
+            if ((eventData.button != PointerEventData.InputButton.Left) || (slider.IsActive() == false) || (slider.IsInteractable() == false))
+                return;
+
+            var pointerTransform = eventData.pointerPressRaycast.gameObject != null ? eventData.pointerPressRaycast.gameObject.transform : null;
+            if ((slider.handleRect != default) && (pointerTransform != default) && ((pointerTransform == slider.handleRect) || pointerTransform.IsChildOf(slider.handleRect)))
+                PlaySfxSafety(_clickAudioSource);
+        }
+
         public void OnLeftButtonClick()
         {
             var slider = GetComponent<Slider>();
             if ((slider.IsActive() == false) || (slider.IsInteractable() == false))
                 return;
+
+            PlaySfxSafety(_clickAudioSource);
 
             var step = slider.wholeNumbers ? WholeNumberStep : (slider.maxValue - slider.minValue) * ContinuousStepRatio;
             var value = Mathf.Clamp(slider.value + ((slider.direction == Slider.Direction.RightToLeft) ? step : -step), slider.minValue, slider.maxValue);
@@ -91,6 +107,8 @@ namespace oojjrs.oui
             var slider = GetComponent<Slider>();
             if ((slider.IsActive() == false) || (slider.IsInteractable() == false))
                 return;
+
+            PlaySfxSafety(_clickAudioSource);
 
             var step = slider.wholeNumbers ? WholeNumberStep : (slider.maxValue - slider.minValue) * ContinuousStepRatio;
             var value = Mathf.Clamp(slider.value + ((slider.direction == Slider.Direction.RightToLeft) ? -step : step), slider.minValue, slider.maxValue);
@@ -110,6 +128,24 @@ namespace oojjrs.oui
 
             if (Texter != default)
                 _text.Text = Texter.ToText(value);
+        }
+
+        private void PlaySfxSafety(AudioSource audioSource)
+        {
+            if ((audioSource == default) || (audioSource.clip == default))
+                return;
+
+            if (audioSource.gameObject.scene.IsValid())
+            {
+                audioSource.Play();
+            }
+            else
+            {
+                var instance = Instantiate(audioSource);
+                instance.Play();
+
+                Destroy(instance.gameObject, instance.clip.length);
+            }
         }
     }
 }

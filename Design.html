@@ -541,6 +541,10 @@
           <strong>버튼 참조를 소유하지 않는 콜백 표면</strong>
           <p>좌우 버튼은 모든 Slider의 필수 구조가 아니므로 <code>MySlider</code>가 serialized 버튼 참조를 갖거나 자식을 자동 검색하지 않는다. 프리팹이 필요한 버튼만 명시적으로 UnityEvent에 연결해 기존 Slider-only 구성을 그대로 유지한다.</p>
         </div>
+        <div class="decision">
+          <strong>선택적인 Slider 조작 오디오</strong>
+          <p>Inspector의 Click Audio Source에 <code>AudioSource</code>를 연결하면 유효한 좌우 콜백과 Thumb의 왼쪽 포인터 입력에 재생한다. 값이 범위 경계에 있어 이동하지 않는 좌우 클릭도 소리를 내며, 트랙 클릭과 Thumb 드래그 중에는 반복 재생하지 않는다. 필드를 비워 두면 기존 이동 동작만 유지한다.</p>
+        </div>
         <div class="note">
           <p><code>Value</code>를 코드에서 설정할 때는 <code>Slider.onValueChanged</code>에 <code>MySlider.OnValueChanged()</code>가 연결된 구성과 연결되지 않은 구성을 모두 지원한다. 연결된 경우 콜백을 중복 전달하지 않고, 연결되지 않은 경우에는 직접 한 번 보충한다.</p>
         </div>
@@ -636,6 +640,11 @@
             </tr>
           </thead>
           <tbody>
+            <tr>
+              <td>2026-08-08</td>
+              <td><code>1.10.1</code> <code>MySlider</code> 조작 오디오</td>
+              <td>좌우 버튼과 Thumb의 조작 피드백을 일관되게 제공하도록 선택적인 <code>AudioSource</code> 필드를 추가했다. 값이 경계에서 바뀌지 않아도 유효한 좌우 클릭에는 재생하고, Thumb은 누를 때 한 번만 재생해 드래그 반복음을 막는다. 소스를 연결하지 않은 기존 프리팹은 동작을 그대로 유지한다.</td>
+            </tr>
             <tr>
               <td>2026-08-08</td>
               <td><code>1.10.0</code> <code>MySlider</code> 좌우 버튼 콜백</td>

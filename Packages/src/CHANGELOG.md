@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.10.1
+
+- `MySlider`에 선택적인 `_clickAudioSource` 필드를 추가해 좌우 버튼 콜백과 Thumb 포인터 입력마다 클릭음을 재생합니다.
+- 슬라이더 값이 최솟값이나 최댓값 경계에 있어 이동하지 않더라도 클릭음은 재생하며, AudioSource가 비어 있으면 기존 이동 동작만 유지합니다.
+- Thumb은 왼쪽 포인터를 누를 때 한 번만 재생하고, 트랙 클릭이나 드래그 중에는 반복 재생하지 않습니다.
+
 ## 1.10.0
 
 - `MySlider.OnLeftButtonClick()`과 `OnRightButtonClick()`을 추가해 별도 좌우 `Button.onClick`에서 슬라이더 값을 이동할 수 있게 했습니다.
