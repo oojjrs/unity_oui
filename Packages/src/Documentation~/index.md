@@ -79,6 +79,8 @@ public sealed class StartButton : MonoBehaviour, MyButton.CallbackInterface, MyB
 
 `MyBar`, `MySlider`, `MyToggle`, `MySelector`, `MySwapper`는 값 기반 UI를 갱신할 때 사용합니다. 각 컴포넌트는 필요한 초기화 또는 변경 콜백 인터페이스를 함께 제공합니다.
 
+`MySlider.OnLeftButtonClick()`과 `OnRightButtonClick()`은 별도의 좌우 `Button.onClick`에 연결하는 진입점입니다. 정수 Slider는 5씩, 연속 Slider는 전체 범위의 5%씩 이동합니다. `RightToLeft` 방향에서는 화면의 좌우에 맞춰 증감 방향을 뒤집고, 최솟값 또는 최댓값 경계에서는 값 변경 콜백을 다시 호출하지 않습니다.
+
 ## 라디오
 
 `MyRadio`와 `MyRadioGroup`은 Unity `Toggle`, `ToggleGroup`, `Selectable`에 기대지 않고 라디오 버튼과 토글 묶음을 구성합니다. `MyRadio`는 `IsOn`과 `IsInteractable`을 Inspector에서 설정할 수 있으며, off/on 각각의 normal, highlighted, pressed preview, selected, disabled 상태 GameObject를 접을 수 있는 `StateObjects` 묶음으로 받아 직접 켜고 끕니다. 라디오별 아이콘과 라벨은 serialized `MyImage[]`, `MyText[]` 배열 참조로 연결하고, 코드는 setter-only `Sprite`와 `Title`로 연결된 이미지·텍스트 배열 전체를 갱신할 수 있습니다. 배열 값은 어떤 슬롯을 대표값으로 읽을지 안정적인 계약을 만들 수 없으므로 getter를 제공하지 않습니다. `MyRadio.InitializerInterface`는 단독 라디오에서만 적용되며, `MyRadioGroup`의 배열에 포함된 라디오 선택 초기화는 그룹이 맡습니다.

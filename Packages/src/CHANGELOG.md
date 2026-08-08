@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.10.0
+
+- `MySlider.OnLeftButtonClick()`과 `OnRightButtonClick()`을 추가해 별도 좌우 `Button.onClick`에서 슬라이더 값을 이동할 수 있게 했습니다.
+- `OnLeftButtonClick()`과 `OnRightButtonClick()`은 정수 슬라이더에서 5, 연속 슬라이더에서 전체 범위의 5%를 한 칸으로 사용하고 `RightToLeft` 방향을 반영합니다.
+- 최솟값과 최댓값 경계에서는 값 변경 콜백을 다시 호출하지 않으며, `Value` 설정 시 `Slider.onValueChanged` 연결 여부와 관계없이 `MySlider` 콜백을 한 번만 전달하도록 정리했습니다.
+
 ## 1.9.0
 
 - `MyButton.PressInterface`가 pointer down 즉시 `OnPressStarted()`를 호출하고, 누르는 동안 `OnPressing()`, pointer up에서 `OnPressEnded()`를 호출하도록 입력 계약을 바로잡았습니다.

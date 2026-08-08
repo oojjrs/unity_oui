@@ -14,7 +14,8 @@ UGUI 기반 UI에서 자주 반복되는 컴포넌트 제어를 `oojjrs.oui` 네
 - `MySelectable`: UGUI `Selectable` 기반 컨트롤의 select/deselect 콜백을 연결하고, 초기 선택과 interactable 해제·비활성화에서도 콜백 짝을 한 번 유지합니다.
 - `MyCurrentGameObjectDetector`: `EventSystem.currentSelectedGameObject`의 변경을 감지해 같은 GameObject의 콜백 구현체에 이전 선택과 현재 선택을 전달합니다.
 - `MyList`: 값 목록을 프리팹 엔트리로 동기화하고 필요하면 정렬합니다.
-- `MyBar` / `MySlider` / `MyToggle` / `MyTab`: 값 변경 UI, 표시 텍스트, 라디오 헤더 기반 탭 선택과 런타임 초기화 콜백을 연결합니다.
+- `MySlider`: 값 변경과 표시 텍스트를 연결하고, 선택적인 좌우 `Button.onClick` 콜백으로 정수 5 또는 전체 범위의 5%씩 이동합니다.
+- `MyBar` / `MyToggle` / `MyTab`: 값 변경 UI, 라디오 헤더 기반 탭 선택과 런타임 초기화 콜백을 연결합니다.
 - `MyText` / `MyImage` / `MyPortrait`: 기본 텍스트와 이미지 갱신을 감싸고, `MyImage.SetNativeSizeSprite`로 스프라이트 교체 후 native size를 배율까지 지정해 맞출 수 있습니다.
 - `MyInput`: 입력값 초기화, 변경, 제출 콜백을 연결합니다.
 - `MyAsker`: 확인 또는 예/아니오 모달을 열고 닫는 흐름을 제공합니다.

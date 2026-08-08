@@ -156,6 +156,7 @@
         <li><a href="#상호작용과-상태-mybutton-컴포넌트" data-page-link="상호작용과-상태-mybutton-컴포넌트"><span class="nav-label">MyButton</span></a></li>
         <li><a href="#ui와-편의-시스템-mytab-컴포넌트" data-page-link="ui와-편의-시스템-mytab-컴포넌트"><span class="nav-label">MyTab</span></a></li>
         <li><a href="#ui와-편의-시스템-myswapper-컴포넌트" data-page-link="ui와-편의-시스템-myswapper-컴포넌트"><span class="nav-label">MySwapper</span></a></li>
+        <li><a href="#ui와-편의-시스템-myslider-컴포넌트" data-page-link="ui와-편의-시스템-myslider-컴포넌트"><span class="nav-label">MySlider</span></a></li>
         <li><a href="#미결정과-제외-selectable-myselectable-컴포넌트" data-page-link="미결정과-제외-selectable-myselectable-컴포넌트"><span class="nav-label">Selectable / MySelectable</span></a></li>
         <li><a href="#ui와-편의-시스템-editor-prefab-제작-보조" data-page-link="ui와-편의-시스템-editor-prefab-제작-보조"><span class="nav-label">Editor / Prefab 제작 보조</span></a></li>
         <li><a href="#미결정과-제외-열린-질문" data-page-link="미결정과-제외-열린-질문"><span class="nav-label">열린 질문</span></a></li>
@@ -523,6 +524,32 @@
       </section>
         </div>
       </article>
+      <article id="ui와-편의-시스템-myslider-컴포넌트" class="page" data-page="ui와-편의-시스템-myslider-컴포넌트">
+        <h2>MySlider</h2>
+        <div class="page-body">
+      <section class="section-group">
+        <div class="section-group-body">
+          <details id="ui와-편의-시스템-myslider-컴포넌트-details">
+            <summary>UI와 편의 시스템 - MySlider 컴포넌트</summary>
+            <div class="details-body">
+<p><code>MySlider</code>는 UGUI <code>Slider</code>의 값 변경을 같은 GameObject의 초기화, 변경, 텍스트 변환 인터페이스와 연결한다. 슬라이더 양옆에 선택적인 화살표 버튼이 있으면 각 <code>Button.onClick</code>을 <code>OnLeftButtonClick()</code>과 <code>OnRightButtonClick()</code>에 직접 연결한다.</p>
+        <div class="decision">
+          <strong>좌우 버튼 이동 단위</strong>
+          <p><code>OnLeftButtonClick()</code>과 <code>OnRightButtonClick()</code>은 정수 Slider에서 5, 연속 Slider에서 전체 범위의 5%를 한 칸으로 사용한다. <code>RightToLeft</code>에서는 화면의 좌우 방향에 맞춰 증감을 뒤집고, 범위 경계에서는 같은 값을 다시 알리지 않는다.</p>
+        </div>
+        <div class="decision">
+          <strong>버튼 참조를 소유하지 않는 콜백 표면</strong>
+          <p>좌우 버튼은 모든 Slider의 필수 구조가 아니므로 <code>MySlider</code>가 serialized 버튼 참조를 갖거나 자식을 자동 검색하지 않는다. 프리팹이 필요한 버튼만 명시적으로 UnityEvent에 연결해 기존 Slider-only 구성을 그대로 유지한다.</p>
+        </div>
+        <div class="note">
+          <p><code>Value</code>를 코드에서 설정할 때는 <code>Slider.onValueChanged</code>에 <code>MySlider.OnValueChanged()</code>가 연결된 구성과 연결되지 않은 구성을 모두 지원한다. 연결된 경우 콜백을 중복 전달하지 않고, 연결되지 않은 경우에는 직접 한 번 보충한다.</p>
+        </div>
+            </div>
+          </details>
+        </div>
+      </section>
+        </div>
+      </article>
       <article id="미결정과-제외-selectable-myselectable-컴포넌트" class="page" data-page="미결정과-제외-selectable-myselectable-컴포넌트">
         <h2>Selectable / MySelectable</h2>
         <div class="page-body">
@@ -609,6 +636,11 @@
             </tr>
           </thead>
           <tbody>
+            <tr>
+              <td>2026-08-08</td>
+              <td><code>1.10.0</code> <code>MySlider</code> 좌우 버튼 콜백</td>
+              <td>볼륨처럼 Slider 양옆에 화살표 버튼을 두는 프리팹에서 별도 어댑터 없이 UnityEvent를 직접 연결할 수 있도록 좌우 콜백을 추가했다. 이동량은 정수 5 또는 전체 범위의 5%로 맞추고, 역방향과 범위 경계, 기존 값 변경 알림의 중복까지 함께 정리했다.</td>
+            </tr>
             <tr>
               <td>2026-08-05</td>
               <td><code>1.9.0</code> <code>MyButton</code> Press/Hold 입력 분리</td>

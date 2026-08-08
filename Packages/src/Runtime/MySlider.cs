@@ -7,6 +7,9 @@ namespace oojjrs.oui
     [RequireComponent(typeof(Slider))]
     public class MySlider : MonoBehaviour
     {
+        private const float ContinuousStepRatio = 0.05f;
+        private const float WholeNumberStep = 5f;
+
         public interface CallbackInterface
         {
             void OnValueChanged(float value);
@@ -24,6 +27,7 @@ namespace oojjrs.oui
 
         [SerializeField]
         private MyText _text;
+        private int _valueChangedVersion;
 
         private CallbackInterface[] Callbacks { get; set; }
         private InitializerInterface Initializer { get; set; }
@@ -34,10 +38,12 @@ namespace oojjrs.oui
             get => GetComponent<Slider>().value;
             set
             {
-                // -_- 호출 안해줄 줄이야...
-                GetComponent<Slider>().value = value;
+                var slider = GetComponent<Slider>();
+                var valueChangedVersion = _valueChangedVersion;
+                slider.value = value;
 
-                OnValueChanged(value);
+                if (_valueChangedVersion == valueChangedVersion)
+                    OnValueChanged(slider.value);
             }
         }
 
@@ -68,8 +74,34 @@ namespace oojjrs.oui
             Started = true;
         }
 
+        public void OnLeftButtonClick()
+        {
+            var slider = GetComponent<Slider>();
+            if ((slider.IsActive() == false) || (slider.IsInteractable() == false))
+                return;
+
+            var step = slider.wholeNumbers ? WholeNumberStep : (slider.maxValue - slider.minValue) * ContinuousStepRatio;
+            var value = Mathf.Clamp(slider.value + ((slider.direction == Slider.Direction.RightToLeft) ? step : -step), slider.minValue, slider.maxValue);
+            if (value != slider.value)
+                Value = value;
+        }
+
+        public void OnRightButtonClick()
+        {
+            var slider = GetComponent<Slider>();
+            if ((slider.IsActive() == false) || (slider.IsInteractable() == false))
+                return;
+
+            var step = slider.wholeNumbers ? WholeNumberStep : (slider.maxValue - slider.minValue) * ContinuousStepRatio;
+            var value = Mathf.Clamp(slider.value + ((slider.direction == Slider.Direction.RightToLeft) ? -step : step), slider.minValue, slider.maxValue);
+            if (value != slider.value)
+                Value = value;
+        }
+
         public void OnValueChanged(float value)
         {
+            ++_valueChangedVersion;
+
             if (Callbacks != default)
             {
                 foreach (var callback in Callbacks)
