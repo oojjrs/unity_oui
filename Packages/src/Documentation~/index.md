@@ -101,6 +101,8 @@ Inspector의 선택적인 Click Audio Source에 `AudioSource`를 연결하면 �
 
 정렬이 필요하면 `MyList.SorterInterface<TValue>`를, 엔트리 추가 후 처리가 필요하면 `MyList.PostscriptInterface<TEntry, TValue>`를 함께 구현합니다.
 
+선택적인 `_emptyText`에 `MyText`를 연결하면 `UpdateEntries()` 후 관리 중인 엔트리가 없을 때 빈 상태 문구를 표시하고, 엔트리가 있으면 숨깁니다. 연결하지 않으면 기존 목록 동작만 유지합니다.
+
 ## 입력과 모달
 
 `MyInput`은 입력값 초기화, 값 변경, 제출 콜백을 분리해서 연결합니다.

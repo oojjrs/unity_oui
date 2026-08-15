@@ -23,6 +23,9 @@ namespace oojjrs.oui
             int GetSortingOrder(TValue value);
         }
 
+        [SerializeField]
+        private MyText _emptyText;
+
         // -_- 유니티가 삭제를 제대로 못해서 땜빵겸 들고 있다. 2022.3.8f1부터 10f1까지.
         private List<GameObject> References { get; } = new();
 
@@ -96,6 +99,9 @@ namespace oojjrs.oui
                         e.transform.SetParent(transform);
                 }
             }
+
+            if (_emptyText != default)
+                _emptyText.gameObject.SetActive(References.Count <= 0);
         }
     }
 }

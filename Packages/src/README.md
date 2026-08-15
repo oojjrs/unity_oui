@@ -13,7 +13,7 @@ UGUI 기반 UI에서 자주 반복되는 컴포넌트 제어를 `oojjrs.oui` 네
 - `MyRadio`, `MyRadioGroup`: Unity `Toggle`, `ToggleGroup`, `Selectable`에 기대지 않고 상태별 GameObject 표시와 명시 배열 기반 라디오 선택 UI를 구성하며, 개별 라디오는 초기 선택 동기화를 포함한 포커스 진입·이탈 콜백을 제공합니다. 라디오별 이미지와 텍스트는 serialized 배열 참조와 setter-only `Sprite`/`Title` 표면으로 연결합니다.
 - `MySelectable`: UGUI `Selectable` 기반 컨트롤의 select/deselect 콜백을 연결하고, 초기 선택과 interactable 해제·비활성화에서도 콜백 짝을 한 번 유지합니다.
 - `MyCurrentGameObjectDetector`: `EventSystem.currentSelectedGameObject`의 변경을 감지해 같은 GameObject의 콜백 구현체에 이전 선택과 현재 선택을 전달합니다.
-- `MyList`: 값 목록을 프리팹 엔트리로 동기화하고 필요하면 정렬합니다.
+- `MyList`: 값 목록을 프리팹 엔트리로 동기화하고 필요하면 정렬하며, 선택적인 빈 상태 문구를 표시합니다.
 - `MySlider`: 값 변경과 표시 텍스트를 연결하고, 선택적인 좌우 `Button.onClick` 콜백으로 정수 5 또는 전체 범위의 5%씩 이동하며 연결한 `AudioSource`를 좌우 버튼과 Thumb 입력에 재생합니다.
 - `MyBar` / `MyToggle` / `MyTab`: 값 변경 UI, 라디오 헤더 기반 탭 선택과 런타임 초기화 콜백을 연결합니다.
 - `MyText` / `MyImage` / `MyPortrait`: 기본 텍스트와 이미지 갱신을 감싸고, `MyImage.SetNativeSizeSprite`로 스프라이트 교체 후 native size를 배율까지 지정해 맞출 수 있습니다.
