@@ -99,9 +99,9 @@ namespace oojjrs.oui
                 Debug.LogWarning($"{name}> DON'T HAVE RADIO.");
 
             if ((_selectionMode != SelectionModeEnum.Multiple) && (_initializer != null))
-                SetIndex(GetValidIndex(_initializer.InitialIndex), true);
+                SetIndex(GetValidIndex(_initializer.InitialIndex), false);
             else
-                ApplyCurrentIndex(true);
+                ApplyCurrentIndex(false);
         }
 
         bool MyRadio.GroupInterface.Contains(MyRadio radio)
