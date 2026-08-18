@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.11.0
+
+- `MyReel`을 추가해 전체 데이터의 표시용 사본은 유지하면서 viewport 주변의 가변 높이 엔트리만 생성하고 재사용합니다.
+- 엔트리가 처음 표시될 때 Unity 레이아웃의 preferred height를 측정해 위치와 전체 콘텐츠 높이를 보정하며, 부모 `ScrollRect`가 있으면 스크롤과 viewport를 자동으로 연동합니다.
+
 ## 1.10.2
 
 - `MyList`에 선택적인 `_emptyText`를 추가해 `UpdateEntries()` 후 관리 중인 엔트리가 없으면 빈 상태 문구를 표시하고, 엔트리가 있으면 숨깁니다.
