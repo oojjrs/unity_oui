@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.11.1
+
+- `MyReel` 엔트리 루트의 `ContentSizeFitter`가 실제 높이를 결정하도록 변경하고, 첫 엔트리의 측정값으로 미측정 항목 높이를 추정해 초기 대량 생성을 방지합니다.
+- `ScrollEnum`과 `OuiScrollToBottom()`을 추가하고, viewport 크기 변경 시 폭에 따른 줄바꿈과 높이를 자동으로 다시 측정합니다.
+
 ## 1.11.0
 
 - `MyReel`을 추가해 전체 데이터의 표시용 사본은 유지하면서 viewport 주변의 가변 높이 엔트리만 생성하고 재사용합니다.

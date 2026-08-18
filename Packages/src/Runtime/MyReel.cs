@@ -9,6 +9,13 @@ namespace oojjrs.oui
     [RequireComponent(typeof(RectTransform))]
     public class MyReel : MonoBehaviour
     {
+        public enum ScrollEnum
+        {
+            None,
+            AlwaysBottom,
+            FollowBottom,
+        }
+
         public interface Master<TEntry, TValue> where TEntry : MonoBehaviour, MyListEntry<TValue>
         {
             TEntry Prefab { get; }
@@ -100,17 +107,11 @@ namespace oojjrs.oui
                         rectTransform.anchorMax = new Vector2(1, 1);
                         rectTransform.pivot = new Vector2(0.5f, 1);
                         rectTransform.anchoredPosition = new Vector2(0, -_positions[index]);
-                        rectTransform.sizeDelta = new Vector2(0, _heights[index]);
+                        rectTransform.sizeDelta = new Vector2(0, rectTransform.sizeDelta.y);
 
                         if (_measureds[index] == false)
                         {
-                            LayoutRebuilder.ForceRebuildLayoutImmediate(rectTransform);
-
-                            var height = LayoutUtility.GetPreferredHeight(rectTransform);
-                            if (height <= 0)
-                                height = rectTransform.rect.height;
-
-                            height = Mathf.Max(1, height);
+                            var height = GetFittedHeight(entry, rectTransform);
                             _measureds[index] = true;
                             if (Mathf.Approximately(_heights[index], height) == false)
                             {
@@ -168,11 +169,7 @@ namespace oojjrs.oui
                 _heights.Clear();
                 _measureds.Clear();
 
-                var prefabRectTransform = _master.Prefab.transform as RectTransform;
-                if (prefabRectTransform == default)
-                    throw new InvalidOperationException($"{_master.Prefab.name} must use RectTransform.");
-
-                var estimatedHeight = Mathf.Max(1, prefabRectTransform.rect.height);
+                var estimatedHeight = GetEstimatedHeight();
                 foreach (var value in _values)
                 {
                     _heights.Add(estimatedHeight);
@@ -180,6 +177,49 @@ namespace oojjrs.oui
                 }
 
                 RebuildPositions();
+            }
+
+            private float GetEstimatedHeight()
+            {
+                var prefabRectTransform = _master.Prefab.transform as RectTransform;
+                if (prefabRectTransform == default)
+                    throw new InvalidOperationException($"{_master.Prefab.name} must use RectTransform.");
+
+                var estimatedHeight = Mathf.Max(1, prefabRectTransform.rect.height);
+                if (_values.Count <= 0)
+                    return estimatedHeight;
+
+                var entry = GetEntry();
+                entry.Value = _values[0];
+
+                var rectTransform = (RectTransform)entry.transform;
+                rectTransform.anchorMin = new Vector2(0, 1);
+                rectTransform.anchorMax = new Vector2(1, 1);
+                rectTransform.pivot = new Vector2(0.5f, 1);
+                rectTransform.anchoredPosition = Vector2.zero;
+                rectTransform.sizeDelta = new Vector2(0, rectTransform.sizeDelta.y);
+                estimatedHeight = GetFittedHeight(entry, rectTransform);
+
+                entry.gameObject.SetActive(false);
+                _pool.Add(entry);
+                return Mathf.Max(1, estimatedHeight);
+            }
+
+            private float GetFittedHeight(TEntry entry, RectTransform rectTransform)
+            {
+                var fitter = entry.GetComponent<ContentSizeFitter>();
+                if ((fitter == default) || (fitter.verticalFit != ContentSizeFitter.FitMode.PreferredSize))
+                    throw new InvalidOperationException($"{entry.name} must use ContentSizeFitter with Vertical Fit set to Preferred Size.");
+
+                LayoutRebuilder.ForceRebuildLayoutImmediate(rectTransform);
+                Canvas.ForceUpdateCanvases();
+                LayoutRebuilder.ForceRebuildLayoutImmediate(rectTransform);
+
+                var height = rectTransform.rect.height;
+                if (height <= 0)
+                    throw new InvalidOperationException($"{entry.name} must resolve to a positive fitted height.");
+
+                return height;
             }
 
             private TEntry GetEntry()
@@ -255,6 +295,8 @@ namespace oojjrs.oui
         [SerializeField]
         private ScrollRect _scrollRect;
         [SerializeField]
+        private ScrollEnum _scroll;
+        [SerializeField]
         [Min(0)]
         private float _spacing;
         [SerializeField]
@@ -262,6 +304,7 @@ namespace oojjrs.oui
 
         private StateInterface CurrentState { get; set; }
         private float Offset { get; set; }
+        private Vector2 ViewportSize { get; set; }
 
         private void Awake()
         {
@@ -281,6 +324,22 @@ namespace oojjrs.oui
                 {
                     _viewport = transform.parent as RectTransform;
                 }
+            }
+
+            if (_viewport != default)
+                ViewportSize = _viewport.rect.size;
+        }
+
+        private void LateUpdate()
+        {
+            if (_viewport == default)
+                return;
+
+            var size = _viewport.rect.size;
+            if ((Mathf.Approximately(ViewportSize.x, size.x) == false) || (Mathf.Approximately(ViewportSize.y, size.y) == false))
+            {
+                ViewportSize = size;
+                Refresh();
             }
         }
 
@@ -321,6 +380,23 @@ namespace oojjrs.oui
             Refresh();
         }
 
+        public void OuiScrollToBottom()
+        {
+            if (_viewport == default)
+                return;
+
+            var rectTransform = (RectTransform)transform;
+            Offset = Mathf.Max(0, rectTransform.rect.height - _viewport.rect.height);
+
+            if (_scrollRect != default)
+            {
+                _scrollRect.StopMovement();
+                _scrollRect.verticalNormalizedPosition = 0;
+            }
+
+            Refresh();
+        }
+
         public void Refresh()
         {
             if ((CurrentState == default) || (_viewport == default))
@@ -331,6 +407,8 @@ namespace oojjrs.oui
 
         public void UpdateEntries<TEntry, TValue>(Master<TEntry, TValue> master, IEnumerable<TValue> values) where TEntry : MonoBehaviour, MyListEntry<TValue>
         {
+            var followsBottom = (_scroll == ScrollEnum.AlwaysBottom) || ((_scroll == ScrollEnum.FollowBottom) && IsBottom());
+
             if (((CurrentState is State<TEntry, TValue> state) && state.Update(master, values)) == false)
             {
                 CurrentState?.Clear();
@@ -338,6 +416,18 @@ namespace oojjrs.oui
             }
 
             Refresh();
+
+            if (followsBottom)
+                OuiScrollToBottom();
+        }
+
+        private bool IsBottom()
+        {
+            if (_viewport == default)
+                return true;
+
+            var rectTransform = (RectTransform)transform;
+            return Offset >= (rectTransform.rect.height - _viewport.rect.height - 1);
         }
     }
 }
