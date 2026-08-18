@@ -105,6 +105,12 @@ Inspector의 선택적인 Click Audio Source에 `AudioSource`를 연결하면 �
 
 선택적인 `_emptyText`에 `MyText`를 연결하면 `UpdateEntries()` 후 관리 중인 엔트리가 없을 때 빈 상태 문구를 표시하고, 엔트리가 있으면 숨깁니다. 연결하지 않으면 기존 목록 동작만 유지합니다.
 
+### 가상화 목록
+
+`MyReel`은 전체 값의 표시용 사본을 유지하되 viewport와 overscan 범위에 들어온 엔트리만 생성하고, 범위를 벗어난 엔트리는 재사용합니다. 소유자는 `MyReel.Master<TEntry, TValue>`를 구현해 프리팹을 제공하고 `UpdateEntries()`로 값을 전달합니다. `ScrollEnum.AlwaysBottom`은 갱신마다 하단으로 이동하며, `FollowBottom`은 갱신 직전에 하단을 보고 있던 경우에만 하단을 유지합니다.
+
+`MyReel`은 Unity 레이아웃 시스템으로 엔트리 높이를 계산하지 않습니다. 프리팹의 `RectTransform.sizeDelta.y`는 아직 표시하지 않은 항목의 초기 추정 높이이며 양수여야 합니다. 각 엔트리의 `Value` setter는 반환되기 전에 현재 값에 맞는 높이를 직접 계산해 자신의 `RectTransform.sizeDelta.y`에 양수로 설정해야 합니다. 코루틴, `Update()` 또는 비동기 작업으로 높이 계산을 미루지 않습니다. 표시 후 내용과 높이를 바꿨다면 변경을 적용한 뒤 `MyReel.Refresh()`를 호출합니다.
+
 ## 입력과 모달
 
 `MyInput`은 입력값 초기화, 값 변경, 제출 콜백을 분리해서 연결합니다.

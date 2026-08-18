@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.11.3
+
+- `MyReel`이 Unity 레이아웃 시스템에 높이 계산을 위임하지 않고, 엔트리의 `Value` setter가 동기적으로 설정한 `RectTransform.sizeDelta.y`를 사용하도록 변경합니다.
+- `MyReel`의 가상화, 엔트리 높이 계약과 하단 스크롤 동작을 패키지 문서와 README에 추가합니다.
+
 ## 1.11.2
 
 - `MyText`에 선택적인 자동 너비·높이 조정을 추가해 `Text` 프로퍼티로 문자열을 설정할 때 UGUI Text의 preferred size에 맞춰 RectTransform 크기를 갱신할 수 있습니다.
