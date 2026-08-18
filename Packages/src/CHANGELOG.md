@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.11.4
+
+- `MyText.CalculatePreferredSize()`를 추가해 RectTransform에 적용하기 전에 자동 너비·높이 옵션을 반영한 목표 크기를 조회할 수 있습니다.
+- 너비와 높이를 함께 자동 조정할 때 계산한 너비를 기준으로 높이를 산출해 사전 계산값과 실제 적용값을 일치시킵니다.
+
 ## 1.11.3
 
 - `MyReel`이 Unity 레이아웃 시스템에 높이 계산을 위임하지 않고, 엔트리의 `Value` setter가 동기적으로 설정한 `RectTransform.sizeDelta.y`를 사용하도록 변경합니다.

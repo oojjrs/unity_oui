@@ -35,14 +35,32 @@ namespace oojjrs.oui
             }
         }
 
+        public Vector2 CalculatePreferredSize()
+        {
+            var text = GetComponent<Text>();
+            var size = text.rectTransform.rect.size;
+
+            if (_autoWidth)
+                size.x = text.preferredWidth;
+            if (_autoHeight)
+            {
+                if (_autoWidth)
+                    size.y = text.cachedTextGeneratorForLayout.GetPreferredHeight(text.text, text.GetGenerationSettings(new Vector2(size.x, 0))) / text.pixelsPerUnit;
+                else
+                    size.y = text.preferredHeight;
+            }
+            return size;
+        }
+
         public void ResizeToPreferredSize()
         {
             var text = GetComponent<Text>();
+            var size = CalculatePreferredSize();
 
             if (_autoWidth)
-                text.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, text.preferredWidth);
+                text.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, size.x);
             if (_autoHeight)
-                text.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, text.preferredHeight);
+                text.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, size.y);
         }
     }
 }
