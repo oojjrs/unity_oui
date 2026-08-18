@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.11.2
+
+- `MyText`에 선택적인 자동 너비·높이 조정을 추가해 `Text` 프로퍼티로 문자열을 설정할 때 UGUI Text의 preferred size에 맞춰 RectTransform 크기를 갱신할 수 있습니다.
+- `ResizeToPreferredSize()`를 추가해 UGUI Text를 직접 변경한 뒤에도 설정된 자동 조정 축을 수동으로 다시 계산할 수 있습니다.
+
 ## 1.11.1
 
 - `MyReel` 엔트리 루트의 `ContentSizeFitter`가 실제 높이를 결정하도록 변경하고, 첫 엔트리의 측정값으로 미측정 항목 높이를 추정해 초기 대량 생성을 방지합니다.
