@@ -7,6 +7,11 @@ namespace oojjrs.oui
     [RequireComponent(typeof(Text))]
     public class MyText : MonoBehaviour
     {
+        [SerializeField]
+        private bool _autoHeight;
+        [SerializeField]
+        private bool _autoWidth;
+
         public Color Color
         {
             get => GetComponent<Text>().color;
@@ -16,7 +21,11 @@ namespace oojjrs.oui
         public string Text
         {
             get => GetComponent<Text>().text;
-            set => GetComponent<Text>().text = value;
+            set
+            {
+                GetComponent<Text>().text = value;
+                ResizeToPreferredSize();
+            }
         }
         public int TextFromInt32
         {
@@ -24,6 +33,16 @@ namespace oojjrs.oui
             {
                 Text = value.ToString();
             }
+        }
+
+        public void ResizeToPreferredSize()
+        {
+            var text = GetComponent<Text>();
+
+            if (_autoWidth)
+                text.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, text.preferredWidth);
+            if (_autoHeight)
+                text.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, text.preferredHeight);
         }
     }
 }
