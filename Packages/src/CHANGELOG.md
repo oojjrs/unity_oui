@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.11.6
+
+- `MyListEntry<TValue>`와 `MyReel.SizeResolverInterface`를 상속한 `MyReel.EntryInterface<TValue>` 계약을 추가합니다. 기존 `MyReel` 엔트리는 새 인터페이스와 동기 `ResolveSize()`를 구현해야 합니다.
+- 숨은 측정 엔트리 하나를 새 값마다 재사용해 `Value`, `PostscriptInterface.OnAdded()`, `ResolveSize()` 호출 후 루트 `RectTransform.rect.height`를 캐시하고, 모든 높이가 확정된 뒤 스크롤 위치와 표시 범위를 계산하도록 변경합니다. 기존 `PostscriptInterface.OnShown()`은 `OnAdded()`로 대체됩니다.
+- `MyReel`의 고정 폭 및 top-anchored `ScrollRect.content` 계약을 추가하고 viewport 폭을 바꾸는 `AutoHideAndExpandViewport` 세로 스크롤바 설정을 거부합니다.
+
 ## 1.11.4
 
 - `MyText.CalculatePreferredSize()`를 추가해 RectTransform에 적용하기 전에 자동 너비·높이 옵션을 반영한 목표 크기를 조회할 수 있습니다.
