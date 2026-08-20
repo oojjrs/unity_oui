@@ -105,17 +105,15 @@ Inspector의 선택적인 Click Audio Source에 `AudioSource`를 연결하면 �
 
 선택적인 `_emptyText`에 `MyText`를 연결하면 `UpdateEntries()` 후 관리 중인 엔트리가 없을 때 빈 상태 문구를 표시하고, 엔트리가 있으면 숨깁니다. 연결하지 않으면 기존 목록 동작만 유지합니다.
 
-### 가상화 목록
+### 크기 확정 목록
 
-`MyReel`은 전체 값의 높이와 위치를 유지하되 viewport와 overscan 범위에 들어온 엔트리만 생성하고, 범위를 벗어난 엔트리는 롤링 재사용합니다. 엔트리는 `MyListEntry<TValue>`와 `MyReel.SizeResolverInterface`를 상속한 `MyReel.EntryInterface<TValue>`를 구현하고, 소유자는 `MyReel.Master<TEntry, TValue>`를 구현해 프리팹을 제공한 뒤 `UpdateEntries()`로 값을 전달합니다. 기존 `MyListEntry<TValue>` 구현만으로는 `MyReel`의 엔트리 제약을 충족하지 않습니다. `ScrollEnum.AlwaysBottom`은 갱신마다 하단으로 이동하며, `FollowBottom`은 갱신 직전에 하단을 보고 있던 경우에만 하단을 유지합니다.
+`MyReel`은 `MyList`와 마찬가지로 값 컬렉션과 프리팹 엔트리를 동기화하지만 정렬 기능은 제공하지 않습니다. 엔트리는 `MyReel.EntryInterface<TValue>`를 구현하고, 소유자는 `MyReel.Master<TEntry, TValue>`를 구현해 프리팹과 `MyReel.Data<TEntry, TValue>`를 제공한 뒤 `UpdateEntries()`로 값을 전달합니다.
 
-새 값은 실제 콘텐츠 폭의 숨은 측정 엔트리 하나에 차례로 바인딩됩니다. 각 값마다 `Value` setter, `PostscriptInterface.OnAdded()`, `EntryInterface.ResolveSize()`를 순서대로 동기 호출한 뒤 루트 `RectTransform.rect.height`를 읽습니다. 모든 높이를 확정한 다음에만 누적 위치, 콘텐츠 높이와 스크롤 위치를 계산하고 실제 표시 범위의 엔트리를 갱신합니다. `OnAdded()`와 `ResolveSize()`는 측정 엔트리와 롤링 표시 엔트리에서 반복 호출되므로 이전 값의 상태나 콜백을 누적하지 않아야 합니다.
+새 엔트리는 `Value` setter, `PostscriptInterface.OnAdded()`, `Data.Set()`, 크기 확정 순서로 동기 처리됩니다. 크기 확정이 반환되면 엔트리 루트의 `RectTransform.rect`를 즉시 사용할 수 있습니다.
 
-크기를 직접 계산해야 하는 자식 컴포넌트는 `MyReel.SizeResolverInterface`를 구현할 수 있습니다. 엔트리의 `ResolveSize()`는 자식 resolver 목록을 생성 시 한 번 캐시하고, 크기 의존 순서에 따라 자식들을 먼저 갱신한 뒤 필요하면 루트에 `LayoutRebuilder.ForceRebuildLayoutImmediate()`를 호출합니다. 메서드가 반환될 때 현재 값과 폭에 대한 루트 높이가 확정되어야 하며 코루틴, `Update()` 또는 비동기 작업으로 계산을 미루지 않습니다.
+엔트리와 크기 계산에 참여하는 직계 자식 컴포넌트는 `MyReel.SizeResolverInterface`를 구현합니다. 자식 resolver가 없는 leaf는 자신의 `ResolveSize()`를 호출해 크기를 결정합니다. 자식 resolver가 있는 container는 직계 자식들을 재귀적으로 먼저 확정한 뒤, 자식들의 월드 코너를 자기 로컬 좌표로 변환해 모두 포함하도록 자신의 폭과 높이만 조정합니다. resolver가 없는 중간 GameObject 아래는 탐색하지 않습니다.
 
-측정 높이는 현재 목록에서 `EqualityComparer<TValue>.Default`로 같은 값끼리 공유합니다. 같은 값은 같은 렌더 결과와 높이를 가져야 하고, 캐시가 유지되는 동안 `Equals()`와 `GetHashCode()` 결과가 바뀌면 안 됩니다. `Refresh()`는 높이를 다시 측정하지 않습니다. 값의 표시 높이가 달라졌다면 `Clear()` 후 전체 값을 다시 추가합니다.
-
-높이 캐시는 엔트리 폭이 고정된 동안에만 유효합니다. `MyReel`의 `RectTransform`은 연결된 `ScrollRect.content`여야 하며 세로 anchor와 pivot을 위쪽에 둡니다. 세로 스크롤바는 콘텐츠 위에 겹치거나 폭을 항상 예약해 viewport 폭을 바꾸지 않아야 하며, `ScrollRect.ScrollbarVisibility.AutoHideAndExpandViewport`는 지원하지 않습니다. 최초 측정 뒤 폭이 바뀌면 `MyReel`은 예외를 발생시키므로 `Clear()` 후 현재 폭에서 값을 다시 추가합니다.
+부모 크기에 따라 자식의 크기나 위치가 다시 바뀌는 stretch anchor는 이 계산과 순환 관계를 만들 수 있으므로 사용하지 않습니다. `ResolveSize()`는 코루틴, `Update()` 또는 비동기 작업으로 계산을 미루지 않고 호출 안에서 크기를 확정해야 합니다.
 
 ## 입력과 모달
 

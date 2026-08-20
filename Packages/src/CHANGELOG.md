@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.11.7
+
+- `MyReel`을 정렬 없는 `MyList`형 데이터 동기화 구조로 단순화합니다.
+- 직계 자식 `SizeResolverInterface`를 가장 깊은 곳부터 재귀적으로 확정하고, container가 자식 bounds를 모두 포함하도록 자기 `RectTransform` 크기를 조정합니다.
+
 ## 1.11.6
 
 - `MyListEntry<TValue>`와 `MyReel.SizeResolverInterface`를 상속한 `MyReel.EntryInterface<TValue>` 계약을 추가합니다. 기존 `MyReel` 엔트리는 새 인터페이스와 동기 `ResolveSize()`를 구현해야 합니다.
