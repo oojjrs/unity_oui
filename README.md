@@ -24,7 +24,7 @@ https://github.com/oojjrs/unity_oui.git?path=/Packages/src
 - `MyCurrentGameObjectDetector`: `EventSystem.currentSelectedGameObject`의 변경을 감지해 같은 GameObject의 콜백 구현체에 이전 선택과 현재 선택을 전달합니다.
 - `MyText`, `MyImage`, `MyPortrait`: UGUI 텍스트와 이미지 값을 코드에서 간단히 갱신하고, 필요하면 텍스트의 preferred size를 미리 계산해 적용하거나 이미지의 native size에 맞춰 컨트롤 크기를 조정합니다.
 - `MyList`: 프리팹 기반 리스트 엔트리 생성, 제거, 정렬과 선택적인 빈 상태 문구 표시를 관리합니다.
-- `MyReel`: 프리팹 엔트리를 값 목록과 동기화하고, 자식 resolver를 가장 깊은 곳부터 확정해 각 엔트리의 크기를 즉시 결정합니다.
+- `MyReel`: 새 값의 크기를 동기 확정해 누적 스크롤 위치를 계산하고, viewport 주변의 엔트리만 풀에서 롤링 재사용합니다.
 - `MySlider`: 값과 표시 텍스트를 연결하고 선택적인 좌우 버튼 콜백으로 정수 5 또는 전체 범위의 5%씩 이동하며 연결한 `AudioSource`를 좌우 버튼과 Thumb 입력에 재생합니다.
 - `MyBar`, `MyToggle`, `MySelector`, `MySwapper`, `MyTab`: 값 기반 UI 상태와 라디오 헤더 기반 탭 선택/런타임 초기화 상태를 갱신합니다.
 - `MyInput`: 입력 초기화, 선택 상태, 제출, 값 변경 콜백을 제공합니다.

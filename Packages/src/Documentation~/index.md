@@ -105,15 +105,15 @@ Inspector의 선택적인 Click Audio Source에 `AudioSource`를 연결하면 �
 
 선택적인 `_emptyText`에 `MyText`를 연결하면 `UpdateEntries()` 후 관리 중인 엔트리가 없을 때 빈 상태 문구를 표시하고, 엔트리가 있으면 숨깁니다. 연결하지 않으면 기존 목록 동작만 유지합니다.
 
-### 크기 확정 목록
+### 가상화 목록
 
-`MyReel`은 `MyList`와 마찬가지로 값 컬렉션과 프리팹 엔트리를 동기화하지만 정렬 기능은 제공하지 않습니다. 엔트리는 `MyReel.EntryInterface<TValue>`를 구현하고, 소유자는 `MyReel.Master<TEntry, TValue>`를 구현해 프리팹과 `MyReel.Data<TEntry, TValue>`를 제공한 뒤 `UpdateEntries()`로 값을 전달합니다.
+`MyReel`은 모든 값의 확정 높이와 누적 위치를 유지하되 viewport와 overscan 범위의 엔트리만 활성화하고, 범위를 벗어난 인스턴스는 풀에서 롤링 재사용합니다. 엔트리는 `MyReel.EntryInterface<TValue>`를 구현하고, 소유자는 `MyReel.Master<TEntry, TValue>`를 구현해 프리팹을 제공한 뒤 `UpdateEntries()`로 값을 전달합니다.
 
-새 엔트리는 `Value` setter, `PostscriptInterface.OnAdded()`, `Data.Set()`, 크기 확정 순서로 동기 처리됩니다. 크기 확정이 반환되면 엔트리 루트의 `RectTransform.rect`를 즉시 사용할 수 있습니다.
+새 값이나 같은 인덱스에서 변경된 값은 숨긴 측정 엔트리에 `Value`와 `PostscriptInterface.OnAdded()`를 적용한 뒤 크기를 동기 확정합니다. 같은 인덱스의 동일한 값은 기존 높이를 유지합니다. 모든 높이가 결정되면 누적 위치와 content 높이를 계산하고 현재 스크롤 위치의 엔트리를 배치합니다.
 
 엔트리와 크기 계산에 참여하는 직계 자식 컴포넌트는 `MyReel.SizeResolverInterface`를 구현합니다. 자식 resolver가 없는 leaf는 자신의 `ResolveSize()`를 호출해 크기를 결정합니다. 자식 resolver가 있는 container는 직계 자식들을 재귀적으로 먼저 확정한 뒤, 자식들의 월드 코너를 자기 로컬 좌표로 변환해 모두 포함하도록 자신의 폭과 높이만 조정합니다. resolver가 없는 중간 GameObject 아래는 탐색하지 않습니다.
 
-부모 크기에 따라 자식의 크기나 위치가 다시 바뀌는 stretch anchor는 이 계산과 순환 관계를 만들 수 있으므로 사용하지 않습니다. `ResolveSize()`는 코루틴, `Update()` 또는 비동기 작업으로 계산을 미루지 않고 호출 안에서 크기를 확정해야 합니다.
+부모 크기에 따라 자식의 크기나 위치가 다시 바뀌는 stretch anchor는 이 계산과 순환 관계를 만들 수 있으므로 사용하지 않습니다. `ResolveSize()`는 코루틴, `Update()` 또는 비동기 작업으로 계산을 미루지 않고 호출 안에서 크기를 확정해야 합니다. 표시용 인스턴스를 풀에서 다시 바인딩할 때에도 같은 높이가 나와야 합니다.
 
 ## 입력과 모달
 
