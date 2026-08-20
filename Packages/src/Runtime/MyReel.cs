@@ -109,9 +109,6 @@ namespace oojjrs.oui
                         entry = GetEntry();
                         ConfigureEntry(entry.RectTransform, _positions[index], _heights[index]);
                         Bind(entry, _values[index]);
-                        if (Mathf.Approximately(entry.RectTransform.rect.height, _heights[index]) == false)
-                            throw new InvalidOperationException($"{entry.name} resolved to a different height after it was measured.");
-
                         _actives.Add(index, entry);
                     }
 
@@ -148,6 +145,7 @@ namespace oojjrs.oui
             private void Bind(TEntry entry, TValue value)
             {
                 entry.gameObject.SetActive(true);
+                entry.RectTransform.ForceUpdateRectTransforms();
                 entry.Value = value;
                 _postscript?.OnAdded(entry, value);
                 ResolveSize(entry);
@@ -211,12 +209,17 @@ namespace oojjrs.oui
                 }
 
                 var entry = _measurementEntry;
+                ConfigureEntry(entry.RectTransform, 0, Mathf.Max(1, _prefab.RectTransform.rect.height));
                 entry.gameObject.SetActive(true);
                 entry.RectTransform.ForceUpdateRectTransforms();
                 entry.Value = value;
                 _postscript?.OnAdded(entry, value);
                 ResolveSize(entry);
                 var height = entry.RectTransform.rect.height;
+                ConfigureEntry(entry.RectTransform, 0, height);
+                entry.RectTransform.ForceUpdateRectTransforms();
+                ResolveSize(entry);
+                height = entry.RectTransform.rect.height;
                 entry.gameObject.SetActive(false);
 
                 if (height <= 0)
