@@ -1,39 +1,43 @@
 # OOJJRS' Unity UI Helper
 
-`com.oojjrs.oui`는 Unity UGUI 기반 프로젝트에서 반복해서 쓰는 UI 컴포넌트 동작을 모아 둔 헬퍼 패키지입니다.
+`com.oojjrs.oui`는 Unity UGUI에서 반복해서 사용하는 버튼, 선택, 값 표시, 목록, 입력 컴포넌트를 제공하는 패키지입니다.
 
 ## 설치
 
-Unity Package Manager의 Git URL로 설치합니다.
+Unity 6000.4 이상에서 Package Manager의 **Add package from git URL**에 다음 주소를 입력합니다.
 
 ```text
 https://github.com/oojjrs/unity_oui.git?path=/Packages/src
 ```
 
-이 저장소를 직접 열어 개발할 때는 `Packages/manifest.json`에 로컬 패키지로 연결되어 있습니다.
+## 구성 요소
 
-```json
-"com.oojjrs.oui": "file:src"
+| 구성 요소 | 종류 | 용도 |
+| --- | --- | --- |
+| `MyButton`, `MySelectable` | 입력 | 클릭·포커스·프레스·홀드 콜백 연결 |
+| `MyRadio`, `MyRadioGroup`, `MyTab` | 선택 | 라디오 선택과 탭 상태 관리 |
+| `MyText`, `MyImage`, `MyPortrait` | 표시 | UGUI 텍스트·이미지 갱신 |
+| `MyList`, `MyReel` | 목록 | 프리팹 목록과 가상화 목록 관리 |
+| `MyBar`, `MySlider`, `MyToggle`, `MySelector`, `MySwapper` | 값 | 값 기반 UI 상태 갱신 |
+| `MyInput`, `MyAsker` | 흐름 | 입력 및 확인·예/아니오 모달 처리 |
+
+## 사용 예시
+
+`MyButton`과 콜백 컴포넌트를 같은 GameObject에 추가합니다.
+
+```csharp
+using oojjrs.oui;
+using UnityEngine;
+
+public sealed class StartButton : MonoBehaviour, MyButton.CallbackInterface
+{
+    void MyButton.CallbackInterface.OnClick()
+    {
+        Debug.Log("Start");
+    }
+}
 ```
 
-## 포함 기능
+런타임 헬퍼는 `DisallowMultipleComponent`를 사용하므로 같은 GameObject에 동일한 헬퍼 타입을 중복으로 추가할 수 없습니다. 패키지는 `com.unity.ugui` 2.0.0에 의존합니다.
 
-- `MyButton`: 클릭, 포커스 진입·이탈, pointer/focus 기반 hover 사운드, 호버, 즉시 프레스, 0.2초 지연 홀드, 더블 클릭 콜백과 버튼 사운드 재생을 다루며, 시작 전에 이미 선택된 포커스도 한 번 동기화합니다. `OuiLock()`과 `OuiFree()`는 버튼의 interactable 표현을 유지한 채 행동 콜백을 일시적으로 잠급니다. Inspector에서 받은 `Animator`를 읽기 전용 속성으로 노출하고 이미지 갱신 표면은 `MyImage` 기준으로 맞춥니다. 기본 disabled 이미지는 숨기고, 옵션을 켜면 이미지를 유지한 채 disabled 색상으로 표시합니다.
-- `MyRadio`, `MyRadioGroup`: Unity `Toggle`, `ToggleGroup`, `Selectable`에 기대지 않고 상태별 GameObject 표시와 명시 배열 기반 라디오 선택 UI를 구성하며, 개별 라디오는 초기 선택 동기화를 포함한 포커스 진입·이탈 콜백을 제공합니다. 라디오별 이미지와 텍스트는 serialized 배열 참조와 setter-only `Sprite`/`Title` 표면으로 연결합니다.
-- `MySelectable`: Unity `Selectable` 기반 컨트롤의 select/deselect 콜백을 연결하고, 초기 선택과 interactable 해제·비활성화에서도 콜백 짝을 한 번 유지합니다.
-- `MyCurrentGameObjectDetector`: `EventSystem.currentSelectedGameObject`의 변경을 감지해 같은 GameObject의 콜백 구현체에 이전 선택과 현재 선택을 전달합니다.
-- `MyText`, `MyImage`, `MyPortrait`: UGUI 텍스트와 이미지 값을 코드에서 간단히 갱신하고, 필요하면 텍스트의 preferred size 또는 이미지의 native size에 맞춰 컨트롤 크기를 조정합니다.
-- `MyList`: 프리팹 기반 리스트 엔트리 생성, 제거, 정렬과 선택적인 빈 상태 문구 표시를 관리합니다.
-- `MyReel`: 새 값의 크기를 동기 확정해 누적 스크롤 위치를 계산하고, viewport 주변의 엔트리만 풀에서 롤링 재사용합니다.
-- `MySlider`: 값과 표시 텍스트를 연결하고 선택적인 좌우 버튼 콜백으로 정수 5 또는 전체 범위의 5%씩 이동하며 연결한 `AudioSource`를 좌우 버튼과 Thumb 입력에 재생합니다.
-- `MyBar`, `MyToggle`, `MySelector`, `MySwapper`, `MyTab`: 값 기반 UI 상태와 라디오 헤더 기반 탭 선택/런타임 초기화 상태를 갱신합니다.
-- `MyInput`: 입력 초기화, 선택 상태, 제출, 값 변경 콜백을 제공합니다.
-- `MyAsker`: 확인 및 예/아니오 형태의 간단한 모달 흐름을 구성합니다.
-
-런타임 헬퍼 컴포넌트는 같은 GameObject에 같은 타입을 중복으로 붙이지 않는 것을 기본 규칙으로 삼고, 이를 `DisallowMultipleComponent`로 표시합니다.
-
-## 패키지 구조
-
-- `Packages/src/package.json`: UPM 패키지 메타데이터입니다.
-- `Packages/src/Runtime`: 런타임 컴포넌트와 asmdef가 들어 있습니다.
-- `Packages/src/Documentation~`: Unity Package Manager에서 열 수 있는 패키지 문서입니다.
+자세한 구성은 [패키지 개요](Packages/src/README.md), 컴포넌트별 사용법은 [상세 문서](Packages/src/Documentation~/index.md)를 참고하세요.
