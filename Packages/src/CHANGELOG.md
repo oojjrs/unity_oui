@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.11.10
+
+- `MyText`가 자동 너비를 RectTransform에 먼저 적용한 뒤 픽셀 보정된 실제 너비를 기준으로 preferred height를 계산하도록 수정해 텍스트가 영역 밖으로 잘리는 문제를 방지합니다.
+- 현재 사용하지 않는 `CalculatePreferredSize()`와 `ResizeToPreferredSize()` 설명을 현재 사용법 문서에서 제거합니다.
+
 ## 1.11.9
 
 - 측정 엔트리와 표시 엔트리의 초기 RectTransform 조건을 일치시키고, 항목별 캐시 높이와 표시 인스턴스 높이 차이로 스크롤 중 예외가 발생하지 않도록 수정합니다.

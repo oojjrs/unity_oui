@@ -24,27 +24,13 @@ namespace oojjrs.oui
             get => GetComponent<Text>().text;
             set
             {
-                GetComponent<Text>().text = value;
+                var text = GetComponent<Text>();
+                text.text = value;
 
-                if (_autoHeight || _autoWidth)
-                {
-                    var text = GetComponent<Text>();
-                    var size = text.rectTransform.rect.size;
-
-                    if (_autoWidth)
-                        size.x = text.preferredWidth;
-
-                    if (_autoHeight)
-                    {
-                        if (_autoWidth)
-                            size.y = text.cachedTextGeneratorForLayout.GetPreferredHeight(text.text, text.GetGenerationSettings(new Vector2(size.x, 0))) / text.pixelsPerUnit;
-                        else
-                            size.y = text.preferredHeight;
-                    }
-
-                    text.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, size.x);
-                    text.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, size.y);
-                }
+                if (_autoWidth)
+                    text.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, text.preferredWidth);
+                if (_autoHeight)
+                    text.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, text.preferredHeight);
             }
         }
         public int TextFromInt32
