@@ -68,7 +68,17 @@ namespace oojjrs.oui
             return Rect.MinMaxRect(minimum.x, minimum.y, maximum.x, maximum.y);
         }
 
+        public void Open(RectTransform target, float width)
+        {
+            Open(target, null, width, false);
+        }
+
         public void Open(RectTransform target, string text, float width)
+        {
+            Open(target, text, width, true);
+        }
+
+        private void Open(RectTransform target, string text, float width, bool setText)
         {
             if (target == null)
                 throw new System.ArgumentNullException(nameof(target));
@@ -97,7 +107,8 @@ namespace oojjrs.oui
             rectTransform.ForceUpdateRectTransforms();
             textRectTransform.ForceUpdateRectTransforms();
 
-            _text.Text = text;
+            if (setText)
+                _text.Text = text;
             rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, Mathf.Max(0, _text.PreferredHeight + heightPadding));
             rectTransform.ForceUpdateRectTransforms();
 

@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.12.1
+
+- 외부에서 설정한 현재 `MyText` 내용을 그대로 측정해 툴팁을 여는 `MyTooltip.Open(RectTransform target, float width)` 오버로드를 추가합니다.
+
 ## 1.12.0
 
 - `MyTooltip`을 추가해 대상 `RectTransform`, 문구와 폭을 받아 높이를 자동으로 계산하고, 같은 루트 Canvas 안에서 대상 위나 아래에 배치합니다.

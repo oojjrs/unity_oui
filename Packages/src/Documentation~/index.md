@@ -87,7 +87,7 @@ Inspector의 선택적인 Click Audio Source에 `AudioSource`를 연결하면 �
 
 ## 툴팁
 
-`MyTooltip.Open(RectTransform target, string text, float width)`은 문구와 폭을 적용한 뒤 `MyText`의 preferred height에 맞춰 툴팁 높이를 결정합니다. 대상 위쪽에 전체 높이가 들어가면 위에 배치하고, 그렇지 않으면 아래쪽을 사용합니다. 양쪽 모두 부족하면 더 넓은 쪽을 선택한 뒤 툴팁을 Canvas 안에 맞춥니다. 대상과 툴팁은 같은 root Canvas에 있어야 합니다.
+`MyTooltip.Open(RectTransform target, string text, float width)`은 문구와 폭을 적용한 뒤 `MyText`의 preferred height에 맞춰 툴팁 높이를 결정합니다. 외부 컴포넌트가 `MyText` 내용을 관리한다면 `Open(RectTransform target, float width)`으로 현재 표시 내용을 바꾸지 않고 같은 크기 계산과 배치를 실행할 수 있습니다. 대상 위쪽에 전체 높이가 들어가면 위에 배치하고, 그렇지 않으면 아래쪽을 사용합니다. 양쪽 모두 부족하면 더 넓은 쪽을 선택한 뒤 툴팁을 Canvas 안에 맞춥니다. 대상과 툴팁은 같은 root Canvas에 있어야 합니다.
 
 툴팁 루트의 `CanvasGroup.blocksRaycasts`는 비활성화되어 배경이나 텍스트가 대상의 pointer hover를 가로채지 않습니다. 표시가 끝나면 `Close()`를 호출합니다. 열린 뒤 대상이나 Canvas가 움직인 경우에는 새 위치를 반영하도록 `Open()`을 다시 호출합니다.
 
