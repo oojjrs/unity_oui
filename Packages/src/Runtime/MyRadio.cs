@@ -84,6 +84,7 @@ namespace oojjrs.oui
         private MyImage[] _images;
         private InitializerInterface _initializer;
         private bool _isFocused;
+        private bool _isHovered;
         private bool _isStarted;
         [SerializeField]
         private bool _isInteractable = true;
@@ -113,11 +114,16 @@ namespace oojjrs.oui
                 else
                     SetState(State.OffDisabled);
 
-                if ((value == false) && Application.isPlaying)
+                if (value == false)
                 {
-                    var eventSystem = EventSystem.current;
-                    if ((eventSystem != null) && (eventSystem.currentSelectedGameObject == gameObject))
-                        eventSystem.SetSelectedGameObject(null);
+                    ExitHover();
+
+                    if (Application.isPlaying)
+                    {
+                        var eventSystem = EventSystem.current;
+                        if ((eventSystem != null) && (eventSystem.currentSelectedGameObject == gameObject))
+                            eventSystem.SetSelectedGameObject(null);
+                    }
                 }
             }
         }
@@ -182,7 +188,12 @@ namespace oojjrs.oui
                 if ((eventSystem != null) && (eventSystem.currentSelectedGameObject == gameObject))
                     eventSystem.SetSelectedGameObject(null);
 
+                ExitHover();
                 ExitFocus();
+            }
+            else
+            {
+                _isHovered = false;
             }
 
             if (_focusHoverSoundCoroutine != null)
@@ -285,27 +296,16 @@ namespace oojjrs.oui
                     SetState(State.OffHighlighted);
 
                 PlayHoverSfx();
-
-                if (_hovers != null)
-                {
-                    foreach (var hover in _hovers)
-                        hover.OnHoverEnter();
-                }
+                EnterHover();
             }
         }
 
         void IPointerExitHandler.OnPointerExit(PointerEventData eventData)
         {
             if (IsInteractable)
-            {
                 SetState(GetDefaultState());
 
-                if (_hovers != null)
-                {
-                    foreach (var hover in _hovers)
-                        hover.OnHoverExit();
-                }
-            }
+            ExitHover();
         }
 
         void IPointerUpHandler.OnPointerUp(PointerEventData eventData)
@@ -351,6 +351,20 @@ namespace oojjrs.oui
             }
         }
 
+        private void EnterHover()
+        {
+            if (_isHovered)
+                return;
+
+            _isHovered = true;
+
+            if (_hovers != null)
+            {
+                foreach (var hover in _hovers)
+                    hover.OnHoverEnter();
+            }
+        }
+
         private void ExitFocus()
         {
             if (_isFocused == false)
@@ -362,6 +376,20 @@ namespace oojjrs.oui
             {
                 foreach (var focus in _focuses)
                     focus.OnFocusExit();
+            }
+        }
+
+        private void ExitHover()
+        {
+            if (_isHovered == false)
+                return;
+
+            _isHovered = false;
+
+            if (_hovers != null)
+            {
+                foreach (var hover in _hovers)
+                    hover.OnHoverExit();
             }
         }
 

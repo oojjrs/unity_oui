@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.12.5
+
+- `MyButton`, `MyRadio`, `MySelector`가 hover 진입 상태를 추적해 pointer 이탈, interactable 해제 또는 비활성화 시 `OnHoverExit()`을 한 번만 전달하도록 보강했습니다.
+
 ## 1.12.4
 
 - `MySelector.HoverInterface`를 추가해 같은 GameObject의 구현체에 pointer 진입과 이탈을 전달합니다.

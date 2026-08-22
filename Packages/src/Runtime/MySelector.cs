@@ -25,11 +25,23 @@ namespace oojjrs.oui
         private CallbackInterface Callback { get; set; }
         private HoverInterface[] Hovers { get; set; }
         private int? Index { get; set; }
+        private bool IsHovered { get; set; }
 
         private void Awake()
         {
             Callback = GetComponent<CallbackInterface>();
             Hovers = GetComponents<HoverInterface>();
+        }
+
+        private void OnDisable()
+        {
+            if ((Application.isPlaying == false) || MyControl.IsQuitting)
+            {
+                IsHovered = false;
+                return;
+            }
+
+            ExitHover();
         }
 
         private void Start()
@@ -43,6 +55,21 @@ namespace oojjrs.oui
 
         void IPointerEnterHandler.OnPointerEnter(PointerEventData eventData)
         {
+            EnterHover();
+        }
+
+        void IPointerExitHandler.OnPointerExit(PointerEventData eventData)
+        {
+            ExitHover();
+        }
+
+        private void EnterHover()
+        {
+            if (IsHovered)
+                return;
+
+            IsHovered = true;
+
             if (Hovers != default)
             {
                 foreach (var hover in Hovers)
@@ -50,8 +77,13 @@ namespace oojjrs.oui
             }
         }
 
-        void IPointerExitHandler.OnPointerExit(PointerEventData eventData)
+        private void ExitHover()
         {
+            if (IsHovered == false)
+                return;
+
+            IsHovered = false;
+
             if (Hovers != default)
             {
                 foreach (var hover in Hovers)

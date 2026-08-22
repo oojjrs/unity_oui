@@ -78,6 +78,7 @@ namespace oojjrs.oui
         private Color _imageNormalColor = Color.white;
         private bool _isCooldowning;
         private bool _isFocused;
+        private bool _isHovered;
         private bool _isStarted;
         [Tooltip("켜면 비활성 상태에서도 이미지를 숨기지 않고 비활성 색상으로 표시합니다.")]
         [SerializeField]
@@ -132,6 +133,9 @@ namespace oojjrs.oui
                     else
                         _text.Color = _textDisableColor;
                 }
+
+                if (value == false)
+                    ExitHover();
             }
         }
         public bool IsLocked => _lock != null;
@@ -184,7 +188,12 @@ namespace oojjrs.oui
             ReleasePress(false, notifyPress);
 
             if ((Application.isPlaying == false) || MyControl.IsQuitting)
+            {
+                _isHovered = false;
                 return;
+            }
+
+            ExitHover();
 
             var eventSystem = EventSystem.current;
             if ((eventSystem != null) && (eventSystem.currentSelectedGameObject == gameObject))
@@ -238,22 +247,15 @@ namespace oojjrs.oui
         void IPointerEnterHandler.OnPointerEnter(PointerEventData eventData)
         {
             if (IsInteractable)
-                PlayHoverSfx();
-
-            if (IsInteractable && (_hovers != null))
             {
-                foreach (var hover in _hovers)
-                    hover.OnHoverEnter();
+                PlayHoverSfx();
+                EnterHover();
             }
         }
 
         void IPointerExitHandler.OnPointerExit(PointerEventData eventData)
         {
-            if (IsInteractable && (_hovers != null))
-            {
-                foreach (var hover in _hovers)
-                    hover.OnHoverExit();
-            }
+            ExitHover();
         }
 
         void ISelectHandler.OnSelect(BaseEventData eventData)
@@ -289,6 +291,20 @@ namespace oojjrs.oui
             }
         }
 
+        private void EnterHover()
+        {
+            if (_isHovered)
+                return;
+
+            _isHovered = true;
+
+            if (_hovers != null)
+            {
+                foreach (var hover in _hovers)
+                    hover.OnHoverEnter();
+            }
+        }
+
         private void ExitFocus()
         {
             if (_isFocused == false)
@@ -300,6 +316,20 @@ namespace oojjrs.oui
             {
                 foreach (var focus in _focuses)
                     focus.OnFocusExit();
+            }
+        }
+
+        private void ExitHover()
+        {
+            if (_isHovered == false)
+                return;
+
+            _isHovered = false;
+
+            if (_hovers != null)
+            {
+                foreach (var hover in _hovers)
+                    hover.OnHoverExit();
             }
         }
 

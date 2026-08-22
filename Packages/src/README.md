@@ -9,14 +9,14 @@ UGUI 기반 UI에서 자주 반복되는 컴포넌트 제어를 `oojjrs.oui` 네
 
 ## 주요 컴포넌트
 
-- `MyButton`: 버튼 클릭, 포커스 진입·이탈, pointer/focus 기반 hover 사운드, 호버, 즉시 프레스, 0.2초 지연 홀드, 더블 클릭, 쿨다운, 애니메이션 트리거, 사운드 오버라이드를 처리하며, 시작 전에 이미 선택된 포커스도 한 번 동기화합니다. `OuiLock()`과 `OuiFree()`는 버튼의 interactable 표현을 유지한 채 행동 콜백을 일시적으로 잠급니다. Inspector에서 받은 `Animator`를 읽기 전용 속성으로 노출하고 이미지 갱신 표면은 `MyImage` 기준으로 맞춥니다. 기본 disabled 이미지는 숨기고, 옵션을 켜면 이미지를 유지한 채 disabled 색상으로 표시합니다.
-- `MyRadio`, `MyRadioGroup`: Unity `Toggle`, `ToggleGroup`, `Selectable`에 기대지 않고 상태별 GameObject 표시와 명시 배열 기반 라디오 선택 UI를 구성하며, 개별 라디오는 초기 선택 동기화를 포함한 포커스 진입·이탈 콜백을 제공합니다. 라디오별 이미지와 텍스트는 serialized 배열 참조와 setter-only `Sprite`/`Title` 표면으로 연결합니다.
+- `MyButton`: 버튼 클릭, 포커스 진입·이탈, pointer/focus 기반 hover 사운드, 짝이 보장되는 호버, 즉시 프레스, 0.2초 지연 홀드, 더블 클릭, 쿨다운, 애니메이션 트리거, 사운드 오버라이드를 처리하며, 시작 전에 이미 선택된 포커스도 한 번 동기화합니다. `OuiLock()`과 `OuiFree()`는 버튼의 interactable 표현을 유지한 채 행동 콜백을 일시적으로 잠급니다. Inspector에서 받은 `Animator`를 읽기 전용 속성으로 노출하고 이미지 갱신 표면은 `MyImage` 기준으로 맞춥니다. 기본 disabled 이미지는 숨기고, 옵션을 켜면 이미지를 유지한 채 disabled 색상으로 표시합니다.
+- `MyRadio`, `MyRadioGroup`: Unity `Toggle`, `ToggleGroup`, `Selectable`에 기대지 않고 상태별 GameObject 표시와 명시 배열 기반 라디오 선택 UI를 구성하며, 개별 라디오는 초기 선택 동기화를 포함한 포커스 및 짝이 보장되는 호버 진입·이탈 콜백을 제공합니다. 라디오별 이미지와 텍스트는 serialized 배열 참조와 setter-only `Sprite`/`Title` 표면으로 연결합니다.
 - `MySelectable`: UGUI `Selectable` 기반 컨트롤의 select/deselect 콜백을 연결하고, 초기 선택과 interactable 해제·비활성화에서도 콜백 짝을 한 번 유지합니다.
 - `MyCurrentGameObjectDetector`: `EventSystem.currentSelectedGameObject`의 변경을 감지해 같은 GameObject의 콜백 구현체에 이전 선택과 현재 선택을 전달합니다.
 - `MyList`: 값 목록을 프리팹 엔트리로 동기화하고 필요하면 정렬하며, 선택적인 빈 상태 문구를 표시합니다.
 - `MyReel`: 새 값의 크기를 동기 확정해 누적 스크롤 위치를 계산하고, viewport 주변의 엔트리만 풀에서 롤링 재사용합니다.
 - `MySlider`: 값 변경과 표시 텍스트를 연결하고, 선택적인 좌우 `Button.onClick` 콜백으로 정수 5 또는 전체 범위의 5%씩 이동하며 연결한 `AudioSource`를 좌우 버튼과 Thumb 입력에 재생합니다.
-- `MySelector`: index에 맞는 GameObject 하나를 표시하고, 같은 GameObject의 `HoverInterface` 구현체에 pointer 진입·이탈을 전달합니다.
+- `MySelector`: index에 맞는 GameObject 하나를 표시하고, 같은 GameObject의 `HoverInterface` 구현체에 짝이 보장되는 pointer 진입·이탈을 전달합니다.
 - `MyBar` / `MyToggle` / `MyTab`: 값 변경 UI, 라디오 헤더 기반 탭 선택과 런타임 초기화 콜백을 연결합니다.
 - `MyText` / `MyImage` / `MyPortrait`: 기본 텍스트와 이미지 갱신을 감싸고, `MyText`의 선택적인 자동 너비·높이 조정과 `MyImage.SetNativeSizeSprite`로 컨트롤 크기를 콘텐츠에 맞출 수 있습니다.
 - `MyTooltip`: 대상 `RectTransform`과 문구를 받아 고정 폭 또는 최대 폭 안의 preferred width로 크기를 계산하고, 대상 바깥의 위·아래 공간을 선택해 같은 루트 Canvas 안에 배치합니다. 툴팁 전체는 pointer raycast를 통과시킵니다.
