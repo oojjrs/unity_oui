@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.12.3
+
+- `MyTooltip.OpenAutoWidth()` 오버로드를 추가해 현재 또는 전달한 문구의 preferred width와 padding으로 폭을 자동 계산하고, 지정한 최대 폭과 Canvas 폭 안에서 줄바꿈 높이를 다시 맞춥니다.
+
 ## 1.12.2
 
 - 화면에 직접 부착되는 UI 컨트롤 14종에 `RectTransform` 요구 조건을 추가하고, EventSystem 보조나 범용 상태 조정 컴포넌트는 기존 부착 범위를 유지합니다.

@@ -7,6 +7,12 @@ namespace oojjrs.oui
     [RequireComponent(typeof(RectTransform))]
     public class MyTooltip : MonoBehaviour
     {
+        private enum WidthModeEnum
+        {
+            Fixed,
+            Auto,
+        }
+
         [SerializeField]
         [Min(0)]
         private float _targetSpacing = 10;
@@ -70,15 +76,25 @@ namespace oojjrs.oui
 
         public void Open(RectTransform target, float width)
         {
-            Open(target, null, width, false);
+            Open(target, null, width, false, WidthModeEnum.Fixed);
         }
 
         public void Open(RectTransform target, string text, float width)
         {
-            Open(target, text, width, true);
+            Open(target, text, width, true, WidthModeEnum.Fixed);
         }
 
-        private void Open(RectTransform target, string text, float width, bool setText)
+        public void OpenAutoWidth(RectTransform target, float maxWidth)
+        {
+            Open(target, null, maxWidth, false, WidthModeEnum.Auto);
+        }
+
+        public void OpenAutoWidth(RectTransform target, string text, float maxWidth)
+        {
+            Open(target, text, maxWidth, true, WidthModeEnum.Auto);
+        }
+
+        private void Open(RectTransform target, string text, float width, bool setText, WidthModeEnum widthMode)
         {
             if (target == null)
                 throw new System.ArgumentNullException(nameof(target));
@@ -97,22 +113,37 @@ namespace oojjrs.oui
 
             gameObject.SetActive(true);
 
+            var canvasRectTransform = (RectTransform)canvas.rootCanvas.transform;
             var rectTransform = (RectTransform)transform;
             var textRectTransform = (RectTransform)_text.transform;
+            canvasRectTransform.ForceUpdateRectTransforms();
             rectTransform.ForceUpdateRectTransforms();
             textRectTransform.ForceUpdateRectTransforms();
+            var horizontalPadding = rectTransform.rect.width - textRectTransform.rect.width;
             var heightPadding = rectTransform.rect.height - textRectTransform.rect.height;
 
-            rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, width);
+            var resolvedWidth = width;
+            if (widthMode == WidthModeEnum.Auto)
+                resolvedWidth = Mathf.Min(resolvedWidth, canvasRectTransform.rect.width);
+
+            rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, resolvedWidth);
             rectTransform.ForceUpdateRectTransforms();
             textRectTransform.ForceUpdateRectTransforms();
 
             if (setText)
                 _text.Text = text;
+
+            if (widthMode == WidthModeEnum.Auto)
+            {
+                resolvedWidth = Mathf.Min(resolvedWidth, Mathf.Max(0, _text.PreferredWidth + horizontalPadding));
+                rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, resolvedWidth);
+                rectTransform.ForceUpdateRectTransforms();
+                textRectTransform.ForceUpdateRectTransforms();
+            }
+
             rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, Mathf.Max(0, _text.PreferredHeight + heightPadding));
             rectTransform.ForceUpdateRectTransforms();
 
-            var canvasRectTransform = (RectTransform)canvas.rootCanvas.transform;
             target.ForceUpdateRectTransforms();
             PlaceOutsideTarget(rectTransform, target, canvasRectTransform);
             FitInCanvas(rectTransform, canvasRectTransform);
