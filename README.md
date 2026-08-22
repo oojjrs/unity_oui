@@ -16,7 +16,7 @@ https://github.com/oojjrs/unity_oui.git?path=/Packages/src
 | --- | --- | --- |
 | `MyButton`, `MySelectable` | 입력 | 클릭·포커스·프레스·홀드 콜백 연결 |
 | `MyRadio`, `MyRadioGroup`, `MyTab` | 선택 | 라디오 선택과 탭 상태 관리 |
-| `MyText`, `MyImage`, `MyPortrait` | 표시 | UGUI 텍스트·이미지 갱신 |
+| `MyText`, `MyImage`, `MyPortrait`, `MyTooltip` | 표시 | UGUI 텍스트·이미지 갱신과 대상 바깥 툴팁 배치 |
 | `MyList`, `MyReel` | 목록 | 프리팹 목록과 가상화 목록 관리 |
 | `MyBar`, `MySlider`, `MyToggle`, `MySelector`, `MySwapper` | 값 | 값 기반 UI 상태 갱신 |
 | `MyInput`, `MyAsker` | 흐름 | 입력 및 확인·예/아니오 모달 처리 |

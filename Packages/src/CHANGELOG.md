@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.12.0
+
+- `MyTooltip`을 추가해 대상 `RectTransform`, 문구와 폭을 받아 높이를 자동으로 계산하고, 같은 루트 Canvas 안에서 대상 위나 아래에 배치합니다.
+- 툴팁 전체의 raycast를 통과시켜 표시 직후 대상의 pointer hover가 끊기지 않도록 합니다.
+
 ## 1.11.10
 
 - `MyText`가 자동 너비를 RectTransform에 먼저 적용한 뒤 픽셀 보정된 실제 너비를 기준으로 preferred height를 계산하도록 수정해 텍스트가 영역 밖으로 잘리는 문제를 방지합니다.

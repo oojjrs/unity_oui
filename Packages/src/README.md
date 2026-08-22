@@ -18,6 +18,7 @@ UGUI 기반 UI에서 자주 반복되는 컴포넌트 제어를 `oojjrs.oui` 네
 - `MySlider`: 값 변경과 표시 텍스트를 연결하고, 선택적인 좌우 `Button.onClick` 콜백으로 정수 5 또는 전체 범위의 5%씩 이동하며 연결한 `AudioSource`를 좌우 버튼과 Thumb 입력에 재생합니다.
 - `MyBar` / `MyToggle` / `MyTab`: 값 변경 UI, 라디오 헤더 기반 탭 선택과 런타임 초기화 콜백을 연결합니다.
 - `MyText` / `MyImage` / `MyPortrait`: 기본 텍스트와 이미지 갱신을 감싸고, `MyText`의 선택적인 자동 너비·높이 조정과 `MyImage.SetNativeSizeSprite`로 컨트롤 크기를 콘텐츠에 맞출 수 있습니다.
+- `MyTooltip`: 대상 `RectTransform`, 문구와 폭을 받아 높이를 자동 계산하고, 대상 바깥의 위·아래 공간을 선택해 같은 루트 Canvas 안에 배치합니다. 툴팁 전체는 pointer raycast를 통과시킵니다.
 - `MyInput`: 입력값 초기화, 변경, 제출 콜백을 연결합니다.
 - `MyAsker`: 확인 또는 예/아니오 모달을 열고 닫는 흐름을 제공합니다.
 
