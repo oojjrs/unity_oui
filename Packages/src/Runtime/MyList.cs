@@ -5,6 +5,7 @@ using UnityEngine;
 namespace oojjrs.oui
 {
     [DisallowMultipleComponent]
+    [RequireComponent(typeof(RectTransform))]
     public partial class MyList : MonoBehaviour
     {
         public interface Master<TEntry, TValue> where TEntry : MonoBehaviour, MyListEntry<TValue>

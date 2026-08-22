@@ -5,6 +5,7 @@ using UnityEngine;
 namespace oojjrs.oui
 {
     [DisallowMultipleComponent]
+    [RequireComponent(typeof(RectTransform))]
     public partial class MyAsker : MonoBehaviour
     {
         public interface AskTextInterface

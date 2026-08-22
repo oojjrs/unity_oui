@@ -6,6 +6,7 @@ namespace oojjrs.oui
 {
     [DisallowMultipleComponent]
     [RequireComponent(typeof(Selectable))]
+    [RequireComponent(typeof(RectTransform))]
     public class MySelectable : MonoBehaviour, IDeselectHandler, ISelectHandler
     {
         public interface CallbackInterface

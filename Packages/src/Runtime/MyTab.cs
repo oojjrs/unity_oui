@@ -7,6 +7,7 @@ namespace oojjrs.oui
     [ExecuteAlways]
     [RequireComponent(typeof(MyRadioGroup))]
     [RequireComponent(typeof(MySelector))]
+    [RequireComponent(typeof(RectTransform))]
     public class MyTab : MonoBehaviour, MyRadioGroup.CallbackInterface, MyRadioGroup.InitializerInterface, MySelector.CallbackInterface
     {
         public interface CallbackInterface

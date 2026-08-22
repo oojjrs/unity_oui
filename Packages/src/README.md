@@ -24,6 +24,6 @@ UGUI 기반 UI에서 자주 반복되는 컴포넌트 제어를 `oojjrs.oui` 네
 
 ## 컴포넌트 배치 규칙
 
-런타임 UI 헬퍼 컴포넌트는 하나의 GameObject에 같은 헬퍼 타입을 하나만 두는 것을 기준으로 합니다. 같은 오브젝트의 필수 UGUI 컴포넌트가 필요한 타입은 `RequireComponent`로 의존성을 드러내고, 헬퍼 본체는 `DisallowMultipleComponent`로 중복 부착을 막습니다.
+런타임 UI 헬퍼 컴포넌트는 하나의 GameObject에 같은 헬퍼 타입을 하나만 두는 것을 기준으로 합니다. 화면에 직접 부착되는 컨트롤은 `RectTransform`을 요구하고, 같은 오브젝트의 필수 UGUI 컴포넌트도 `RequireComponent`로 의존성을 드러냅니다. EventSystem 감지·전달이나 임의 GameObject 상태만 조정하는 보조 컴포넌트는 `RectTransform`을 강제하지 않습니다. 헬퍼 본체는 `DisallowMultipleComponent`로 중복 부착을 막습니다.
 
 자세한 내용은 `Documentation~/index.md`를 참고합니다.

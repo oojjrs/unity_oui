@@ -7,6 +7,7 @@ namespace oojjrs.oui
 {
     [DisallowMultipleComponent]
     [ExecuteAlways]
+    [RequireComponent(typeof(RectTransform))]
     public class MyRadio : MonoBehaviour, IDeselectHandler, IPointerClickHandler, IPointerDownHandler, IPointerEnterHandler, IPointerExitHandler, IPointerUpHandler, ISelectHandler, ISubmitHandler
     {
         private enum State

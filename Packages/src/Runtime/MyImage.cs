@@ -5,6 +5,7 @@ namespace oojjrs.oui
 {
     [DisallowMultipleComponent]
     [RequireComponent(typeof(Image))]
+    [RequireComponent(typeof(RectTransform))]
     public class MyImage : MonoBehaviour
     {
         public Color Color

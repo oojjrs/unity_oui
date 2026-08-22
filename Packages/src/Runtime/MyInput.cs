@@ -6,6 +6,7 @@ namespace oojjrs.oui
 {
     [DisallowMultipleComponent]
     [RequireComponent(typeof(InputField))]
+    [RequireComponent(typeof(RectTransform))]
     public class MyInput : MonoBehaviour, IDeselectHandler, ISelectHandler
     {
         public interface InitializerInterface

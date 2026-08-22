@@ -4,6 +4,7 @@ namespace oojjrs.oui
 {
     [DisallowMultipleComponent]
     [RequireComponent(typeof(MySelector))]
+    [RequireComponent(typeof(RectTransform))]
     public class MySwapper : MonoBehaviour, MySelector.CallbackInterface
     {
         public interface CallbackInterface

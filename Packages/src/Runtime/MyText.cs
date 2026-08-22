@@ -5,6 +5,7 @@ namespace oojjrs.oui
 {
     [DisallowMultipleComponent]
     [RequireComponent(typeof(Text))]
+    [RequireComponent(typeof(RectTransform))]
     public class MyText : MonoBehaviour
     {
         [SerializeField]

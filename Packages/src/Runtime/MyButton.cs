@@ -8,6 +8,7 @@ namespace oojjrs.oui
     [DisallowMultipleComponent]
     [ExecuteAlways]
     [RequireComponent(typeof(Button))]
+    [RequireComponent(typeof(RectTransform))]
     public partial class MyButton : MonoBehaviour, IDeselectHandler, IPointerEnterHandler, IPointerExitHandler, ISelectHandler
     {
         public enum ClickSoundEnum

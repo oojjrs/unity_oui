@@ -6,6 +6,7 @@ namespace oojjrs.oui
 {
     [DisallowMultipleComponent]
     [RequireComponent(typeof(Slider))]
+    [RequireComponent(typeof(RectTransform))]
     public class MySlider : MonoBehaviour, IPointerDownHandler
     {
         private const float ContinuousStepRatio = 0.05f;

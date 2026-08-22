@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.12.2
+
+- 화면에 직접 부착되는 UI 컨트롤 14종에 `RectTransform` 요구 조건을 추가하고, EventSystem 보조나 범용 상태 조정 컴포넌트는 기존 부착 범위를 유지합니다.
+
 ## 1.12.1
 
 - 외부에서 설정한 현재 `MyText` 내용을 그대로 측정해 툴팁을 여는 `MyTooltip.Open(RectTransform target, float width)` 오버로드를 추가합니다.

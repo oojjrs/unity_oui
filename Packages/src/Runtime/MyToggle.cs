@@ -5,6 +5,7 @@ namespace oojjrs.oui
 {
     [DisallowMultipleComponent]
     [RequireComponent(typeof(MyButton))]
+    [RequireComponent(typeof(RectTransform))]
     public class MyToggle : MonoBehaviour, MyButton.CallbackInterface
     {
         public interface CallbackInterface
