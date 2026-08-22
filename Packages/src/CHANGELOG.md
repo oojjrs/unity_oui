@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.12.4
+
+- `MySelector.HoverInterface`를 추가해 같은 GameObject의 구현체에 pointer 진입과 이탈을 전달합니다.
+
 ## 1.12.3
 
 - `MyTooltip.OpenAutoWidth()` 오버로드를 추가해 현재 또는 전달한 문구의 preferred width와 padding으로 폭을 자동 계산하고, 지정한 최대 폭과 Canvas 폭 안에서 줄바꿈 높이를 다시 맞춥니다.

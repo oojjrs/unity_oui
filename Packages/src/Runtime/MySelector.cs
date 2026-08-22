@@ -1,13 +1,20 @@
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 namespace oojjrs.oui
 {
     [DisallowMultipleComponent]
-    public class MySelector : MonoBehaviour
+    public class MySelector : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {
         public interface CallbackInterface
         {
             int GetIndex();
+        }
+
+        public interface HoverInterface
+        {
+            void OnHoverEnter();
+            void OnHoverExit();
         }
 
         [SerializeField]
@@ -16,11 +23,13 @@ namespace oojjrs.oui
         private GameObject[] _values;
 
         private CallbackInterface Callback { get; set; }
+        private HoverInterface[] Hovers { get; set; }
         private int? Index { get; set; }
 
         private void Awake()
         {
             Callback = GetComponent<CallbackInterface>();
+            Hovers = GetComponents<HoverInterface>();
         }
 
         private void Start()
@@ -29,6 +38,24 @@ namespace oojjrs.oui
             {
                 if (Callback == default)
                     Debug.LogWarning($"{name}> DON'T HAVE CALLBACK FUNCTION.");
+            }
+        }
+
+        void IPointerEnterHandler.OnPointerEnter(PointerEventData eventData)
+        {
+            if (Hovers != default)
+            {
+                foreach (var hover in Hovers)
+                    hover.OnHoverEnter();
+            }
+        }
+
+        void IPointerExitHandler.OnPointerExit(PointerEventData eventData)
+        {
+            if (Hovers != default)
+            {
+                foreach (var hover in Hovers)
+                    hover.OnHoverExit();
             }
         }
 

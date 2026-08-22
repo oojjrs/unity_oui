@@ -79,7 +79,7 @@ public sealed class StartButton : MonoBehaviour, MyButton.CallbackInterface, MyB
 
 `MyImage.SetNativeSizeSprite(sprite, nativeSizeScale)`는 `sprite`를 설정한 뒤 `SetNativeSize()`를 호출하고 `nativeSizeScale` 배율을 적용합니다. `1f`는 100%, `0.5f`는 50%, `2f`는 200% 크기입니다. 단순히 값을 읽거나 크기 조정 없이 교체할 때는 기존 `Sprite`, `OverrideSprite` 프로퍼티를 사용합니다.
 
-`MyBar`, `MySlider`, `MyToggle`, `MySelector`, `MySwapper`는 값 기반 UI를 갱신할 때 사용합니다. 각 컴포넌트는 필요한 초기화 또는 변경 콜백 인터페이스를 함께 제공합니다.
+`MyBar`, `MySlider`, `MyToggle`, `MySelector`, `MySwapper`는 값 기반 UI를 갱신할 때 사용합니다. 각 컴포넌트는 필요한 초기화 또는 변경 콜백 인터페이스를 함께 제공합니다. `MySelector.HoverInterface`는 같은 GameObject에서 pointer 진입과 이탈을 받아 `OnHoverEnter()`와 `OnHoverExit()`로 전달합니다.
 
 `MySlider.OnLeftButtonClick()`과 `OnRightButtonClick()`은 별도의 좌우 `Button.onClick`에 연결하는 진입점입니다. 정수 Slider는 5씩, 연속 Slider는 전체 범위의 5%씩 이동합니다. `RightToLeft` 방향에서는 화면의 좌우에 맞춰 증감 방향을 뒤집고, 최솟값 또는 최댓값 경계에서는 값 변경 콜백을 다시 호출하지 않습니다.
 
