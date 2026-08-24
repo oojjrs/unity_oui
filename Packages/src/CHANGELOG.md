@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.12.6
+
+- `MyImage`에 `Image.alphaHitTestMinimumThreshold`를 설정하는 Inspector 필드를 추가하고, 편집 중과 런타임 활성화 시 직렬화된 값을 적용하도록 했습니다.
+
 ## 1.12.5
 
 - `MyButton`, `MyRadio`, `MySelector`가 hover 진입 상태를 추적해 pointer 이탈, interactable 해제 또는 비활성화 시 `OnHoverExit()`을 한 번만 전달하도록 보강했습니다.
