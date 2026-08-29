@@ -285,7 +285,7 @@
           <li><code>MyRadio</code> 기반 타입: <code>MonoBehaviour</code></li>
           <li><code>MyRadio</code> 필수 컴포넌트: 없음. 단, 클릭 판정을 위해 자식 중 하나 이상은 raycast 가능한 <code>Graphic</code>이어야 한다.</li>
           <li><code>MyRadio.State</code>: <code>OffNormal</code>부터 <code>OnDisabled</code>까지 단일 상태 enum으로 보관한다. 내부 로직은 보조 숫자 축이나 변환 함수 없이 현재 <code>_state</code>와 목표 enum 값을 직접 다룬다.</li>
-          <li><code>_isOn</code>과 <code>_isInteractable</code>은 Inspector에서 초기 선택 여부와 상호작용 가능 여부를 고르는 serialized 값이다. public <code>IsOn</code>과 <code>IsInteractable</code> setter는 상태 표시를 바꾸고, <code>SetState</code>는 enum 상태를 기준으로 두 serialized 값을 다시 동기화한다.</li>
+          <li><code>_isOn</code>과 <code>_isInteractable</code>은 Inspector에서 초기 선택 여부와 상호작용 가능 여부를 고르는 serialized 값이다. public <code>IsOn</code>과 <code>IsInteractable</code> setter는 상태 표시를 바꾸고, <code>SetState</code>는 enum 상태를 기준으로 선택 여부만 다시 동기화한다. 상호작용 가능 여부는 선택이나 표시 상태 갱신이 덮어쓰지 않는다.</li>
           <li><code>MyRadio</code>는 선택지별 대표 이미지와 텍스트를 serialized <code>MyImage[]</code>, <code>MyText[]</code> 배열 참조로 받는다. 외부 코드는 <code>Sprite</code>와 <code>Title</code> 설정으로 연결된 이미지·텍스트 배열 전체를 갱신할 수 있고, on/off 연출은 계속 <code>StateObjects</code>가 담당한다.</li>
           <li><code>MyRadioGroup</code>의 <code>_radios</code> 배열에 포함된 라디오는 선택 초기화를 그룹이 소유하므로, <code>MyRadio</code> 자신의 <code>InitializerInterface.InitialValue</code>는 적용하지 않는다. 그룹이 없거나 상위 그룹 배열에 포함되지 않은 단독 라디오일 때만 이 초기값을 읽는다.</li>
           <li>Inspector에 직접 노출되는 <code>Tooltip</code> 문구는 사용자가 바로 읽을 수 있도록 한글을 기본으로 작성한다.</li>

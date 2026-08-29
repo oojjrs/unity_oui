@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.12.7
+
+- `MyRadio`의 선택 및 표시 상태 동기화가 Inspector나 코드에서 끈 `IsInteractable` 값을 다시 켜지 않도록 수정했습니다.
+
 ## 1.12.6
 
 - `MyImage`에 `Image.alphaHitTestMinimumThreshold`를 설정하는 Inspector 필드를 추가하고, 편집 중과 런타임 활성화 시 직렬화된 값을 적용하도록 했습니다.

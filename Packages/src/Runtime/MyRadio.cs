@@ -573,7 +573,6 @@ namespace oojjrs.oui
         private void SetState(State state)
         {
             _state = state;
-            _isInteractable = (_state != State.OffDisabled) && (_state != State.OnDisabled);
             _isOn = _state switch
             {
                 State.OnNormal or
