@@ -24,7 +24,7 @@ namespace oojjrs.oui
             {
                 if (GetComponent<Text>().supportRichText)
                 {
-                    Text = value?.Replace('<', '\u02C2').Replace('>', '\u02C3');
+                    Text = Escape(value);
                 }
                 else
                 {
@@ -56,6 +56,11 @@ namespace oojjrs.oui
             {
                 Text = value.ToString();
             }
+        }
+
+        public static string Escape(string text)
+        {
+            return text?.Replace('<', '\u02C2').Replace('>', '\u02C3');
         }
     }
 }

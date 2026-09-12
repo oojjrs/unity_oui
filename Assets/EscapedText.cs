@@ -15,5 +15,11 @@ namespace Assets
         {
             GetComponent<MyText>().EscapedText = _text;
         }
+
+        [ContextMenu("Test Escaped Text With Color")]
+        private void TestWithColor()
+        {
+            GetComponent<MyText>().Text = $"<color=yellow>{MyText.Escape(_text)}</color>";
+        }
     }
 }

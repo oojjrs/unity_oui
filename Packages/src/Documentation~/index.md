@@ -81,6 +81,8 @@ public sealed class StartButton : MonoBehaviour, MyButton.CallbackInterface, MyB
 
 `MyText.EscapedText`는 setter 전용 프로퍼티입니다. 연결된 UGUI `Text.supportRichText`가 켜져 있으면 입력의 `<`와 `>`를 각각 `˂`(U+02C2)와 `˃`(U+02C3)로 바꿔 태그 해석을 막고, 꺼져 있으면 대입할 때마다 경고한 뒤 원문을 표시합니다. Rich Text 설정은 변경하지 않으며, 두 경로 모두 기존 `Text`를 거쳐 자동 너비·높이 조정을 적용합니다. `null`과 빈 문자열도 `Text`로 전달합니다.
 
+`MyText.Escape(string text)`는 컴포넌트 설정과 무관하게 같은 괄호 치환을 적용한 문자열을 반환하며, `null`은 그대로 반환합니다. 외부 입력에 시스템 서식을 붙일 때는 먼저 입력만 escape한 뒤 태그와 조합해 `Text`에 대입합니다. 예: `text.Text = $"<color=yellow>{MyText.Escape(nickname)}</color>";`. 조합한 결과를 `EscapedText`에 넣으면 시스템 태그도 치환됩니다. 서식을 표시하려면 대상 UGUI `Text.supportRichText`가 켜져 있어야 합니다.
+
 `MyImage`의 Alpha Hit Test Minimum Threshold는 연결된 `Image.alphaHitTestMinimumThreshold`에 즉시 반영되며, 에디터와 런타임에서 다시 활성화될 때도 직렬화된 값을 복원합니다. `0`이면 Image 사각형 전체가 raycast 대상이고, `0`보다 큰 값을 사용하려면 Sprite 텍스처의 Read/Write를 켜고 Crunch 압축과 Sprite Atlas 사용을 피해야 합니다.
 
 `MyImage.SetNativeSizeSprite(sprite, nativeSizeScale)`는 `sprite`를 설정한 뒤 `SetNativeSize()`를 호출하고 `nativeSizeScale` 배율을 적용합니다. `1f`는 100%, `0.5f`는 50%, `2f`는 200% 크기입니다. 단순히 값을 읽거나 크기 조정 없이 교체할 때는 기존 `Sprite`, `OverrideSprite` 프로퍼티를 사용합니다.

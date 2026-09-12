@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.12.9
+
+- `MyText.Escape(string)`를 추가해 입력 문자열만 escape한 뒤 색상 등 Rich Text 서식과 조합할 수 있도록 했습니다. `EscapedText`도 같은 함수를 사용합니다.
+
 ## 1.12.8
 
 - `MyText.EscapedText`를 추가했습니다. Rich Text가 켜져 있으면 `<`, `>`를 `˂`, `˃`로 치환하고, 꺼져 있으면 대입할 때마다 경고한 뒤 원문을 표시합니다.
