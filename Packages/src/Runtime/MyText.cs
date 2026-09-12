@@ -18,6 +18,22 @@ namespace oojjrs.oui
             get => GetComponent<Text>().color;
             set => GetComponent<Text>().color = value;
         }
+        public string EscapedText
+        {
+            set
+            {
+                if (GetComponent<Text>().supportRichText)
+                {
+                    Text = value?.Replace('<', '\u02C2').Replace('>', '\u02C3');
+                }
+                else
+                {
+                    Debug.LogWarning($"{name}> RICH TEXT IS DISABLED : {nameof(EscapedText)}", this);
+
+                    Text = value;
+                }
+            }
+        }
         public float PreferredHeight => GetComponent<Text>().preferredHeight;
         public float PreferredWidth => GetComponent<Text>().preferredWidth;
         public string Text

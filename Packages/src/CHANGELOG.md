@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.12.8
+
+- `MyText.EscapedText`를 추가했습니다. Rich Text가 켜져 있으면 `<`, `>`를 `˂`, `˃`로 치환하고, 꺼져 있으면 대입할 때마다 경고한 뒤 원문을 표시합니다.
+
 ## 1.12.7
 
 - `MyRadio`의 선택 및 표시 상태 동기화가 Inspector나 코드에서 끈 `IsInteractable` 값을 다시 켜지 않도록 수정했습니다.
