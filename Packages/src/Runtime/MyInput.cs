@@ -9,6 +9,11 @@ namespace oojjrs.oui
     [RequireComponent(typeof(RectTransform))]
     public class MyInput : MonoBehaviour, IDeselectHandler, ISelectHandler
     {
+        public interface EndEditInterface
+        {
+            void OnEndEdit(string s, bool wasCanceled);
+        }
+
         public interface InitializerInterface
         {
             string InitialValue { get; }
@@ -32,6 +37,7 @@ namespace oojjrs.oui
         private bool _focusAfterSubmit;
 
         public int CharacterLimit => GetComponent<InputField>().characterLimit;
+        private EndEditInterface EndEdit { get; set; }
         private InitializerInterface Initializer { get; set; }
         private SubmitInterface Submit { get; set; }
         public string Text
@@ -43,6 +49,7 @@ namespace oojjrs.oui
 
         private void Awake()
         {
+            EndEdit = GetComponent<EndEditInterface>();
             Initializer = GetComponent<InitializerInterface>();
             Submit = GetComponent<SubmitInterface>();
             ValueChanged = GetComponent<ValueChangedInterface>();
@@ -95,6 +102,7 @@ namespace oojjrs.oui
         // lost focus 때 부른다
         public void OnEndEdit(string s)
         {
+            EndEdit?.OnEndEdit(s, GetComponent<InputField>().wasCanceled);
         }
 
         // enter 등이 입력되었을 때 호출되는데, OnEndEdit보다 빠르다.
