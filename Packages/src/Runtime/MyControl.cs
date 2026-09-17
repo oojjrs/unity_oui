@@ -22,7 +22,7 @@ namespace oojjrs.oui
         }
 
         public static bool IsQuitting { get; private set; }
-        public static bool Texting { get; internal set; }
+        public static bool IsTexting { get; internal set; }
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
         private static void ResetQuitting()

@@ -65,7 +65,7 @@ namespace oojjrs.oui
             {
                 eventSystem.SetSelectedGameObject(default);
 
-                MyControl.Texting = false;
+                MyControl.IsTexting = false;
             }
         }
 
@@ -91,12 +91,12 @@ namespace oojjrs.oui
 
         void IDeselectHandler.OnDeselect(BaseEventData eventData)
         {
-            MyControl.Texting = false;
+            MyControl.IsTexting = false;
         }
 
         void ISelectHandler.OnSelect(BaseEventData eventData)
         {
-            MyControl.Texting = true;
+            MyControl.IsTexting = true;
         }
 
         // lost focus 때 부른다
