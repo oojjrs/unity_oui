@@ -44,13 +44,14 @@ namespace oojjrs.oui
         private bool _isClearWhenOpen;
         [SerializeField]
         private bool _isFocusAfterSubmit;
+        private bool _isFocused;
         [SerializeField]
         private bool _isFocusWhenOpen;
         private SubmitInterface _submit;
         private ValueChangedInterface _valueChanged;
 
         public int CharacterLimit => GetComponent<InputField>().characterLimit;
-        public bool IsFocused => GetComponent<InputField>().isFocused;
+        public bool IsFocused => _isFocused;
         public bool IsInteractable => GetComponent<InputField>().IsInteractable();
         public string Text
         {
@@ -122,6 +123,11 @@ namespace oojjrs.oui
 
         private void EnterFocus()
         {
+            if (_isFocused)
+                return;
+
+            _isFocused = true;
+
             if (_focuses != null)
             {
                 foreach (var focus in _focuses)
@@ -131,6 +137,11 @@ namespace oojjrs.oui
 
         private void ExitFocus()
         {
+            if (_isFocused == false)
+                return;
+
+            _isFocused = false;
+
             if (_focuses != null)
             {
                 foreach (var focus in _focuses)

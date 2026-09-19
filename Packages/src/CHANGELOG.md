@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.12.12
+
+- `MyInput.IsFocused` 버그 수정
+
 ## 1.12.11
 
 - `MyInput.FocusInterface` 추가
