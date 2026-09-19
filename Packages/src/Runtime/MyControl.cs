@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace oojjrs.oui
@@ -22,7 +24,8 @@ namespace oojjrs.oui
         }
 
         public static bool IsQuitting { get; private set; }
-        public static bool IsTexting { get; internal set; }
+        public static bool IsTexting => MyInputs.Any() && MyInputs.All(t => t.IsFocused);
+        internal static HashSet<MyInput> MyInputs { get; } = new();
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
         private static void ResetQuitting()

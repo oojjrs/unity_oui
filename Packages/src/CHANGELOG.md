@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.12.11
+
+- `MyInput.FocusInterface` 추가
+
 ## 1.12.10
 
 - `MyInput.EndEditInterface`를 추가해 입력 종료 문자열과 취소 여부(`wasCanceled`)를 같은 GameObject의 구현체로 전달합니다.

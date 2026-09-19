@@ -14,6 +14,12 @@ namespace oojjrs.oui
             void OnEndEdit(string s, bool wasCanceled);
         }
 
+        public interface FocusInterface
+        {
+            void OnFocusEnter();
+            void OnFocusExit();
+        }
+
         public interface InitializerInterface
         {
             string InitialValue { get; }
@@ -29,30 +35,36 @@ namespace oojjrs.oui
             void OnValueChanged(string s);
         }
 
+        private EndEditInterface _endEdit;
+        private FocusInterface[] _focuses;
+        private InitializerInterface _initializer;
         [SerializeField]
-        private bool _clearAfterSubmit;
+        private bool _isClearAfterSubmit;
         [SerializeField]
-        private bool _clearWhenOpen;
+        private bool _isClearWhenOpen;
         [SerializeField]
-        private bool _focusAfterSubmit;
+        private bool _isFocusAfterSubmit;
+        [SerializeField]
+        private bool _isFocusWhenOpen;
+        private SubmitInterface _submit;
+        private ValueChangedInterface _valueChanged;
 
         public int CharacterLimit => GetComponent<InputField>().characterLimit;
-        private EndEditInterface EndEdit { get; set; }
-        private InitializerInterface Initializer { get; set; }
-        private SubmitInterface Submit { get; set; }
+        public bool IsFocused => GetComponent<InputField>().isFocused;
+        public bool IsInteractable => GetComponent<InputField>().IsInteractable();
         public string Text
         {
             get => GetComponent<InputField>().text;
             set => GetComponent<InputField>().text = value;
         }
-        private ValueChangedInterface ValueChanged { get; set; }
 
         private void Awake()
         {
-            EndEdit = GetComponent<EndEditInterface>();
-            Initializer = GetComponent<InitializerInterface>();
-            Submit = GetComponent<SubmitInterface>();
-            ValueChanged = GetComponent<ValueChangedInterface>();
+            _endEdit = GetComponent<EndEditInterface>();
+            _focuses = GetComponents<FocusInterface>();
+            _initializer = GetComponent<InitializerInterface>();
+            _submit = GetComponent<SubmitInterface>();
+            _valueChanged = GetComponent<ValueChangedInterface>();
         }
 
         private void OnDisable()
@@ -60,60 +72,87 @@ namespace oojjrs.oui
             if ((Application.isPlaying == false) || MyControl.IsQuitting)
                 return;
 
+            MyControl.MyInputs.Remove(this);
+
             var eventSystem = EventSystem.current;
             if ((eventSystem != null) && (eventSystem.currentSelectedGameObject == gameObject))
             {
                 eventSystem.SetSelectedGameObject(default);
 
-                MyControl.IsTexting = false;
+                ExitFocus();
             }
         }
 
         private void OnEnable()
         {
-            if (_clearWhenOpen)
+            MyControl.MyInputs.Add(this);
+
+            if (_isClearWhenOpen)
                 GetComponent<InputField>().text = string.Empty;
 
-            if (Initializer != default)
-                GetComponent<InputField>().text = Initializer.InitialValue;
+            if (_initializer != default)
+                GetComponent<InputField>().text = _initializer.InitialValue;
 
-            GetComponent<InputField>().Select();
+            if (_isFocusWhenOpen)
+                GetComponent<InputField>().Select();
+            else
+                SyncFocus();
         }
 
         private void Start()
         {
-            if (Initializer != default)
+            if (_initializer != default)
             {
-                GetComponent<InputField>().text = Initializer.InitialValue;
-                GetComponent<InputField>().Select();
+                GetComponent<InputField>().text = _initializer.InitialValue;
+
+                if (_isFocusWhenOpen)
+                    GetComponent<InputField>().Select();
             }
         }
 
         void IDeselectHandler.OnDeselect(BaseEventData eventData)
         {
-            MyControl.IsTexting = false;
+            ExitFocus();
         }
 
         void ISelectHandler.OnSelect(BaseEventData eventData)
         {
-            MyControl.IsTexting = true;
+            EnterFocus();
+        }
+
+        private void EnterFocus()
+        {
+            if (_focuses != null)
+            {
+                foreach (var focus in _focuses)
+                    focus.OnFocusEnter();
+            }
+        }
+
+        private void ExitFocus()
+        {
+            if (_focuses != null)
+            {
+                foreach (var focus in _focuses)
+                    focus.OnFocusExit();
+            }
         }
 
         // lost focus 때 부른다
         public void OnEndEdit(string s)
         {
-            EndEdit?.OnEndEdit(s, GetComponent<InputField>().wasCanceled);
+            _endEdit?.OnEndEdit(s, GetComponent<InputField>().wasCanceled);
         }
 
         // enter 등이 입력되었을 때 호출되는데, OnEndEdit보다 빠르다.
         public void OnSubmit(string s)
         {
-            Submit?.OnSubmit(s);
+            _submit?.OnSubmit(s);
 
-            if(_clearAfterSubmit)
+            if(_isClearAfterSubmit)
                 GetComponent<InputField>().text = string.Empty;
 
-            if (_focusAfterSubmit)
+            if (_isFocusAfterSubmit)
             {
                 // TODO : 왜 여기선 Select만 갖고 안 되는 거지?
                 GetComponent<InputField>().Select();
@@ -123,7 +162,15 @@ namespace oojjrs.oui
 
         public void OnValueChanged(string s)
         {
-            ValueChanged?.OnValueChanged(s);
+            _valueChanged?.OnValueChanged(s);
+        }
+
+        private void SyncFocus()
+        {
+            if (IsInteractable && (EventSystem.current != null) && (EventSystem.current.currentSelectedGameObject == gameObject))
+                EnterFocus();
+            else
+                ExitFocus();
         }
     }
 }
