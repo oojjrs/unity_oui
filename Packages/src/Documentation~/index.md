@@ -137,6 +137,6 @@ Inspector의 선택적인 Click Audio Source에 `AudioSource`를 연결하면 �
 
 ## 입력과 모달
 
-`MyInput`은 입력값 초기화, 값 변경, 제출, 입력 종료 콜백을 분리해서 연결합니다. 같은 GameObject의 `MyInput.EndEditInterface` 구현체는 기존 InputField 이벤트에 연결된 `MyInput.OnEndEdit(string s)`를 통해 입력 종료 문자열과 취소 여부를 `EndEditInterface.OnEndEdit(string s, bool wasCanceled)`로 전달받습니다. 취소 시 문자열은 InputField가 입력 시작 전 값으로 복원한 결과입니다.
+`MyInput`은 입력값 초기화, 값 변경, 제출, 입력 종료 콜백을 분리해서 연결합니다. 같은 GameObject의 `MyInput.EndEditInterface` 구현체는 기존 InputField 이벤트에 연결된 `MyInput.OnEndEdit(string s)`를 통해 입력 종료 문자열과 취소 여부를 `EndEditInterface.OnEndEdit(string s, bool wasCanceled)`로 전달받습니다. 취소 시 문자열은 InputField가 입력 시작 전 값으로 복원한 결과입니다. `MyControl.IsTexting`은 활성 입력창 중 선택된 창이 하나라도 있고 그 창의 입력이 취소되지 않았을 때 true입니다. Escape 취소 후 같은 창을 다시 활성화하면 true로 돌아갑니다.
 
 `MyAsker`는 확인 모달과 예/아니오 모달의 열기, 닫기, 결과 콜백을 제공합니다. 추가 데이터는 `MyAsker.MyAskerArguments`로 전달합니다.

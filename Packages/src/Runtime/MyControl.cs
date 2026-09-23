@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace oojjrs.oui
 {
@@ -24,7 +25,7 @@ namespace oojjrs.oui
         }
 
         public static bool IsQuitting { get; private set; }
-        public static bool IsTexting => MyInputs.Any() && MyInputs.All(t => t.IsFocused);
+        public static bool IsTexting => MyInputs.Any(t => t.IsFocused && (t.GetComponent<InputField>().wasCanceled == false));
         internal static HashSet<MyInput> MyInputs { get; } = new();
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]

@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.12.13
+
+- `MyControl.IsTexting`이 `InputField`의 Escape 취소 직후 false가 되도록 하고, 여러 입력창 중 하나가 선택되었을 때도 올바르게 판정합니다.
+
 ## 1.12.12
 
 - `MyInput.IsFocused` 버그 수정
