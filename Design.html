@@ -287,7 +287,7 @@
           <li><code>MyRadio.State</code>: <code>OffNormal</code>부터 <code>OnDisabled</code>까지 단일 상태 enum으로 보관한다. 내부 로직은 보조 숫자 축이나 변환 함수 없이 현재 <code>_state</code>와 목표 enum 값을 직접 다룬다.</li>
           <li><code>_isOn</code>과 <code>_isInteractable</code>은 Inspector에서 초기 선택 여부와 상호작용 가능 여부를 고르는 serialized 값이다. public <code>IsOn</code>과 <code>IsInteractable</code> setter는 상태 표시를 바꾸고, <code>SetState</code>는 enum 상태를 기준으로 선택 여부만 다시 동기화한다. 상호작용 가능 여부는 선택이나 표시 상태 갱신이 덮어쓰지 않는다.</li>
           <li><code>MyRadio</code>는 선택지별 대표 이미지와 텍스트를 serialized <code>MyImage[]</code>, <code>MyText[]</code> 배열 참조로 받는다. 외부 코드는 <code>Sprite</code>와 <code>Title</code> 설정으로 연결된 이미지·텍스트 배열 전체를 갱신할 수 있고, on/off 연출은 계속 <code>StateObjects</code>가 담당한다.</li>
-          <li><code>MyRadioGroup</code>의 <code>_radios</code> 배열에 포함된 라디오는 선택 초기화를 그룹이 소유하므로, <code>MyRadio</code> 자신의 <code>InitializerInterface.InitialValue</code>는 적용하지 않는다. 그룹이 없거나 상위 그룹 배열에 포함되지 않은 단독 라디오일 때만 이 초기값을 읽는다.</li>
+          <li><code>MyRadioGroup</code>의 <code>_radios</code> 배열에 포함된 라디오는 선택 초기화를 그룹이 소유하므로, <code>MyRadio</code> 자신의 <code>InitializerInterface.InitialValue</code>를 선택 상태에는 적용하지 않는다. 대신 첫 사용자 선택에서 현재 상태와 다를 때 해당 라디오의 <code>OnValueChanged</code>를 한 번 전달하는 기준으로만 읽는다. 그룹이 없거나 상위 그룹 배열에 포함되지 않은 단독 라디오일 때는 이 초기값을 선택 상태에 적용한다.</li>
           <li>Inspector에 직접 노출되는 <code>Tooltip</code> 문구는 사용자가 바로 읽을 수 있도록 한글을 기본으로 작성한다.</li>
           <li><code>MyRadio</code>는 <code>ExecuteAlways</code>로 동작해 에디터에서도 <code>_isOn</code>, <code>_isInteractable</code> 변경과 상태 표시 오브젝트 전환을 즉시 맞춘다.</li>
           <li><code>MyRadio.FocusInterface</code>는 선택적 확장점이다. 콜백 구현체가 없어도 경고하지 않으며, interactable 해제나 비활성화로 포커스를 잃을 때도 진입·이탈 짝을 한 번 유지한다.</li>
@@ -307,7 +307,7 @@
           <li>선택 index는 <code>_index</code> 하나로 관리한다. <code>Required</code>와 <code>Optional</code>에서 Inspector의 <code>_index</code>는 초기 선택값이자 런타임 현재값이며, 외부 <code>InitializerInterface.InitialIndex</code> 값은 <code>Start()</code>에서 한 번만 <code>_index</code>에 적용한다. <code>Multiple</code>에서는 단일 초기 인덱스를 사용하지 않고 첫 번째 on 라디오의 index만 표시한다.</li>
         </ul>
         <h3>콜백 결정</h3>
-        <p><code>OuiSetIsOn</code>은 개별 라디오의 notify API이고, <code>IsOn</code> setter는 이 API로 위임한다. <code>OuiSelect</code>는 이미 선택된 index를 다시 요청해도 그룹 콜백을 한 번 호출하고, 실제 on/off 값이 바뀐 개별 <code>MyRadio</code>도 <code>OuiSetIsOn</code>을 통해 콜백을 호출한다. <code>Multiple</code>에서는 콜백 인자로 실제 변경된 라디오의 index와 radio를 넘기며, <code>OuiSetIndexWithoutNotify</code>는 그룹 콜백과 개별 라디오 콜백을 모두 생략하고 시각 상태만 조용히 맞춘다.</p>
+        <p><code>OuiSetIsOn</code>은 개별 라디오의 notify API이고, <code>IsOn</code> setter는 이 API로 위임한다. <code>OuiSelect</code>는 이미 선택된 index를 다시 요청해도 그룹 콜백을 한 번 호출하고, 실제 on/off 값이 바뀐 개별 <code>MyRadio</code>도 <code>OuiSetIsOn</code>을 통해 콜백을 호출한다. 그룹에 포함된 라디오의 첫 사용자 선택에서는 실제 on/off 값이 이미 같더라도 <code>InitializerInterface.InitialValue</code>와 다르면 해당 라디오 콜백을 한 번 보충한다. <code>Multiple</code>에서는 콜백 인자로 실제 변경된 라디오의 index와 radio를 넘기며, <code>OuiSetIndexWithoutNotify</code>는 그룹 콜백과 개별 라디오 콜백을 모두 생략하고 시각 상태만 조용히 맞춘다.</p>
         <h3>구현 메모</h3>
         <ul>
           <li>라디오 목록은 자식 자동 수집이 아니라 serialized 배열로 결정한다. 배열 순서가 곧 선택 index 순서이며, <code>MySelector</code>의 값 배열과 같은 authoring 감각을 따른다.</li>

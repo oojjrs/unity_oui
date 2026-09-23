@@ -83,6 +83,7 @@ namespace oojjrs.oui
         [SerializeField]
         private MyImage[] _images;
         private InitializerInterface _initializer;
+        private bool? _initialValue;
         private bool _isFocused;
         private bool _isHovered;
         private bool _isStarted;
@@ -243,8 +244,15 @@ namespace oojjrs.oui
                 Debug.LogWarning($"{name}> DON'T HAVE RAYCAST GRAPHIC.");
 
             var group = GetComponentInParent<GroupInterface>();
-            if (((group == null) || (group.Contains(this) == false)) && (_initializer != null))
-                IsOn = _initializer.InitialValue;
+            if ((group == null) || (group.Contains(this) == false))
+            {
+                if (_initializer != null)
+                    IsOn = _initializer.InitialValue;
+            }
+            else if (_initializer != null)
+            {
+                _initialValue = _initializer.InitialValue;
+            }
 
             if (Application.isPlaying)
             {
@@ -437,6 +445,15 @@ namespace oojjrs.oui
             }
         }
 
+        private void NotifyValueChanged(bool isOn)
+        {
+            if (_callbacks != null)
+            {
+                foreach (var callback in _callbacks)
+                    callback.OnValueChanged(isOn);
+            }
+        }
+
         public void OuiClick()
         {
             if (IsInteractable == false)
@@ -445,8 +462,20 @@ namespace oojjrs.oui
             _lastClickFrame = Time.frameCount;
 
             var group = GetComponentInParent<GroupInterface>();
-            if ((group == null) || (group.Contains(this) == false) || (group.OnClick(this) == false))
+            if ((group != null) && group.Contains(this) && group.OnClick(this))
+            {
+                if (_initialValue.HasValue)
+                {
+                    if (_initialValue.Value != IsOn)
+                        NotifyValueChanged(IsOn);
+
+                    _initialValue = null;
+                }
+            }
+            else
+            {
                 OuiSetIsOn(IsOn == false);
+            }
 
             if (_soundOverrides.Click != null)
                 PlaySfxSafety(_soundOverrides.Click);
@@ -465,12 +494,8 @@ namespace oojjrs.oui
             }
 
             OuiSetIsOnWithoutNotify(isOn);
-
-            if (_callbacks != null)
-            {
-                foreach (var callback in _callbacks)
-                    callback.OnValueChanged(isOn);
-            }
+            _initialValue = null;
+            NotifyValueChanged(isOn);
         }
 
         public void OuiSetIsOnWithoutNotify(bool isOn)

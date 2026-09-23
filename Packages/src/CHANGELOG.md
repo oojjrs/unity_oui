@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.12.14
+
+- `MyRadioGroup`의 초기 index와 `MyRadio.InitializerInterface.InitialValue`가 다를 때, 같은 index의 라디오를 처음 선택해도 해당 `MyRadio`의 값 변경 콜백을 한 번 전달하도록 수정했습니다.
+
 ## 1.12.13
 
 - `MyControl.IsTexting`이 `InputField`의 Escape 취소 직후 false가 되도록 하고, 여러 입력창 중 하나가 선택되었을 때도 올바르게 판정합니다.
