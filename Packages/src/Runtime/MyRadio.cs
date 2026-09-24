@@ -51,6 +51,11 @@ namespace oojjrs.oui
             void OnValueChanged(bool isOn);
         }
 
+        public interface ClickInterface
+        {
+            void OnClick();
+        }
+
         public interface FocusInterface
         {
             void OnFocusEnter();
@@ -75,6 +80,7 @@ namespace oojjrs.oui
         }
 
         private CallbackInterface[] _callbacks;
+        private ClickInterface[] _clicks;
         private FocusInterface[] _focuses;
         private Coroutine _focusHoverSoundCoroutine;
         private HoverInterface[] _hovers;
@@ -176,6 +182,7 @@ namespace oojjrs.oui
         private void Awake()
         {
             _callbacks = GetComponents<CallbackInterface>();
+            _clicks = GetComponents<ClickInterface>();
             _focuses = GetComponents<FocusInterface>();
             _hovers = GetComponents<HoverInterface>();
             _initializer = GetComponent<InitializerInterface>();
@@ -475,6 +482,12 @@ namespace oojjrs.oui
             else
             {
                 OuiSetIsOn(IsOn == false);
+            }
+
+            if (_clicks != null)
+            {
+                foreach (var click in _clicks)
+                    click.OnClick();
             }
 
             if (_soundOverrides.Click != null)

@@ -262,8 +262,8 @@
             </tr>
             <tr>
               <td>버튼 공통 기능</td>
-              <td><code>IsInteractable</code>, <code>SoundOverrides</code>, <code>FocusInterface</code>, <code>HoverInterface</code></td>
-              <td><code>MyButton</code>을 직접 붙이거나 그 내부 타입을 참조하지 않고, 버튼 계열 컴포넌트로 기대되는 외부 제어 표면과 사운드/focus/hover 콜백 계약을 <code>MyRadio</code> 안에 복제한다. 단, 라디오에서 switch는 곧 click 동작이므로 외부 <code>ClickSound</code> 선택지로 열지 않고, <code>SoundOverrides.Click</code>은 기본 switch SFX의 대체 사운드로만 쓴다.</td>
+              <td><code>IsInteractable</code>, <code>SoundOverrides</code>, <code>ClickInterface</code>, <code>FocusInterface</code>, <code>HoverInterface</code></td>
+              <td><code>MyButton</code>을 직접 붙이거나 그 내부 타입을 참조하지 않고, 버튼 계열 컴포넌트로 기대되는 외부 제어 표면과 사운드/click/focus/hover 콜백 계약을 <code>MyRadio</code> 안에 복제한다. 단, 라디오에서 switch는 곧 click 동작이므로 외부 <code>ClickSound</code> 선택지로 열지 않고, <code>SoundOverrides.Click</code>은 기본 switch SFX의 대체 사운드로만 쓴다.</td>
             </tr>
           </tbody>
         </table>
@@ -273,7 +273,7 @@
           <li><code>IPointerExitHandler</code>: 현재 EventSystem 선택 여부에 따라 Normal 또는 Selected enum 상태로 되돌린다.</li>
           <li><code>IPointerDownHandler</code>: 왼쪽 버튼이면 현재 EventSystem 선택 오브젝트로 지정한 뒤 현재 값의 반대값을 미리 보여주는 pressed preview 상태로 바꾼다.</li>
           <li><code>IPointerUpHandler</code>: 왼쪽 버튼이면 click 성공 여부가 확정되기 전이므로 현재 논리값 기준의 Normal 또는 Selected enum 상태로 되돌린다.</li>
-          <li><code>IPointerClickHandler</code>: 왼쪽 버튼이면 <code>OuiClick()</code>을 실행하고, 값이 바뀌면 현재 EventSystem 선택 여부에 따라 반대값의 Selected 또는 Normal 상태로 확정한다.</li>
+          <li><code>IPointerClickHandler</code>: 왼쪽 버튼이면 <code>OuiClick()</code>을 실행하고, 선택 정책을 적용한 뒤 값 변경 여부와 관계없이 <code>ClickInterface.OnClick()</code>을 한 번 호출한다.</li>
           <li><code>ISelectHandler</code> / <code>IDeselectHandler</code>: 포인터와 패드/키보드의 EventSystem 선택을 포커스 진입·이탈로 보고 <code>FocusInterface</code> 콜백을 즉시 호출한다. 컴포넌트 시작 전에 이미 현재 선택이었다면 <code>Start()</code>에서 진입 콜백을 한 번 보충한다. 라디오는 진입 콜백보다 먼저 Selected enum 상태를 반영한다. focus hover 사운드는 별도로 예약 재생하며, 같은 프레임에 click이 실행되거나 pointer hover 사운드가 이미 재생되면 취소한다. 포커스 해제는 EventSystem 갱신 타이밍에 기대지 않고 Normal 상태로 내린다.</li>
           <li><code>ISubmitHandler</code>: 가짜 pressed 연출 없이 <code>OuiClick()</code>만 실행한다.</li>
         </ul>
@@ -290,6 +290,7 @@
           <li><code>MyRadioGroup</code>의 <code>_radios</code> 배열에 포함된 라디오는 선택 초기화를 그룹이 소유하므로, <code>MyRadio</code> 자신의 <code>InitializerInterface.InitialValue</code>를 선택 상태에는 적용하지 않는다. 대신 첫 사용자 선택에서 현재 상태와 다를 때 해당 라디오의 <code>OnValueChanged</code>를 한 번 전달하는 기준으로만 읽는다. 그룹이 없거나 상위 그룹 배열에 포함되지 않은 단독 라디오일 때는 이 초기값을 선택 상태에 적용한다.</li>
           <li>Inspector에 직접 노출되는 <code>Tooltip</code> 문구는 사용자가 바로 읽을 수 있도록 한글을 기본으로 작성한다.</li>
           <li><code>MyRadio</code>는 <code>ExecuteAlways</code>로 동작해 에디터에서도 <code>_isOn</code>, <code>_isInteractable</code> 변경과 상태 표시 오브젝트 전환을 즉시 맞춘다.</li>
+          <li><code>MyRadio.ClickInterface</code>는 선택적 확장점이다. 포인터 클릭과 submit이 <code>OuiClick()</code>에 도달하면 선택 정책을 먼저 적용하고, 실제 <code>IsOn</code> 변경 여부와 관계없이 클릭 콜백을 한 번 전달한다.</li>
           <li><code>MyRadio.FocusInterface</code>는 선택적 확장점이다. 콜백 구현체가 없어도 경고하지 않으며, interactable 해제나 비활성화로 포커스를 잃을 때도 진입·이탈 짝을 한 번 유지한다.</li>
           <li>상속/인터페이스 순서: Unity 제공 그룹, 로컬 제공 그룹 순서로 배치하고 각 그룹 안에서는 이름 ABC 순서</li>
           <li>함수 순서: Unity 함수, 상속/인터페이스 함수, 로컬 함수 그룹 순서로 배치한다. 상속/인터페이스 함수 그룹 안에서도 Unity 제공 함수, 로컬 제공 함수 순서로 나누고 각 그룹 안에서는 modifier와 무관하게 함수명 ABC 순서</li>
@@ -307,7 +308,7 @@
           <li>선택 index는 <code>_index</code> 하나로 관리한다. <code>Required</code>와 <code>Optional</code>에서 Inspector의 <code>_index</code>는 초기 선택값이자 런타임 현재값이며, 외부 <code>InitializerInterface.InitialIndex</code> 값은 <code>Start()</code>에서 한 번만 <code>_index</code>에 적용한다. <code>Multiple</code>에서는 단일 초기 인덱스를 사용하지 않고 첫 번째 on 라디오의 index만 표시한다.</li>
         </ul>
         <h3>콜백 결정</h3>
-        <p><code>OuiSetIsOn</code>은 개별 라디오의 notify API이고, <code>IsOn</code> setter는 이 API로 위임한다. <code>OuiSelect</code>는 이미 선택된 index를 다시 요청해도 그룹 콜백을 한 번 호출하고, 실제 on/off 값이 바뀐 개별 <code>MyRadio</code>도 <code>OuiSetIsOn</code>을 통해 콜백을 호출한다. 그룹에 포함된 라디오의 첫 사용자 선택에서는 실제 on/off 값이 이미 같더라도 <code>InitializerInterface.InitialValue</code>와 다르면 해당 라디오 콜백을 한 번 보충한다. <code>Multiple</code>에서는 콜백 인자로 실제 변경된 라디오의 index와 radio를 넘기며, <code>OuiSetIndexWithoutNotify</code>는 그룹 콜백과 개별 라디오 콜백을 모두 생략하고 시각 상태만 조용히 맞춘다.</p>
+        <p><code>OuiSetIsOn</code>은 개별 라디오의 값 변경 notify API이고, <code>IsOn</code> setter는 이 API로 위임한다. <code>OuiClick</code>은 그룹 또는 단독 선택 정책을 먼저 적용한 뒤 <code>ClickInterface.OnClick()</code>을 호출하므로, 값이 유지된 클릭도 별도로 구독할 수 있다. <code>OuiSelect</code>는 이미 선택된 index를 다시 요청해도 그룹 콜백을 한 번 호출하고, 실제 on/off 값이 바뀐 개별 <code>MyRadio</code>도 <code>OuiSetIsOn</code>을 통해 콜백을 호출한다. 그룹에 포함된 라디오의 첫 사용자 선택에서는 실제 on/off 값이 이미 같더라도 <code>InitializerInterface.InitialValue</code>와 다르면 해당 라디오 콜백을 한 번 보충한다. <code>Multiple</code>에서는 콜백 인자로 실제 변경된 라디오의 index와 radio를 넘기며, <code>OuiSetIndexWithoutNotify</code>는 그룹 콜백과 개별 라디오 값 변경 콜백을 모두 생략하고 시각 상태만 조용히 맞춘다.</p>
         <h3>구현 메모</h3>
         <ul>
           <li>라디오 목록은 자식 자동 수집이 아니라 serialized 배열로 결정한다. 배열 순서가 곧 선택 index 순서이며, <code>MySelector</code>의 값 배열과 같은 authoring 감각을 따른다.</li>

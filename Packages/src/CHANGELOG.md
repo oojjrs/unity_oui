@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.12.15
+
+- `MyRadio.ClickInterface`를 추가해 `IsOn` 변경 여부와 관계없이 클릭을 한 번 전달합니다.
+
 ## 1.12.14
 
 - `MyRadioGroup`의 초기 index와 `MyRadio.InitializerInterface.InitialValue`가 다를 때, 같은 index의 라디오를 처음 선택해도 해당 `MyRadio`의 값 변경 콜백을 한 번 전달하도록 수정했습니다.

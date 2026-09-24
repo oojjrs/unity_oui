@@ -105,7 +105,7 @@ Inspector의 선택적인 Click Audio Source에 `AudioSource`를 연결하면 �
 
 ## 라디오
 
-`MyRadio`와 `MyRadioGroup`은 Unity `Toggle`, `ToggleGroup`, `Selectable`에 기대지 않고 라디오 버튼과 토글 묶음을 구성합니다. `MyRadio`는 `IsOn`과 `IsInteractable`을 Inspector에서 설정할 수 있으며, off/on 각각의 normal, highlighted, pressed preview, selected, disabled 상태 GameObject를 접을 수 있는 `StateObjects` 묶음으로 받아 직접 켜고 끕니다. 라디오별 아이콘과 라벨은 serialized `MyImage[]`, `MyText[]` 배열 참조로 연결하고, 코드는 setter-only `Sprite`와 `Title`로 연결된 이미지·텍스트 배열 전체를 갱신할 수 있습니다. 배열 값은 어떤 슬롯을 대표값으로 읽을지 안정적인 계약을 만들 수 없으므로 getter를 제공하지 않습니다. `MyRadio.InitializerInterface`는 단독 라디오에서 선택 상태에 적용됩니다. `MyRadioGroup`의 배열에 포함된 라디오 선택 초기화는 그룹이 맡되, `InitialValue`는 첫 사용자 선택에서 현재 상태와 다를 때 해당 라디오의 `OnValueChanged`를 한 번 전달하는 기준으로만 사용합니다.
+`MyRadio`와 `MyRadioGroup`은 Unity `Toggle`, `ToggleGroup`, `Selectable`에 기대지 않고 라디오 버튼과 토글 묶음을 구성합니다. `MyRadio`는 `IsOn`과 `IsInteractable`을 Inspector에서 설정할 수 있으며, off/on 각각의 normal, highlighted, pressed preview, selected, disabled 상태 GameObject를 접을 수 있는 `StateObjects` 묶음으로 받아 직접 켜고 끕니다. 라디오별 아이콘과 라벨은 serialized `MyImage[]`, `MyText[]` 배열 참조로 연결하고, 코드는 setter-only `Sprite`와 `Title`로 연결된 이미지·텍스트 배열 전체를 갱신할 수 있습니다. 배열 값은 어떤 슬롯을 대표값으로 읽을지 안정적인 계약을 만들 수 없으므로 getter를 제공하지 않습니다. `MyRadio.InitializerInterface`는 단독 라디오에서 선택 상태에 적용됩니다. `MyRadioGroup`의 배열에 포함된 라디오 선택 초기화는 그룹이 맡되, `InitialValue`는 첫 사용자 선택에서 현재 상태와 다를 때 해당 라디오의 `OnValueChanged`를 한 번 전달하는 기준으로만 사용합니다. `MyRadio.ClickInterface.OnClick()`은 실제 클릭 처리가 끝난 뒤 `IsOn` 변경 여부와 관계없이 한 번 호출되므로, 구현체는 콜백 안에서 최종 선택 상태를 읽을 수 있습니다.
 
 `MyRadio.HoverInterface`도 진입 뒤 pointer가 나가거나 라디오가 non-interactable 또는 비활성 상태가 될 때 `OnHoverExit()`을 한 번 보장합니다.
 
