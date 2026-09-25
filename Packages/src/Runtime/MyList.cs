@@ -31,9 +31,8 @@ namespace oojjrs.oui
 
         [SerializeField]
         private MyText _emptyText;
-
         // -_- 유니티가 삭제를 제대로 못해서 땜빵겸 들고 있다. 2022.3.8f1부터 10f1까지.
-        private List<GameObject> References { get; } = new();
+        private readonly List<GameObject> _references = new();
         private UpdateInterface[] _updates;
 
         private void Awake()
@@ -43,7 +42,7 @@ namespace oojjrs.oui
 
         private void OnDestroy()
         {
-            foreach (var r in References)
+            foreach (var r in _references)
             {
                 if (r != default)
                     Destroy(r);
@@ -61,7 +60,7 @@ namespace oojjrs.oui
                     Destroy(child.gameObject);
             }
 
-            References.Clear();
+            _references.Clear();
         }
 
         public void UpdateEntries<TEntry, TValue>(Master<TEntry, TValue> master, IEnumerable<TValue> entries) where TEntry : MonoBehaviour, MyListEntry<TValue>
@@ -81,7 +80,7 @@ namespace oojjrs.oui
                     // TODO : 이 가드가 왜 필요한지 이해는 1도 못했는데 없으니까 터져?
                     if (entry != default)
                     {
-                        References.Remove(entry.gameObject);
+                        _references.Remove(entry.gameObject);
                         Destroy(entry.gameObject);
                     }
                 }
@@ -89,7 +88,7 @@ namespace oojjrs.oui
                 foreach (var value in master.Data.Addeds)
                 {
                     var entry = Instantiate(master.Prefab, transform);
-                    References.Add(entry.gameObject);
+                    _references.Add(entry.gameObject);
 
                     if (sorter != default)
                         entry.SortingOrder = sorter.GetSortingOrder(value);
@@ -120,7 +119,7 @@ namespace oojjrs.oui
             }
 
             if (_emptyText != default)
-                _emptyText.gameObject.SetActive(References.Count <= 0);
+                _emptyText.gameObject.SetActive(_references.Count <= 0);
         }
     }
 }
