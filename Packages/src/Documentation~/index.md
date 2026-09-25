@@ -75,6 +75,12 @@ public sealed class StartButton : MonoBehaviour, MyButton.CallbackInterface, MyB
 
 `MyCurrentGameObjectDetector`는 매 프레임 `EventSystem.currentSelectedGameObject`를 확인하고 값이 바뀌었을 때만 같은 GameObject의 `CallbackInterface.Update(previousGameObject, currentGameObject)`를 호출합니다. 선택 해제로 `null`이 되거나 `null`에서 새 객체가 선택되는 전환도 전달하며, 특정 `Selectable`이나 게임별 포커스 정책에는 관여하지 않습니다. `_debugLog`를 켜면 이전·현재 객체 이름을 Unity Console에서 확인할 수 있습니다.
 
+## 포커스 자동 스크롤
+
+`MyScrollRect`는 같은 GameObject의 `ScrollRect`와 `MyCurrentGameObjectDetector`를 사용해 `EventSystem.currentSelectedGameObject`가 바뀔 때마다 현재 선택을 확인합니다. 선택된 UI의 `RectTransform`이 `ScrollRect.content`의 자손이고 viewport를 벗어났으면, 활성화된 가로·세로 축에서 선택 영역 전체가 보이는 데 필요한 최소 거리만큼 content를 이동합니다. 이미 viewport 안에 있거나 content 바깥의 객체가 선택되면 위치를 바꾸지 않습니다.
+
+키보드·마우스와 게임패드 입력 모드를 전환했지만 EventSystem의 현재 선택 객체 자체는 바뀌지 않은 경우에는 `OuiFocus()`를 호출합니다. 자동 감지와 `OuiFocus()` 모두 실제 위치 계산을 Canvas의 post-layout 단계까지 미뤄 같은 프레임의 선택 및 UI 레이아웃 변경이 반영된 뒤 스크롤합니다.
+
 ## 값 표시
 
 `MyText`, `MyImage`, `MyPortrait`는 UGUI `Text`와 `Image` 갱신을 간단한 프로퍼티로 감쌉니다. `MyText`의 Auto Width와 Auto Height를 선택하면 `Text` 프로퍼티로 문자열을 설정할 때 `preferredWidth`와 `preferredHeight`에 맞춰 RectTransform 크기를 조정합니다. 두 옵션을 함께 사용하면 너비를 먼저 실제 적용한 뒤 픽셀 보정된 너비를 기준으로 높이를 계산합니다. UGUI `Text.text`를 직접 변경하면 자동 조정은 실행되지 않습니다.

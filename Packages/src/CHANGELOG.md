@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.14.0
+
+- `MyScrollRect`를 추가해 현재 선택된 content 자손이 viewport 안에 보이도록 가로·세로 최소 거리만큼 자동 스크롤합니다.
+- 입력 모드 전환처럼 EventSystem의 선택 객체가 바뀌지 않은 경우에도 현재 포커스를 다시 맞출 수 있는 `OuiFocus()`를 제공합니다.
+
 ## 1.13.1
 
 - `MyRadioNavigation`이 `Awake()` 전에도 같은 GameObject의 `MyRadio`를 확인해 초기 비활성 상태의 상호작용 가능 여부를 판정합니다.

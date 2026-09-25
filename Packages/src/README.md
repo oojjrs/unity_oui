@@ -13,6 +13,7 @@ UGUI 기반 UI에서 자주 반복되는 컴포넌트 제어를 `oojjrs.oui` 네
 - `MyRadio`, `MyRadioNavigation`, `MyRadioGroup`: `MyRadio`와 `MyRadioGroup`은 Unity `Toggle`, `ToggleGroup`, `Selectable`에 기대지 않고 상태별 GameObject 표시와 명시 배열 기반 라디오 선택 UI를 구성하며, 개별 라디오는 초기 선택 동기화를 포함한 포커스 및 짝이 보장되는 호버 진입·이탈 콜백을 제공합니다. 선택적으로 같은 GameObject에 `MyRadioNavigation`을 추가하면 라디오 연출은 그대로 유지하면서 UGUI 자동 내비게이션 후보와 방향 이동을 사용할 수 있습니다. 라디오별 이미지와 텍스트는 serialized 배열 참조와 setter-only `Sprite`/`Title` 표면으로 연결합니다.
 - `MySelectable`: UGUI `Selectable` 기반 컨트롤의 select/deselect 콜백을 연결하고, 초기 선택과 interactable 해제·비활성화에서도 콜백 짝을 한 번 유지합니다.
 - `MyCurrentGameObjectDetector`: `EventSystem.currentSelectedGameObject`의 변경을 감지해 같은 GameObject의 콜백 구현체에 이전 선택과 현재 선택을 전달합니다.
+- `MyScrollRect`: 현재 선택된 content 자손이 viewport 안에 보이도록 `ScrollRect`를 가로·세로 최소 거리만큼 자동으로 이동하며, `OuiFocus()`로 현재 선택을 다시 맞춥니다.
 - `MyList`: 값 목록을 프리팹 엔트리로 동기화하고 필요하면 정렬하며, 선택적인 빈 상태 문구를 표시합니다.
 - `MyReel`: 새 값의 크기를 동기 확정해 누적 스크롤 위치를 계산하고, viewport 주변의 엔트리만 풀에서 롤링 재사용합니다.
 - `MySlider`: 값 변경과 표시 텍스트를 연결하고, 선택적인 좌우 `Button.onClick` 콜백으로 정수 5 또는 전체 범위의 5%씩 이동하며 연결한 `AudioSource`를 좌우 버튼과 Thumb 입력에 재생합니다.
