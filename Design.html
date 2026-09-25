@@ -566,7 +566,7 @@
 <p><code>Selectable</code>은 패드/키보드 navigation, <code>currentSelectedGameObject</code>, <code>interactable</code> 저장소 측면에서 유효하다. 다만 <code>MyRadio</code> 본체가 직접 상속하지 않고, 자동 navigation이 필요한 인스턴스만 같은 GameObject의 <code>MyRadioNavigation</code>으로 연결한다.</p>
         <div class="decision">
           <strong><code>MyRadioNavigation</code>으로 탐색 책임 분리</strong>
-          <p><code>MyRadio</code>가 <code>Selectable</code>을 직접 상속하면 <code>Transition</code>, <code>Target Graphic</code>, <code>Colors</code>, <code>Sprite State</code>, <code>Animation Triggers</code>처럼 이 설계에서 쓰지 않는 연출 필드가 Inspector에 노출된다. <code>MyRadioNavigation</code>은 <code>Selectable</code>의 후보 등록과 방향 이동만 맡고 전용 Inspector에는 <code>Navigation</code>만 표시한다. <code>MyRadio</code>의 연출 표시는 기존 명명 GameObject 필드가 계속 전담한다.</p>
+          <p><code>MyRadio</code>가 <code>Selectable</code>을 직접 상속하면 <code>Transition</code>, <code>Target Graphic</code>, <code>Colors</code>, <code>Sprite State</code>, <code>Animation Triggers</code>처럼 이 설계에서 쓰지 않는 연출 필드가 Inspector에 노출된다. <code>MyRadioNavigation</code>은 <code>Selectable</code>의 후보 등록과 방향 이동만 맡고 전용 Inspector에는 <code>Navigation</code>만 표시한다. 같은 GameObject의 필수 <code>MyRadio</code>는 <code>IsInteractable()</code>의 첫 호출에 캐시해 <code>Awake()</code> 전에도 상호작용 가능 여부를 판정한다. <code>MyRadio</code>의 연출 표시는 기존 명명 GameObject 필드가 계속 전담한다.</p>
         </div>
         <div class="note amber">
           <p><code>MyRadioNavigation</code>을 붙이지 않은 라디오는 기존처럼 직접 선택과 submit은 처리하지만 기본 UGUI navigation 그래프의 자동 이동 후보에는 포함되지 않는다. 자동 이동이 필요한 라디오에만 어댑터를 추가한다.</p>

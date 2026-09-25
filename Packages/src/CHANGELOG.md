@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.13.1
+
+- `MyRadioNavigation`이 `Awake()` 전에도 같은 GameObject의 `MyRadio`를 확인해 초기 비활성 상태의 상호작용 가능 여부를 판정합니다.
+
 ## 1.13.0
 
 - `MyRadioNavigation`을 추가해 `MyRadio`의 상태 연출을 유지하면서 UGUI 자동 내비게이션 후보와 방향 이동을 제공합니다.

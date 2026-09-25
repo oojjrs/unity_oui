@@ -8,15 +8,11 @@ namespace oojjrs.oui
     {
         private MyRadio _radio;
 
-        protected override void Awake()
-        {
-            base.Awake();
-
-            _radio = GetComponent<MyRadio>();
-        }
-
         public override bool IsInteractable()
         {
+            if (_radio == null)
+                _radio = GetComponent<MyRadio>();
+
             return base.IsInteractable() && _radio.IsInteractable;
         }
 
