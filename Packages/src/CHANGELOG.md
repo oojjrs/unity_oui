@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.13.0
+
+- `MyRadioNavigation`을 추가해 `MyRadio`의 상태 연출을 유지하면서 UGUI 자동 내비게이션 후보와 방향 이동을 제공합니다.
+- `MyRadioNavigation` 전용 Inspector에는 `Navigation`만 표시합니다.
+
 ## 1.12.15
 
 - `MyRadio.ClickInterface`를 추가해 `IsOn` 변경 여부와 관계없이 클릭을 한 번 전달합니다.

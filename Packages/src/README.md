@@ -10,7 +10,7 @@ UGUI 기반 UI에서 자주 반복되는 컴포넌트 제어를 `oojjrs.oui` 네
 ## 주요 컴포넌트
 
 - `MyButton`: 버튼 클릭, 포커스 진입·이탈, pointer/focus 기반 hover 사운드, 짝이 보장되는 호버, 즉시 프레스, 0.2초 지연 홀드, 더블 클릭, 쿨다운, 애니메이션 트리거, 사운드 오버라이드를 처리하며, 시작 전에 이미 선택된 포커스도 한 번 동기화합니다. `OuiLock()`과 `OuiFree()`는 버튼의 interactable 표현을 유지한 채 행동 콜백을 일시적으로 잠급니다. Inspector에서 받은 `Animator`를 읽기 전용 속성으로 노출하고 이미지 갱신 표면은 `MyImage` 기준으로 맞춥니다. 기본 disabled 이미지는 숨기고, 옵션을 켜면 이미지를 유지한 채 disabled 색상으로 표시합니다.
-- `MyRadio`, `MyRadioGroup`: Unity `Toggle`, `ToggleGroup`, `Selectable`에 기대지 않고 상태별 GameObject 표시와 명시 배열 기반 라디오 선택 UI를 구성하며, 개별 라디오는 초기 선택 동기화를 포함한 포커스 및 짝이 보장되는 호버 진입·이탈 콜백을 제공합니다. 라디오별 이미지와 텍스트는 serialized 배열 참조와 setter-only `Sprite`/`Title` 표면으로 연결합니다.
+- `MyRadio`, `MyRadioNavigation`, `MyRadioGroup`: `MyRadio`와 `MyRadioGroup`은 Unity `Toggle`, `ToggleGroup`, `Selectable`에 기대지 않고 상태별 GameObject 표시와 명시 배열 기반 라디오 선택 UI를 구성하며, 개별 라디오는 초기 선택 동기화를 포함한 포커스 및 짝이 보장되는 호버 진입·이탈 콜백을 제공합니다. 선택적으로 같은 GameObject에 `MyRadioNavigation`을 추가하면 라디오 연출은 그대로 유지하면서 UGUI 자동 내비게이션 후보와 방향 이동을 사용할 수 있습니다. 라디오별 이미지와 텍스트는 serialized 배열 참조와 setter-only `Sprite`/`Title` 표면으로 연결합니다.
 - `MySelectable`: UGUI `Selectable` 기반 컨트롤의 select/deselect 콜백을 연결하고, 초기 선택과 interactable 해제·비활성화에서도 콜백 짝을 한 번 유지합니다.
 - `MyCurrentGameObjectDetector`: `EventSystem.currentSelectedGameObject`의 변경을 감지해 같은 GameObject의 콜백 구현체에 이전 선택과 현재 선택을 전달합니다.
 - `MyList`: 값 목록을 프리팹 엔트리로 동기화하고 필요하면 정렬하며, 선택적인 빈 상태 문구를 표시합니다.

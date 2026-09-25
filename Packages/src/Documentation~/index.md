@@ -69,7 +69,7 @@ public sealed class StartButton : MonoBehaviour, MyButton.CallbackInterface, MyB
 
 전역 UI 사운드는 `MyControl.Audio`에 연결할 수 있고, 개별 버튼은 인스펙터의 사운드 오버라이드로 별도 `AudioSource`를 사용할 수 있습니다. focus hover 사운드는 click 또는 pointer hover 사운드와 같은 프레임에 겹치면 재생하지 않습니다. `FocusInterface` 콜백은 이 사운드 예약과 분리되어 EventSystem 선택 변경 시 즉시 호출됩니다. 컴포넌트가 시작되기 전에 이미 EventSystem의 현재 선택이었다면 시작 시 진입 콜백을 한 번 보충하며, 이 초기 동기화는 focus hover 사운드를 다시 재생하지 않습니다.
 
-`MyRadio`는 `Selectable`을 요구하지 않으므로 자체 `MyRadio.FocusInterface`를 제공합니다. `MyInput`, `MySlider`처럼 UGUI `Selectable` 기반 컨트롤은 같은 GameObject에 `MySelectable`을 붙여 `OnSelect()`와 `OnDeselect()` 콜백을 사용할 수 있으며, `MySelectable`도 시작 시 이미 선택된 상태를 같은 방식으로 동기화합니다.
+`MyRadio`는 `Selectable`을 직접 요구하지 않으므로 자체 `MyRadio.FocusInterface`를 제공합니다. 패드나 키보드의 UGUI 자동 내비게이션이 필요한 라디오에는 같은 GameObject에 `MyRadioNavigation`을 추가합니다. `MyInput`, `MySlider`처럼 UGUI `Selectable` 기반 컨트롤은 같은 GameObject에 `MySelectable`을 붙여 `OnSelect()`와 `OnDeselect()` 콜백을 사용할 수 있으며, `MySelectable`도 시작 시 이미 선택된 상태를 같은 방식으로 동기화합니다.
 
 ## 현재 선택 객체 감지
 
@@ -108,6 +108,8 @@ Inspector의 선택적인 Click Audio Source에 `AudioSource`를 연결하면 �
 `MyRadio`와 `MyRadioGroup`은 Unity `Toggle`, `ToggleGroup`, `Selectable`에 기대지 않고 라디오 버튼과 토글 묶음을 구성합니다. `MyRadio`는 `IsOn`과 `IsInteractable`을 Inspector에서 설정할 수 있으며, off/on 각각의 normal, highlighted, pressed preview, selected, disabled 상태 GameObject를 접을 수 있는 `StateObjects` 묶음으로 받아 직접 켜고 끕니다. 라디오별 아이콘과 라벨은 serialized `MyImage[]`, `MyText[]` 배열 참조로 연결하고, 코드는 setter-only `Sprite`와 `Title`로 연결된 이미지·텍스트 배열 전체를 갱신할 수 있습니다. 배열 값은 어떤 슬롯을 대표값으로 읽을지 안정적인 계약을 만들 수 없으므로 getter를 제공하지 않습니다. `MyRadio.InitializerInterface`는 단독 라디오에서 선택 상태에 적용됩니다. `MyRadioGroup`의 배열에 포함된 라디오 선택 초기화는 그룹이 맡되, `InitialValue`는 첫 사용자 선택에서 현재 상태와 다를 때 해당 라디오의 `OnValueChanged`를 한 번 전달하는 기준으로만 사용합니다. `MyRadio.ClickInterface.OnClick()`은 실제 클릭 처리가 끝난 뒤 `IsOn` 변경 여부와 관계없이 한 번 호출되므로, 구현체는 콜백 안에서 최종 선택 상태를 읽을 수 있습니다.
 
 `MyRadio.HoverInterface`도 진입 뒤 pointer가 나가거나 라디오가 non-interactable 또는 비활성 상태가 될 때 `OnHoverExit()`을 한 번 보장합니다.
+
+`MyRadioNavigation`은 같은 GameObject의 `MyRadio`를 UGUI 자동 내비게이션 후보로 등록하고 `Selectable.OnMove()`의 방향 탐색을 제공합니다. Inspector에는 `Navigation`만 표시하며 `Selectable`의 색상, Sprite, Animation transition은 사용하지 않습니다. 후보 활성 여부는 `MyRadio.IsInteractable`과 부모 `CanvasGroup`의 상호작용 허용 상태를 함께 따릅니다. EventSystem이 같은 GameObject를 선택하므로 기존 `MyRadio`의 selected 표시, 포커스 콜백과 submit 동작은 그대로 유지됩니다.
 
 `MyRadioGroup.SelectionMode`는 항상 하나를 선택하는 `Required`, 선택 없음도 허용하는 `Optional`, 각 항목을 독립 토글처럼 다루는 `Multiple`을 제공합니다. `Index`는 현재 선택과 Inspector 초기 선택을 함께 맡으며, `Optional`의 `-1`은 선택 없음입니다. `Multiple`에서는 단일 초기 인덱스를 사용하지 않고 첫 번째 on 라디오의 index를 표시합니다. 그룹의 라디오 목록은 Inspector의 배열로 직접 받으며, 배열 순서가 선택 index 순서입니다. 상위에 라디오 그룹이 있어도 배열에 포함되지 않은 `MyRadio`는 단독 토글처럼 동작합니다. Inspector 변경은 `OnValidate()`로 표시를 맞추고, `OnEnable()`과 `Start()`의 초기화 경로는 플레이 모드에서만 실행합니다. 자식 자동 수집은 그룹의 기본 동작이 아니며, 필요하면 별도 보조 컴포넌트나 Editor 도구에서 제공하는 영역으로 둡니다.
 

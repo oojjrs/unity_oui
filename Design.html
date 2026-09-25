@@ -563,15 +563,15 @@
           <details id="미결정과-제외-selectable-myselectable-컴포넌트-details">
             <summary>미결정과 제외 - Selectable / MySelectable 컴포넌트</summary>
             <div class="details-body">
-<p><code>Selectable</code>은 패드/키보드 navigation, <code>currentSelectedGameObject</code>, <code>interactable</code> 저장소 측면에서 매력적이었다. 그러나 현재 <code>MyRadio</code> 설계에서는 쓰지 않는다.</p>
+<p><code>Selectable</code>은 패드/키보드 navigation, <code>currentSelectedGameObject</code>, <code>interactable</code> 저장소 측면에서 유효하다. 다만 <code>MyRadio</code> 본체가 직접 상속하지 않고, 자동 navigation이 필요한 인스턴스만 같은 GameObject의 <code>MyRadioNavigation</code>으로 연결한다.</p>
         <div class="decision">
-          <strong><code>Selectable</code> 미사용</strong>
-          <p><code>Selectable</code>을 상속하거나 요구하면 <code>Transition</code>, <code>Target Graphic</code>, <code>Colors</code>, <code>Sprite State</code>, <code>Animation Triggers</code>처럼 이 설계에서 쓰지 않는 연출 필드가 Inspector에 노출된다. <code>MyRadio</code>의 연출 표시는 명명된 GameObject 필드가 전담하므로 혼란이 크다.</p>
+          <strong><code>MyRadioNavigation</code>으로 탐색 책임 분리</strong>
+          <p><code>MyRadio</code>가 <code>Selectable</code>을 직접 상속하면 <code>Transition</code>, <code>Target Graphic</code>, <code>Colors</code>, <code>Sprite State</code>, <code>Animation Triggers</code>처럼 이 설계에서 쓰지 않는 연출 필드가 Inspector에 노출된다. <code>MyRadioNavigation</code>은 <code>Selectable</code>의 후보 등록과 방향 이동만 맡고 전용 Inspector에는 <code>Navigation</code>만 표시한다. <code>MyRadio</code>의 연출 표시는 기존 명명 GameObject 필드가 계속 전담한다.</p>
         </div>
         <div class="note amber">
-          <p>이 결정의 대가는 기본 UGUI navigation 그래프의 자동 이동을 잃을 수 있다는 점이다. <code>SetSelectedGameObject()</code>는 아무 오브젝트나 받을 수 있지만, 방향 이동 탐색은 기본적으로 <code>Selectable</code> 생태계에 기대는 부분이 많다.</p>
+          <p><code>MyRadioNavigation</code>을 붙이지 않은 라디오는 기존처럼 직접 선택과 submit은 처리하지만 기본 UGUI navigation 그래프의 자동 이동 후보에는 포함되지 않는다. 자동 이동이 필요한 라디오에만 어댑터를 추가한다.</p>
         </div>
-        <p><code>MySelectable</code>은 기존 UGUI <code>Selectable</code>의 select/deselect 콜백을 감싸는 타입이다. <code>MyInput</code>, <code>MySlider</code>와 다른 UGUI <code>Selectable</code> 기반 컨트롤의 범용 경로로 유지하고, 시작 전에 이미 현재 선택인 경우와 재활성화 시 선택 상태를 동기화한다. interactable 해제나 비활성화에서도 진입한 선택의 deselect 콜백을 한 번 보장한다. <code>MyRadio</code>는 <code>Selectable</code>을 쓰지 않으므로 직접 관계를 만들지 않고 자체 <code>FocusInterface</code>를 사용한다.</p>
+        <p><code>MySelectable</code>은 기존 UGUI <code>Selectable</code>의 select/deselect 콜백을 감싸는 타입이다. <code>MyInput</code>, <code>MySlider</code>와 다른 UGUI <code>Selectable</code> 기반 컨트롤의 범용 경로로 유지하고, 시작 전에 이미 현재 선택인 경우와 재활성화 시 선택 상태를 동기화한다. interactable 해제나 비활성화에서도 진입한 선택의 deselect 콜백을 한 번 보장한다. <code>MyRadio</code>는 자체 <code>FocusInterface</code>를 유지하고 <code>MyRadioNavigation</code>은 탐색 후보와 방향 이동만 보완한다.</p>
             </div>
           </details>
         </div>
@@ -614,7 +614,6 @@
             <summary>미결정과 제외 - 열린 질문</summary>
             <div class="details-body">
 <ul>
-          <li><code>Selectable</code>을 쓰지 않는 상태에서 패드/키보드 방향 이동을 어떻게 보완할지 정해야 한다.</li>
           <li><code>MyRadio</code>의 명명된 상태 필드를 Editor에서 자동 구성하려면 context menu로 충분한지, custom inspector까지 갈지 정해야 한다.</li>
           <li>현재 <code>MyRadio</code>는 <code>Graphic</code>이 없으면 경고하지만, 클릭용 raycast target을 자동 생성하지는 않는다.</li>
         </ul>
