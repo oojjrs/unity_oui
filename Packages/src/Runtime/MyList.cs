@@ -24,11 +24,22 @@ namespace oojjrs.oui
             int GetSortingOrder(TValue value);
         }
 
+        public interface UpdateInterface
+        {
+            void OnUpdate(bool isDirty);
+        }
+
         [SerializeField]
         private MyText _emptyText;
 
         // -_- 유니티가 삭제를 제대로 못해서 땜빵겸 들고 있다. 2022.3.8f1부터 10f1까지.
         private List<GameObject> References { get; } = new();
+        private UpdateInterface[] _updates;
+
+        private void Awake()
+        {
+            _updates = GetComponents<UpdateInterface>();
+        }
 
         private void OnDestroy()
         {
@@ -62,7 +73,8 @@ namespace oojjrs.oui
         {
             master.Data.Update(entries);
 
-            if (master.Data.Dirty)
+            var isDirty = master.Data.Dirty;
+            if (isDirty)
             {
                 foreach (var entry in master.Data.Removeds)
                 {
@@ -99,6 +111,12 @@ namespace oojjrs.oui
                     foreach (var e in es.OrderBy(entry => entry.SortingOrder))
                         e.transform.SetParent(transform);
                 }
+            }
+
+            if (_updates != null)
+            {
+                foreach (var update in _updates)
+                    update?.OnUpdate(isDirty);
             }
 
             if (_emptyText != default)
