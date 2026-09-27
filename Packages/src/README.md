@@ -18,6 +18,7 @@ UGUI 기반 UI에서 자주 반복되는 컴포넌트 제어를 `oojjrs.oui` 네
 - `MyReel`: 새 값의 크기를 동기 확정해 누적 스크롤 위치를 계산하고, viewport 주변의 엔트리만 풀에서 롤링 재사용합니다.
 - `MySlider`: 값 변경과 표시 텍스트를 연결하고, 선택적인 좌우 `Button.onClick` 콜백으로 정수 5 또는 전체 범위의 5%씩 이동하며 연결한 `AudioSource`를 좌우 버튼과 Thumb 입력에 재생합니다.
 - `MySelector`: index에 맞는 GameObject 하나를 표시하고, 같은 GameObject의 `HoverInterface` 구현체에 짝이 보장되는 pointer 진입·이탈을 전달합니다.
+- `MyView`: 설정한 프리팹의 인스턴스 하나를 자식으로 생성·교체하고 현재 원본과 인스턴스를 노출합니다. `OuiRecreate()`로 같은 프리팹을 강제로 다시 생성할 수 있으며, 같은 GameObject의 `CallbackInterface` 구현체에 교체 결과를 전달합니다.
 - `MyBar` / `MyToggle` / `MyTab`: 값 변경 UI, 라디오 헤더 기반 탭 선택과 런타임 초기화 콜백을 연결합니다.
 - `MyText` / `MyImage` / `MyPortrait`: 기본 텍스트와 이미지 갱신을 감싸고, `MyText`의 선택적인 자동 너비·높이 조정, `MyImage`의 Inspector 기반 alpha hit test 임계값과 `SetNativeSizeSprite`로 표시와 입력 판정을 조정할 수 있습니다.
 - `MyTooltip`: 대상 `RectTransform`과 문구를 받아 고정 폭 또는 최대 폭 안의 preferred width로 크기를 계산하고, 대상 바깥의 위·아래 공간을 선택해 같은 루트 Canvas 안에 배치합니다. 툴팁 전체는 pointer raycast를 통과시킵니다.

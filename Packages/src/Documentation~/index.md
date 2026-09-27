@@ -99,6 +99,12 @@ public sealed class StartButton : MonoBehaviour, MyButton.CallbackInterface, MyB
 
 Inspector의 선택적인 Click Audio Source에 `AudioSource`를 연결하면 좌우 콜백이 유효하게 호출되거나 Thumb에서 왼쪽 포인터를 누를 때 재생합니다. 값이 범위 경계에 있어 이동하지 않는 좌우 클릭도 재생하며, 트랙 클릭과 Thumb 드래그 중에는 반복 재생하지 않습니다. 비워 두면 오디오 없이 기존 이동 동작만 사용합니다.
 
+## 뷰
+
+`MyView`는 설정한 `Prefab`의 인스턴스 하나를 자신의 자식으로 소유합니다. 직렬화된 초기 프리팹은 `Awake()`에서 생성하며, `Prefab`을 다른 값으로 설정하면 기존 인스턴스를 즉시 비활성화한 뒤 폐기하고 새 인스턴스를 생성합니다. `null`을 설정하면 현재 인스턴스를 제거하고, 같은 프리팹을 다시 설정하면 교체하지 않습니다. 설정한 원본은 `Prefab`, 현재 생성 객체는 읽기 전용 `Instance`로 확인합니다.
+
+`OuiRecreate()`는 `Prefab`을 바꾸지 않고 현재 인스턴스를 강제로 다시 생성합니다. 같은 GameObject의 컴포넌트가 `CallbackInterface`를 구현하면 초기 생성, `Prefab` 변경과 `OuiRecreate()`가 끝난 뒤 `OnViewChanged(GameObject instance)`로 현재 인스턴스 또는 `null`을 받습니다. `MyView`가 파괴될 때에는 소유 인스턴스를 정리하며 변경 콜백을 다시 호출하지 않습니다.
+
 ## 툴팁
 
 `MyTooltip.Open(RectTransform target, string text, float width)`은 문구와 고정 폭을 적용한 뒤 `MyText`의 preferred height에 맞춰 툴팁 높이를 결정합니다. 외부 컴포넌트가 `MyText` 내용을 관리한다면 `Open(RectTransform target, float width)`으로 현재 표시 내용을 바꾸지 않고 같은 크기 계산과 배치를 실행할 수 있습니다.

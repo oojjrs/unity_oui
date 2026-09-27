@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.15.0
+
+- `MyView`를 추가해 설정한 프리팹의 인스턴스 하나를 자식으로 생성·교체하고 현재 원본과 인스턴스를 노출합니다.
+- `OuiRecreate()` 강제 재생성과 `CallbackInterface` 교체 완료 알림을 제공하며, `MyView`가 파괴될 때 소유 인스턴스를 정리합니다.
+
 ## 1.14.0
 
 - `MyScrollRect`를 추가해 현재 선택된 content 자손이 viewport 안에 보이도록 가로·세로 최소 거리만큼 자동 스크롤합니다.
