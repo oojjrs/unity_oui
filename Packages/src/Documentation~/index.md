@@ -83,6 +83,10 @@ public sealed class StartButton : MonoBehaviour, MyButton.CallbackInterface, MyB
 
 ## 값 표시
 
+`MyTextBase`는 `MonoBehaviour` 기반 공통 추상 텍스트 컴포넌트이며 `RectTransform`을 요구합니다. 구현체는 `Color`, `EscapedText`, `PreferredHeight`, `PreferredWidth`, `Text`를 재정의하고, 기반 클래스의 `TextFromInt32`와 `Escape(string)`를 공통으로 사용합니다. `PreferredHeight`는 현재 폭에서 줄바꿈된 높이를 반환해야 하므로, 툴팁은 최종 폭을 적용한 뒤 다시 조회합니다. UGUI용 `MyText`가 이를 상속하며 기존 `MyText.Text`, `MyText.EscapedText`, `MyText.Escape(string)` 호출은 그대로 사용할 수 있습니다. TMP용 어댑터는 TMP와 oui를 참조하는 사용 프로젝트나 별도 연동 어셈블리에서 `MyTextBase`를 상속해 구현할 수 있습니다.
+
+`MyButton`, `MyBar`, `MySlider`, `MyPortrait`, `MyRadio`, `MyList`, `MyReel`, `MyAsker`, `MyTooltip`의 텍스트 참조는 `MyTextBase` 또는 그 배열로 연결합니다. 기존 `MyText`와 외부 구현체를 같은 Inspector 필드에 연결할 수 있습니다. `MyButton.Text`와 `MyTooltip.Text`의 반환 타입 및 `MyAsker.AskTextInterface.OnUpdate(MyTextBase text)`의 인자 타입도 공통 기반 타입입니다. 기존 콜백 구현체의 `OnUpdate(MyText text)` 선언은 `OnUpdate(MyTextBase text)`로 변경해야 합니다.
+
 `MyText`, `MyImage`, `MyPortrait`는 UGUI `Text`와 `Image` 갱신을 간단한 프로퍼티로 감쌉니다. `MyText`의 Auto Width와 Auto Height를 선택하면 `Text` 프로퍼티로 문자열을 설정할 때 `preferredWidth`와 `preferredHeight`에 맞춰 RectTransform 크기를 조정합니다. 두 옵션을 함께 사용하면 너비를 먼저 실제 적용한 뒤 픽셀 보정된 너비를 기준으로 높이를 계산합니다. UGUI `Text.text`를 직접 변경하면 자동 조정은 실행되지 않습니다.
 
 `MyText.EscapedText`는 setter 전용 프로퍼티입니다. 연결된 UGUI `Text.supportRichText`가 켜져 있으면 입력의 `<`와 `>`를 각각 `˂`(U+02C2)와 `˃`(U+02C3)로 바꿔 태그 해석을 막고, 꺼져 있으면 대입할 때마다 경고한 뒤 원문을 표시합니다. Rich Text 설정은 변경하지 않으며, 두 경로 모두 기존 `Text`를 거쳐 자동 너비·높이 조정을 적용합니다. `null`과 빈 문자열도 `Text`로 전달합니다.
@@ -107,7 +111,7 @@ Inspector의 선택적인 Click Audio Source에 `AudioSource`를 연결하면 �
 
 ## 툴팁
 
-`MyTooltip.Open(RectTransform target, string text, float width)`은 문구와 고정 폭을 적용한 뒤 `MyText`의 preferred height에 맞춰 툴팁 높이를 결정합니다. 외부 컴포넌트가 `MyText` 내용을 관리한다면 `Open(RectTransform target, float width)`으로 현재 표시 내용을 바꾸지 않고 같은 크기 계산과 배치를 실행할 수 있습니다.
+`MyTooltip.Open(RectTransform target, string text, float width)`은 문구와 고정 폭을 적용한 뒤 연결한 `MyTextBase` 구현체의 preferred height에 맞춰 툴팁 높이를 결정합니다. 외부 컴포넌트가 `MyTextBase` 내용을 관리한다면 `Open(RectTransform target, float width)`으로 현재 표시 내용을 바꾸지 않고 같은 크기 계산과 배치를 실행할 수 있습니다.
 
 `OpenAutoWidth(RectTransform target, string text, float maxWidth)`은 preferred width와 좌우 padding으로 툴팁 폭을 계산하고, 전달한 최대 폭과 root Canvas 폭을 넘지 않도록 제한합니다. 현재 표시 내용을 유지하는 `OpenAutoWidth(RectTransform target, float maxWidth)` 오버로드도 제공합니다. 최종 폭을 적용한 뒤 줄바꿈된 preferred height를 다시 계산합니다.
 
@@ -117,7 +121,7 @@ Inspector의 선택적인 Click Audio Source에 `AudioSource`를 연결하면 �
 
 ## 라디오
 
-`MyRadio`와 `MyRadioGroup`은 Unity `Toggle`, `ToggleGroup`, `Selectable`에 기대지 않고 라디오 버튼과 토글 묶음을 구성합니다. `MyRadio`는 `IsOn`과 `IsInteractable`을 Inspector에서 설정할 수 있으며, off/on 각각의 normal, highlighted, pressed preview, selected, disabled 상태 GameObject를 접을 수 있는 `StateObjects` 묶음으로 받아 직접 켜고 끕니다. 라디오별 아이콘과 라벨은 serialized `MyImage[]`, `MyText[]` 배열 참조로 연결하고, 코드는 setter-only `Sprite`와 `Title`로 연결된 이미지·텍스트 배열 전체를 갱신할 수 있습니다. 배열 값은 어떤 슬롯을 대표값으로 읽을지 안정적인 계약을 만들 수 없으므로 getter를 제공하지 않습니다. `MyRadio.InitializerInterface`는 단독 라디오에서 선택 상태에 적용됩니다. `MyRadioGroup`의 배열에 포함된 라디오 선택 초기화는 그룹이 맡되, `InitialValue`는 첫 사용자 선택에서 현재 상태와 다를 때 해당 라디오의 `OnValueChanged`를 한 번 전달하는 기준으로만 사용합니다. `MyRadio.ClickInterface.OnClick()`은 실제 클릭 처리가 끝난 뒤 `IsOn` 변경 여부와 관계없이 한 번 호출되므로, 구현체는 콜백 안에서 최종 선택 상태를 읽을 수 있습니다.
+`MyRadio`와 `MyRadioGroup`은 Unity `Toggle`, `ToggleGroup`, `Selectable`에 기대지 않고 라디오 버튼과 토글 묶음을 구성합니다. `MyRadio`는 `IsOn`과 `IsInteractable`을 Inspector에서 설정할 수 있으며, off/on 각각의 normal, highlighted, pressed preview, selected, disabled 상태 GameObject를 접을 수 있는 `StateObjects` 묶음으로 받아 직접 켜고 끕니다. 라디오별 아이콘과 라벨은 serialized `MyImage[]`, `MyTextBase[]` 배열 참조로 연결하고, 코드는 setter-only `Sprite`와 `Title`로 연결된 이미지·텍스트 배열 전체를 갱신할 수 있습니다. 배열 값은 어떤 슬롯을 대표값으로 읽을지 안정적인 계약을 만들 수 없으므로 getter를 제공하지 않습니다. `MyRadio.InitializerInterface`는 단독 라디오에서 선택 상태에 적용됩니다. `MyRadioGroup`의 배열에 포함된 라디오 선택 초기화는 그룹이 맡되, `InitialValue`는 첫 사용자 선택에서 현재 상태와 다를 때 해당 라디오의 `OnValueChanged`를 한 번 전달하는 기준으로만 사용합니다. `MyRadio.ClickInterface.OnClick()`은 실제 클릭 처리가 끝난 뒤 `IsOn` 변경 여부와 관계없이 한 번 호출되므로, 구현체는 콜백 안에서 최종 선택 상태를 읽을 수 있습니다.
 
 `MyRadio.HoverInterface`도 진입 뒤 pointer가 나가거나 라디오가 non-interactable 또는 비활성 상태가 될 때 `OnHoverExit()`을 한 번 보장합니다.
 
@@ -137,7 +141,7 @@ Inspector의 선택적인 Click Audio Source에 `AudioSource`를 연결하면 �
 
 정렬이 필요하면 `MyList.SorterInterface<TValue>`를, 엔트리 추가 후 처리가 필요하면 `MyList.PostscriptInterface<TEntry, TValue>`를 함께 구현합니다.
 
-선택적인 `_emptyText`에 `MyText`를 연결하면 `UpdateEntries()` 후 관리 중인 엔트리가 없을 때 빈 상태 문구를 표시하고, 엔트리가 있으면 숨깁니다. 연결하지 않으면 기존 목록 동작만 유지합니다.
+선택적인 `_emptyText`에 `MyTextBase` 구현체를 연결하면 `UpdateEntries()` 후 관리 중인 엔트리가 없을 때 빈 상태 문구를 표시하고, 엔트리가 있으면 숨깁니다. 연결하지 않으면 기존 목록 동작만 유지합니다.
 
 ### 가상화 목록
 

@@ -5,20 +5,19 @@ namespace oojjrs.oui
 {
     [DisallowMultipleComponent]
     [RequireComponent(typeof(Text))]
-    [RequireComponent(typeof(RectTransform))]
-    public class MyText : MonoBehaviour
+    public class MyText : MyTextBase
     {
         [SerializeField]
         private bool _autoHeight;
         [SerializeField]
         private bool _autoWidth;
 
-        public Color Color
+        public override Color Color
         {
             get => GetComponent<Text>().color;
             set => GetComponent<Text>().color = value;
         }
-        public string EscapedText
+        public override string EscapedText
         {
             set
             {
@@ -34,9 +33,9 @@ namespace oojjrs.oui
                 }
             }
         }
-        public float PreferredHeight => GetComponent<Text>().preferredHeight;
-        public float PreferredWidth => GetComponent<Text>().preferredWidth;
-        public string Text
+        public override float PreferredHeight => GetComponent<Text>().preferredHeight;
+        public override float PreferredWidth => GetComponent<Text>().preferredWidth;
+        public override string Text
         {
             get => GetComponent<Text>().text;
             set
@@ -49,18 +48,6 @@ namespace oojjrs.oui
                 if (_autoHeight)
                     text.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, text.preferredHeight);
             }
-        }
-        public int TextFromInt32
-        {
-            set
-            {
-                Text = value.ToString();
-            }
-        }
-
-        public static string Escape(string text)
-        {
-            return text?.Replace('<', '\u02C2').Replace('>', '\u02C3');
         }
     }
 }

@@ -10,7 +10,7 @@ namespace oojjrs.oui
     {
         public interface AskTextInterface
         {
-            void OnUpdate(MyText text);
+            void OnUpdate(MyTextBase text);
         }
 
         public class MyAskerArguments
@@ -48,7 +48,7 @@ namespace oojjrs.oui
         private MyAskerArguments _arguments;
         private readonly MyAskerArguments _argumentsEmpty = new();
         [SerializeField]
-        private MyText _askText;
+        private MyTextBase _askText;
         private AskTextInterface[] _askTexts;
 
         public MyAskerArguments Arguments => _arguments ?? _argumentsEmpty;

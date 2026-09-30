@@ -30,7 +30,7 @@ namespace oojjrs.oui
         [SerializeField]
         private AudioSource _clickAudioSource;
         [SerializeField]
-        private MyText _text;
+        private MyTextBase _text;
         private int _valueChangedVersion;
 
         private CallbackInterface[] Callbacks { get; set; }

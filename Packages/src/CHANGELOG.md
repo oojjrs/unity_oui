@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.16.0
+
+- `MyTextBase` 추상 컴포넌트를 추가하고 UGUI용 `MyText`가 이를 상속하도록 변경했습니다. 텍스트·색상·escape·preferred size 접근과 숫자 표시를 공통 기반 타입으로 제공합니다.
+- UI 헬퍼의 텍스트 참조와 `MyButton.Text`, `MyTooltip.Text`, `MyAsker.AskTextInterface.OnUpdate()`를 `MyTextBase` 기준으로 변경해 외부 텍스트 구현체를 연결할 수 있도록 했습니다. 기존 `OnUpdate(MyText text)` 콜백 구현체는 인자 타입을 변경해야 합니다.
+
 ## 1.15.1
 
 - `MyView` Inspector에 직렬화된 Prefab은 간단한 초기 설정용이고 런타임에는 `Prefab` 프로퍼티로 동적으로 교체한다는 안내를 추가했습니다.

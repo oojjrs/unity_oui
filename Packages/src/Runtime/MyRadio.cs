@@ -105,7 +105,7 @@ namespace oojjrs.oui
         [SerializeField]
         private StateObjects _stateObjects;
         [SerializeField]
-        private MyText[] _texts;
+        private MyTextBase[] _texts;
 
         public bool IsInteractable
         {

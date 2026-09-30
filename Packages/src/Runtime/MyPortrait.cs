@@ -12,7 +12,7 @@ namespace oojjrs.oui
         [SerializeField]
         private MyImage _portraitImage;
         [SerializeField]
-        private MyText _text;
+        private MyTextBase _text;
         [SerializeField]
         private MyImage _textBackImage;
 

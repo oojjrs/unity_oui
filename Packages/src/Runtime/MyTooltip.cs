@@ -17,9 +17,9 @@ namespace oojjrs.oui
         [Min(0)]
         private float _targetSpacing = 10;
         [SerializeField]
-        private MyText _text;
+        private MyTextBase _text;
 
-        public MyText Text => _text;
+        public MyTextBase Text => _text;
 
         private void Awake()
         {

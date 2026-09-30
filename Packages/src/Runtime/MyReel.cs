@@ -280,7 +280,7 @@ namespace oojjrs.oui
         }
 
         [SerializeField]
-        private MyText _emptyText;
+        private MyTextBase _emptyText;
         [SerializeField]
         [Min(0)]
         private float _overscan;

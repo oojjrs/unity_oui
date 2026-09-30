@@ -92,7 +92,7 @@ namespace oojjrs.oui
         [SerializeField]
         private SoundOverrides _soundOverrides;
         [SerializeField]
-        private MyText _text;
+        private MyTextBase _text;
         [SerializeField]
         private Color _textDisableColor = Color.gray;
         [SerializeField]
@@ -168,7 +168,7 @@ namespace oojjrs.oui
                 }
             }
         }
-        public MyText Text => _text;
+        public MyTextBase Text => _text;
 
         private void Awake()
         {

@@ -22,7 +22,7 @@ namespace oojjrs.oui
         [SerializeField]
         private Image _frontImage;
         [SerializeField]
-        private MyText _text;
+        private MyTextBase _text;
         private float _value;
 
         private Coroutine Coroutine { get; set; }

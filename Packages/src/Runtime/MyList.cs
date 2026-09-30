@@ -30,7 +30,7 @@ namespace oojjrs.oui
         }
 
         [SerializeField]
-        private MyText _emptyText;
+        private MyTextBase _emptyText;
         // -_- 유니티가 삭제를 제대로 못해서 땜빵겸 들고 있다. 2022.3.8f1부터 10f1까지.
         private readonly List<GameObject> _references = new();
         private UpdateInterface[] _updates;
