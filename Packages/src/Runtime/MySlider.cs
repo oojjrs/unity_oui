@@ -9,9 +9,6 @@ namespace oojjrs.oui
     [RequireComponent(typeof(RectTransform))]
     public class MySlider : MonoBehaviour, IPointerDownHandler
     {
-        private const float ContinuousStepRatio = 0.05f;
-        private const float WholeNumberStep = 5f;
-
         public interface CallbackInterface
         {
             void OnValueChanged(float value);
@@ -22,21 +19,76 @@ namespace oojjrs.oui
             float InitialValue { get; }
         }
 
+        public interface IntCallbackInterface
+        {
+            void OnValueChanged(int value);
+        }
+
+        public interface IntInitializerInterface
+        {
+            int InitialValue { get; }
+        }
+
+        public interface IntTexterInterface
+        {
+            string ToText(int value);
+        }
+
         public interface TextertInterface
         {
             string ToText(float value);
         }
 
+        private CallbackInterface[] _callbacks;
         [SerializeField]
         private AudioSource _clickAudioSource;
         [SerializeField]
+        [Range(0f, 1f)]
+        private float _continuousStepRatio = 0.05f;
+        private InitializerInterface _initializer;
+        private IntCallbackInterface[] _intCallbacks;
+        private IntInitializerInterface _intInitializer;
+        private IntTexterInterface _intTexter;
+        private bool _isStarted;
+        [SerializeField]
         private MyTextBase _text;
+        private TextertInterface _texter;
         private int _valueChangedVersion;
+        [SerializeField]
+        [Min(1)]
+        private int _wholeNumberStep = 1;
 
-        private CallbackInterface[] Callbacks { get; set; }
-        private InitializerInterface Initializer { get; set; }
-        private bool Started { get; set; }
-        private TextertInterface Texter { get; set; }
+        public float ContinuousStepRatio { get => Mathf.Clamp01(_continuousStepRatio); set => _continuousStepRatio = Mathf.Clamp01(value); }
+        public float MaxValue
+        {
+            get => GetComponent<Slider>().maxValue;
+            set
+            {
+                var slider = GetComponent<Slider>();
+                var previousValue = slider.value;
+                var valueChangedVersion = _valueChangedVersion;
+                slider.maxValue = value;
+
+                if ((slider.value != previousValue) && (_valueChangedVersion == valueChangedVersion))
+                    OnValueChanged(slider.value);
+            }
+        }
+        public int MaxValueAsInteger { get => Mathf.RoundToInt(MaxValue); set => MaxValue = value; }
+        public float MinValue
+        {
+            get => GetComponent<Slider>().minValue;
+            set
+            {
+                var slider = GetComponent<Slider>();
+                var previousValue = slider.value;
+                var valueChangedVersion = _valueChangedVersion;
+                slider.minValue = value;
+
+                if ((slider.value != previousValue) && (_valueChangedVersion == valueChangedVersion))
+                    OnValueChanged(slider.value);
+            }
+        }
+        public int MinValueAsInteger { get => Mathf.RoundToInt(MinValue); set => MinValue = value; }
         public float Value
         {
             get => GetComponent<Slider>().value;
@@ -50,32 +102,47 @@ namespace oojjrs.oui
                     OnValueChanged(slider.value);
             }
         }
+        public int ValueAsInteger { get => Mathf.RoundToInt(Value); set => Value = value; }
+        public bool WholeNumbers
+        {
+            get => GetComponent<Slider>().wholeNumbers;
+            set
+            {
+                var slider = GetComponent<Slider>();
+                var previousValue = slider.value;
+                var valueChangedVersion = _valueChangedVersion;
+                slider.wholeNumbers = value;
+
+                if ((slider.value != previousValue) && (_valueChangedVersion == valueChangedVersion))
+                    OnValueChanged(slider.value);
+            }
+        }
+        public int WholeNumberStep { get => Mathf.Max(1, _wholeNumberStep); set => _wholeNumberStep = Mathf.Max(1, value); }
 
         private void Awake()
         {
-            Callbacks = GetComponents<CallbackInterface>();
-            Initializer = GetComponent<InitializerInterface>();
-            Texter = GetComponent<TextertInterface>();
+            _callbacks = GetComponents<CallbackInterface>();
+            _initializer = GetComponent<InitializerInterface>();
+            _intCallbacks = GetComponents<IntCallbackInterface>();
+            _intInitializer = GetComponent<IntInitializerInterface>();
+            _intTexter = GetComponent<IntTexterInterface>();
+            _texter = GetComponent<TextertInterface>();
         }
 
         private void OnEnable()
         {
-            if (Started)
-            {
-                if (Initializer != default)
-                    Value = Initializer.InitialValue;
-            }
+            if (_isStarted)
+                InitializeValue();
         }
 
         private void Start()
         {
-            if (Callbacks?.Length <= 0)
+            if ((_callbacks?.Length <= 0) && (_intCallbacks?.Length <= 0))
                 Debug.LogWarning($"{name}> DON'T HAVE CALLBACK FUNCTION.");
 
-            if (Initializer != default)
-                Value = Initializer.InitialValue;
+            InitializeValue();
 
-            Started = true;
+            _isStarted = true;
         }
 
         void IPointerDownHandler.OnPointerDown(PointerEventData eventData)
@@ -87,6 +154,14 @@ namespace oojjrs.oui
             var pointerTransform = eventData.pointerPressRaycast.gameObject != null ? eventData.pointerPressRaycast.gameObject.transform : null;
             if ((slider.handleRect != default) && (pointerTransform != default) && ((pointerTransform == slider.handleRect) || pointerTransform.IsChildOf(slider.handleRect)))
                 PlaySfxSafety(_clickAudioSource);
+        }
+
+        private void InitializeValue()
+        {
+            if (_intInitializer != default)
+                ValueAsInteger = _intInitializer.InitialValue;
+            else if (_initializer != default)
+                Value = _initializer.InitialValue;
         }
 
         public void OnLeftButtonClick()
@@ -121,14 +196,22 @@ namespace oojjrs.oui
         {
             ++_valueChangedVersion;
 
-            if (Callbacks != default)
+            if (_callbacks != default)
             {
-                foreach (var callback in Callbacks)
+                foreach (var callback in _callbacks)
                     callback.OnValueChanged(value);
             }
 
-            if (Texter != default)
-                _text.Text = Texter.ToText(value);
+            if (_intCallbacks != default)
+            {
+                foreach (var callback in _intCallbacks)
+                    callback.OnValueChanged(Mathf.RoundToInt(value));
+            }
+
+            if (_intTexter != default)
+                _text.Text = _intTexter.ToText(Mathf.RoundToInt(value));
+            else if (_texter != default)
+                _text.Text = _texter.ToText(value);
         }
 
         private void PlaySfxSafety(AudioSource audioSource)

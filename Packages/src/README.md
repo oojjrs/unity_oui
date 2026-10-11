@@ -16,7 +16,7 @@ UGUI 기반 UI에서 자주 반복되는 컴포넌트 제어를 `oojjrs.oui` 네
 - `MyScrollRect`: 현재 선택된 content 자손이 viewport 안에 보이도록 `ScrollRect`를 가로·세로 최소 거리만큼 자동으로 이동하며, `OuiFocus()`로 현재 선택을 다시 맞춥니다.
 - `MyList`: 값 목록을 프리팹 엔트리로 동기화하고 필요하면 정렬하며, 선택적인 빈 상태 문구를 표시합니다.
 - `MyReel`: 새 값의 크기를 동기 확정해 누적 스크롤 위치를 계산하고, viewport 주변의 엔트리만 풀에서 롤링 재사용합니다.
-- `MySlider`: 값 변경과 표시 텍스트를 연결하고, 선택적인 좌우 `Button.onClick` 콜백으로 정수 5 또는 전체 범위의 5%씩 이동하며 연결한 `AudioSource`를 좌우 버튼과 Thumb 입력에 재생합니다.
+- `MySlider`: 정수·실수 값과 텍스트, 이동 간격과 클릭음을 연결합니다.
 - `MySelector`: index에 맞는 GameObject 하나를 표시하고, 같은 GameObject의 `HoverInterface` 구현체에 짝이 보장되는 pointer 진입·이탈을 전달합니다.
 - `MyView`: 설정한 프리팹의 인스턴스 하나를 자식으로 생성·교체하고 현재 원본과 인스턴스를 노출합니다. `OuiRecreate()`로 같은 프리팹을 강제로 다시 생성할 수 있으며, 같은 GameObject의 `CallbackInterface` 구현체에 교체 결과를 전달합니다.
 - `MyBar` / `MyToggle` / `MyTab`: 값 변경 UI, 라디오 헤더 기반 탭 선택과 런타임 초기화 콜백을 연결합니다.

@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.16.1
+
+- `MySlider`에 정수형 인터페이스와 `ValueAsInteger`를 추가했습니다.
+- `MinValue`·`MaxValue`로 범위 변경과 값 보정 알림을 제공합니다.
+- 정수 범위 속성과 `WholeNumbers` 설정을 추가했습니다.
+- 이동 간격을 Inspector·코드에 노출하고 정수 기본 간격을 1로 변경했습니다.
+
 ## 1.16.0
 
 - `MyTextBase` 추상 컴포넌트를 추가하고 UGUI용 `MyText`가 이를 상속하도록 변경했습니다. 텍스트·색상·escape·preferred size 접근과 숫자 표시를 공통 기반 타입으로 제공합니다.

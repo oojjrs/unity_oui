@@ -99,7 +99,17 @@ public sealed class StartButton : MonoBehaviour, MyButton.CallbackInterface, MyB
 
 `MyBar`, `MySlider`, `MyToggle`, `MySelector`, `MySwapper`는 값 기반 UI를 갱신할 때 사용합니다. 각 컴포넌트는 필요한 초기화 또는 변경 콜백 인터페이스를 함께 제공합니다. `MySelector.HoverInterface`는 같은 GameObject에서 pointer 진입과 이탈을 받아 `OnHoverEnter()`와 `OnHoverExit()`로 전달하며, 진입 뒤 selector가 비활성화되면 이탈을 한 번 보충합니다.
 
-`MySlider.OnLeftButtonClick()`과 `OnRightButtonClick()`은 별도의 좌우 `Button.onClick`에 연결하는 진입점입니다. 정수 Slider는 5씩, 연속 Slider는 전체 범위의 5%씩 이동합니다. `RightToLeft` 방향에서는 화면의 좌우에 맞춰 증감 방향을 뒤집고, 최솟값 또는 최댓값 경계에서는 값 변경 콜백을 다시 호출하지 않습니다.
+정수형은 `IntCallbackInterface`·`IntInitializerInterface`로 연결합니다.
+`IntTexterInterface`와 `ValueAsInteger`로 반올림한 정수 표시·값을 연결합니다.
+`MinValueAsInteger`·`MaxValueAsInteger`로 int 범위를 설정합니다.
+초기화·텍스트는 int를 우선하고, 값 변경은 두 타입 모두 전달합니다.
+정수 모드는 Inspector 또는 `WholeNumbers` 속성으로 설정합니다.
+
+`OnLeftButtonClick()`·`OnRightButtonClick()`은 버튼에 연결합니다.
+정수 간격은 `WholeNumberStep`이며 기본값은 1입니다.
+연속 간격은 `ContinuousStepRatio`이며 기본값은 범위의 5%입니다.
+간격은 Inspector·코드에서 바꾸며, `RightToLeft`는 방향을 뒤집습니다.
+경계에서는 콜백을 다시 호출하지 않습니다.
 
 Inspector의 선택적인 Click Audio Source에 `AudioSource`를 연결하면 좌우 콜백이 유효하게 호출되거나 Thumb에서 왼쪽 포인터를 누를 때 재생합니다. 값이 범위 경계에 있어 이동하지 않는 좌우 클릭도 재생하며, 트랙 클릭과 Thumb 드래그 중에는 반복 재생하지 않습니다. 비워 두면 오디오 없이 기존 이동 동작만 사용합니다.
 
