@@ -109,7 +109,7 @@ public sealed class StartButton : MonoBehaviour, MyButton.CallbackInterface, MyB
 정수 간격은 `WholeNumberStep`이며 기본값은 1입니다.
 연속 간격은 `ContinuousStepRatio`이며 기본값은 범위의 5%입니다.
 간격은 Inspector·코드에서 바꾸며, `RightToLeft`는 방향을 뒤집습니다.
-경계에서는 콜백을 다시 호출하지 않습니다.
+경계에서는 콜백을 재호출하지 않으며, 자식 버튼 입력은 드래그로 넘어가지 않습니다.
 
 Inspector의 선택적인 Click Audio Source에 `AudioSource`를 연결하면 좌우 콜백이 유효하게 호출되거나 Thumb에서 왼쪽 포인터를 누를 때 재생합니다. 값이 범위 경계에 있어 이동하지 않는 좌우 클릭도 재생하며, 트랙 클릭과 Thumb 드래그 중에는 반복 재생하지 않습니다. 비워 두면 오디오 없이 기존 이동 동작만 사용합니다.
 

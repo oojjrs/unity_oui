@@ -7,7 +7,7 @@ namespace oojjrs.oui
     [DisallowMultipleComponent]
     [RequireComponent(typeof(Slider))]
     [RequireComponent(typeof(RectTransform))]
-    public class MySlider : MonoBehaviour, IPointerDownHandler
+    public class MySlider : MonoBehaviour, IInitializePotentialDragHandler, IPointerDownHandler
     {
         public interface CallbackInterface
         {
@@ -143,6 +143,13 @@ namespace oojjrs.oui
             InitializeValue();
 
             _isStarted = true;
+        }
+
+        void IInitializePotentialDragHandler.OnInitializePotentialDrag(PointerEventData eventData)
+        {
+            var pointerPress = eventData.pointerPress;
+            if ((pointerPress != default) && (pointerPress != gameObject) && pointerPress.transform.IsChildOf(transform) && pointerPress.TryGetComponent<Button>(out _))
+                eventData.pointerDrag = null;
         }
 
         void IPointerDownHandler.OnPointerDown(PointerEventData eventData)

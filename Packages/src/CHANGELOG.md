@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.16.2
+
+- MySlider 자식 버튼 입력이 부모 드래그로 넘어가는 문제를 수정했습니다.
+
 ## 1.16.1
 
 - `MySlider`에 정수형 인터페이스와 `ValueAsInteger`를 추가했습니다.
