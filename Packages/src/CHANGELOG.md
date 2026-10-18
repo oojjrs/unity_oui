@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.16.3
+
+- MyBar의 이미지 참조를 MyImage로 변경하고 선택 연결을 명시했습니다.
+- MyImage.FillAmount로 Image의 채움 비율을 읽고 쓸 수 있습니다.
+
 ## 1.16.2
 
 - MySlider 자식 버튼 입력이 부모 드래그로 넘어가는 문제를 수정했습니다.

@@ -1,6 +1,5 @@
 using System.Collections;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace oojjrs.oui
 {
@@ -17,10 +16,12 @@ namespace oojjrs.oui
         private float _baringTimeSeconds = 0.2f;
         [SerializeField]
         private float _baringWaitTimeSeconds = 0.2f;
+        [Tooltip("선택 사항입니다. 연결하지 않으면 델타 이미지를 갱신하지 않습니다.")]
         [SerializeField]
-        private Image _deltaImage;
+        private MyImage _deltaImage;
         [SerializeField]
-        private Image _frontImage;
+        private MyImage _frontImage;
+        [Tooltip("선택 사항입니다. 연결하지 않으면 텍스트를 갱신하지 않습니다.")]
         [SerializeField]
         private MyTextBase _text;
         private float _value;
@@ -34,14 +35,14 @@ namespace oojjrs.oui
                 {
                     var s = Max - Min;
                     if (s > 0)
-                        _deltaImage.fillAmount = Mathf.Clamp(value, Min, Max) / s;
+                        _deltaImage.FillAmount = Mathf.Clamp(value, Min, Max) / s;
                     else
-                        _deltaImage.fillAmount = 0;
+                        _deltaImage.FillAmount = 0;
                 }
             }
         }
         // TODO : 좀 더 고민할 필요는 있는 속성
-        public float FillAmount { set => _frontImage.fillAmount = value; }
+        public float FillAmount { set => _frontImage.FillAmount = value; }
         private bool Init { get; set; }
         public float Max { get; set; }
         public float Min { get; set; }
@@ -57,14 +58,14 @@ namespace oojjrs.oui
                 var s = Max - Min;
                 if (s > 0)
                 {
-                    _frontImage.fillAmount = _value / s;
+                    _frontImage.FillAmount = _value / s;
 
                     if ((_text != default) && (Texter != default))
                         _text.Text = Texter.ToText(_value, Min, Max);
                 }
                 else
                 {
-                    _frontImage.fillAmount = 0;
+                    _frontImage.FillAmount = 0;
 
                     if (_text != default)
                         _text.Text = string.Empty;

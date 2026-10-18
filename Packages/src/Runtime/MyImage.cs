@@ -24,6 +24,11 @@ namespace oojjrs.oui
             get => GetComponent<Image>().color;
             set => GetComponent<Image>().color = value;
         }
+        public float FillAmount
+        {
+            get => GetComponent<Image>().fillAmount;
+            set => GetComponent<Image>().fillAmount = value;
+        }
         public Sprite OverrideSprite
         {
             get => GetComponent<Image>().overrideSprite;

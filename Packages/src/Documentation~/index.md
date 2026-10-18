@@ -95,9 +95,15 @@ public sealed class StartButton : MonoBehaviour, MyButton.CallbackInterface, MyB
 
 `MyImage`의 Alpha Hit Test Minimum Threshold는 연결된 `Image.alphaHitTestMinimumThreshold`에 즉시 반영되며, 에디터와 런타임에서 다시 활성화될 때도 직렬화된 값을 복원합니다. `0`이면 Image 사각형 전체가 raycast 대상이고, `0`보다 큰 값을 사용하려면 Sprite 텍스처의 Read/Write를 켜고 Crunch 압축과 Sprite Atlas 사용을 피해야 합니다.
 
+`MyImage.FillAmount`는 연결된 UGUI Image의 채움 비율을 읽고 씁니다.
+
 `MyImage.SetNativeSizeSprite(sprite, nativeSizeScale)`는 `sprite`를 설정한 뒤 `SetNativeSize()`를 호출하고 `nativeSizeScale` 배율을 적용합니다. `1f`는 100%, `0.5f`는 50%, `2f`는 200% 크기입니다. 단순히 값을 읽거나 크기 조정 없이 교체할 때는 기존 `Sprite`, `OverrideSprite` 프로퍼티를 사용합니다.
 
 `MyBar`, `MySlider`, `MyToggle`, `MySelector`, `MySwapper`는 값 기반 UI를 갱신할 때 사용합니다. 각 컴포넌트는 필요한 초기화 또는 변경 콜백 인터페이스를 함께 제공합니다. `MySelector.HoverInterface`는 같은 GameObject에서 pointer 진입과 이탈을 받아 `OnHoverEnter()`와 `OnHoverExit()`로 전달하며, 진입 뒤 selector가 비활성화되면 이탈을 한 번 보충합니다.
+
+`MyBar`의 이미지는 `MyImage`, 텍스트는 `MyTextBase`로 연결합니다.
+Front Image는 필수이며, Text와 Delta Image는 각각 생략할 수 있습니다.
+기존 Image 참조는 MyImage로 다시 연결합니다.
 
 정수형은 `IntCallbackInterface`·`IntInitializerInterface`로 연결합니다.
 `IntTexterInterface`와 `ValueAsInteger`로 반올림한 정수 표시·값을 연결합니다.
