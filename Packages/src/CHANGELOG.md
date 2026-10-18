@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.16.4
+
+- MyBar에 FillAmount·Resize 표시 방식 선택을 추가했습니다.
+- 현재 값·델타·애니메이션과 FillAmount 직접 설정에 선택 방식을 적용합니다.
+- Resize는 Sliced 이미지의 가로 길이를 조절하며 짧은 구간에서는 양끝도 압축됩니다.
+
 ## 1.16.3
 
 - MyBar의 이미지 참조를 MyImage로 변경하고 선택 연결을 명시했습니다.

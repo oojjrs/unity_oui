@@ -104,6 +104,8 @@ public sealed class StartButton : MonoBehaviour, MyButton.CallbackInterface, MyB
 `MyBar`의 이미지는 `MyImage`, 텍스트는 `MyTextBase`로 연결합니다.
 Front Image는 필수이며, Text와 Delta Image는 각각 생략할 수 있습니다.
 기존 Image 참조는 MyImage로 다시 연결합니다.
+Fill Mode의 FillAmount는 Filled, Resize는 Sliced 이미지를 사용합니다.
+Resize는 부모 너비를 왼쪽부터 채우며, 짧은 구간에서는 양끝도 압축됩니다.
 
 정수형은 `IntCallbackInterface`·`IntInitializerInterface`로 연결합니다.
 `IntTexterInterface`와 `ValueAsInteger`로 반올림한 정수 표시·값을 연결합니다.
