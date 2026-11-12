@@ -52,7 +52,16 @@ namespace oojjrs.oui
 
         public int CharacterLimit => GetComponent<InputField>().characterLimit;
         public bool IsFocused => _isFocused;
-        public bool IsInteractable => GetComponent<InputField>().IsInteractable();
+        public bool IsInteractable
+        {
+            get => GetComponent<InputField>().IsInteractable();
+            set => GetComponent<InputField>().interactable = value;
+        }
+        public bool IsReadOnly
+        {
+            get => GetComponent<InputField>().readOnly;
+            set => GetComponent<InputField>().readOnly = value;
+        }
         public string Text
         {
             get => GetComponent<InputField>().text;
