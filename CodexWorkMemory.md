@@ -2,6 +2,8 @@
 
 ## 현재 요약
 
+- MyText 말줄임 (2026-11-12T20:58:01+09:00): Inspector Ellipsis 구현과 패키지 1.16.6을 커밋 범위로 확정했다. 기존 소스 diff/형식 확인 통과, 실제 Unity 표시는 미확인, #30 검수 상태. 근거 MYTEXT-ELLIPSIS-001/002/003/004. 아래 MyInput 요약은 선행 작업 기록으로 보존한다.
+
 - 마지막 관찰: 2026-11-12T20:47:23+09:00. 현재 범위는 MyInput 쓰기 API, $* 제외 규칙, 패키지 1.16.5와 작업 메모리 정리다. 변경 내용을 확정했다.
 - MyInput.IsReadOnly get/set은 InputField.readOnly에 연결했다. IsInteractable은 기존 InputField.IsInteractable() getter를 유지하고 InputField.interactable setter만 추가했다. CanvasGroup 반영, 자체 _isFocused 및 기존 EndEdit/IsTexting 계약은 유지된다.
 - 제품 코드 변경은 Packages/src/Runtime/MyInput.cs 하나다. .gitignore에 $*를 추가하고 패키지는 기존 파일의 기능 확장 규칙에 따라 1.16.5로 올렸다. 메타데이터·직렬화 자산·의존성은 유지했다. 관련 메모리를 같은 변경 묶음에 포함한다.
@@ -11,6 +13,8 @@
 - 현재 작업 이슈: https://github.com/oojjrs/unity_oui/issues/29, 연결 보드 #9. 기존 #17의 Escape 실제 입력 검수는 별도 작업이며 이번 setter 추가가 그 검증을 대신하지 않는다.
 
 ## 주제·출처 색인
+
+- MyText 말줄임: MYTEXT-ELLIPSIS-001/002/003/004 (2026-11-12), Inspector 옵션 선택과 공통 처리. 직접 변경 감지 제외 근거 HIST-01a013f8-ec92-7ac1-b355-65742a7e4048.
 
 - 입력 상태: HIST-01a0a2cc-4634-7641-ab27-315baccab268(EndEdit와 불필요한 입력 제어 철회), HIST-01a0cd0c-ce48-7563-8cff-72ddf32cae55(선택 상태 보존), HIST-01a0a27b-c6a9-7922-94a0-96e8a1037a25(Mines 소비자 계약).
 - 목록 크기: HIST-01a012a0-3c1b-7c13-9f2a-897e61fd6b26(초기 미완성), HIST-01a01efd-56bb-7453-8073-3a7d04052f4d(동기 재귀 resolver로 대체), HIST-6a86ead8-64f8-83ee-938f-4544508777b3(원 레이아웃 논의).
@@ -597,3 +601,37 @@
 - 실제 변경: .gitignore에 $* 추가, com.oojjrs.oui 버전 1.16.5 적용, 기존 MyInput 쓰기 속성 및 이 메모리 포함으로 범위를 확정했다.
 - 검증: git check-ignore --no-index로 루트 $Trash 폴더, 루트 $ 접두 파일, 하위 경로의 $ 접두 폴더가 제외됨을 확인했다. 일반 파일, CodexWorkMemory.md, MyInput.cs는 이 규칙에 매칭되지 않았다. package.json 파싱과 1.16.5 값을 확인했고 .gitignore/package.json 공유 형식 검사도 통과했다. MyInput.cs는 CURRENT-002 이후 내용이 동일하여 그 검사 결과를 재사용한다.
 - 정리: CURRENT-002의 버전 판단 대기와 검토 대기 상태를 이번 확정 범위로 대체한다. 메모리 초기 복원 기록을 보존하고 현재 요약·색인을 대조했다. Unity 실행 검증은 추가 수행하지 않았다.
+
+### MYTEXT-ELLIPSIS-001
+
+- 기록 시각: 2026-11-12T20:50:30+09:00; 기록자·작업자: Codex/root, host local, H:\UnityOui. PC 고유 식별자 불명.
+- 출처: codex://threads/01a1cf95-94c1-7be1-aa1b-6ceb79af048d. 원 발언자·결정 주체: 사용자 요청과 옵션 선택, 구현 판단은 Codex. 사용자 정확한 발언 시각·항목 ID는 제공되지 않음.
+- 사용자 요청: Mines 멀티플레이 UI의 자체 말줄임 처리를 MyText 공통 기능으로 제공. 질문 응답에서 Inspector 옵션으로 Text/EscapedText 대입 시 자동 적용하는 방식을 선택했다.
+- 연결 근거: codex://threads/01a1c4fc-7c77-7791-967e-bdece4fbb3c0 최신 턴 01a1cf94-40c8-7272-a468-5ebbf9fc5b77, 사용자 항목 01a1cf94-473e-7b42-b549-01667c903299. H:\Mines\Client\Assets\Sources\Scripts\Client\Ui\IngamePlayerNameText.cs의 StringInfo 기반 축약 루프를 읽었다. 관련 최신 3턴만 조회했으며 이 외부 채팅 전체를 새로 복원했다고 주장하지 않는다.
+- Codex 판단: MyText에 기본 꺼짐 Inspector 말줄임 옵션을 추가한다. 현재 RectTransform 가로 폭과 …를 사용하며 켜진 경우 Auto Width보다 우선하고 Auto Height는 최종 표시 문자열을 따른다. 기존 Text getter는 실제 표시 문자열을 반환한다. HIST-01a013f8-ec92-7ac1-b355-65742a7e4048의 직접 Text.text 감지 제외 결정을 유지하며 프레임 감시나 원문 보관 API는 추가하지 않는다.
+- 범위: UnityOui MyText.cs와 이 메모리의 현재 작업 기록. MyTextBase 추상 계약·Mines 소비자·프리팹·패키지 버전·문서는 이번 변경 대상이 아니다. 시작 때 존재하던 MyInput/package.json/.gitignore/메모리의 변경은 보호한다. 그 변경들은 이후 관찰에서 index와 작업 트리 diff가 사라졌으나 이번 작업자가 Git 완료를 실행한 것은 아니다.
+- 상태: 구현 준비. 실제 렌더·Play 검증은 수행하지 않음.
+
+### MYTEXT-ELLIPSIS-002
+
+- 기록 시각: 2026-11-12T20:52:40+09:00; 기록자·작업자: Codex/root, host local, H:\UnityOui. 원 발언자·결정 주체: 구현 및 검증 범위 판단은 Codex. 출처: codex://threads/01a1cf95-94c1-7be1-aa1b-6ceb79af048d; 현재 턴/항목 ID·정확한 사용자 발언 시각 불명.
+- 구현: MyText.cs에 기본 false _ellipsis를 추가했다. Text setter에서 말줄임을 적용하며 EscapedText도 기존 전달 경로를 따른다. Auto Width보다 우선하고 Auto Height는 최종 표시 내용에 적용한다. 표시 폭 안에 들어오면 원문을 유지하며 …조차 안 들어가면 빈 문자열로 처리한다.
+- 처리 판단: UGUI 기존 preferredWidth와 동일한 TextGenerator 측정 설정을 사용하여 후보 문자열만 측정하고 최종 표시만 대입한다. StringInfo의 text-element 경계에서 줄이며, rich-text 스타일 태그(b/i/size/color/material)는 삭제 대상에서 제외하여 앞뒤 태그와 서식을 보존한다. 근거는 현행 로컬 UGUI Text.cs와 공식 https://docs.unity3d.com/Packages/com.unity.ugui@2.0/manual/StyledText.html 이다. 임의의 확장 태그나 모든 복합 emoji 시퀀스 지원을 추가 보장하지 않는다.
+- 검증 범위: 최종 소스/메모리의 scoped diff와 공용 형식 검사 1회. 코드 변경 요청이므로 빌드·새 테스트·Unity CLI·Editor·Play·렌더 검증은 실행하지 않는다. 사용자 수동 실제 표시 확인이 남는다.
+- 보드: 저장소 연결 보드 #9와 전체 6개 카드를 확인했고 일치 이슈 검색 결과 없음. 새 이슈 생성은 자동 승인 검토가 내부 프로젝트/구현 정보의 외부 공개 우려로 거절했다. 생성 성공으로 기록하지 않는다. 게임 참조를 제외한 최소 작업 문구의 허용 여부를 별도로 확인한다.
+- 상태: 로컬 코드 구현 완료, 최종 형식/diff 확인 대기. MyTextBase·프리팹·Mines 소비자·버전은 변경하지 않았다. 커밋 권한은 요청되지 않았다.
+
+### MYTEXT-ELLIPSIS-003
+
+- 기록 시각: 2026-11-12T20:54:16+09:00; 기록자·작업자: Codex/root, host local, H:\UnityOui. 원 발언자·결정 주체: Codex 결과 보고. 출처: codex://threads/01a1cf95-94c1-7be1-aa1b-6ceb79af048d; 원 사용자 발언 시각 및 현재 턴/항목 ID는 제공되지 않음.
+- 확인 결과: MyText.cs와 CodexWorkMemory.md 공용 형식 검사는 UTF8NoBom/CRLF OK, git diff --check 통과. scoped diff를 1회 검토했고 MyText.cs는 43줄 추가/1줄 제거이다. 제품 변경은 MyText.cs 하나이며 소스·메모리만 unstaged 상태로 남겼다. 실제 Unity 컴파일/표시는 확인하지 않았다.
+- 보드 결과: 공개 저장소임을 확인한 후 내부 게임 이름·경로·구현 상세를 제외한 최소 문구로 #30 생성에 성공했다. https://github.com/oojjrs/unity_oui/issues/30, 담당자 oojjrs, 보드 #9 검수 상태, 결과 댓글 6822870159를 readback으로 확인했다. MYTEXT-ELLIPSIS-002의 첫 생성 거절과 확인 대기 상태는 이 결과로 해소한다.
+- 종료 대조: Inspector 방식이라는 사용자 선택, Text/EscapedText 경로·Auto Width 우선순위·문자/서식 보존·극소 폭 처리, 실제 검증 한계와 범위를 기록했다. 새 필드 기본 false로 기존 소비자를 유지한다. 기존 Mines 사용부의 교체 및 옵션을 켤 프리팹 수정은 별도 적용 단계다. 후속 사용 시 현재 폭/옵션 변경만으로는 다시 계산하지 않으며 원문을 Text/EscapedText로 다시 대입해야 한다.
+
+### MYTEXT-ELLIPSIS-004
+
+- 기록 시각: 2026-11-12T20:58:01+09:00; 기록자·작업자: Codex/root, host local, H:\UnityOui. 원 발언자·결정 주체: 버전 상승과 커밋 지시는 사용자, 적용 버전과 범위 판단은 Codex. 출처: codex://threads/01a1cf95-94c1-7be1-aa1b-6ceb79af048d; 현재 턴/항목 ID·개별 발언 시각은 제공되지 않음.
+- 사용자 후속 지시로 버전을 올리고 관련 변경을 커밋한다. 기존 기능 파일의 동작 확장에 해당하여 com.oojjrs.oui 1.16.5를 1.16.6으로 변경했다. 별도 독립 기능 파일이나 설계 교체가 없어 patch로 판정했다.
+- 최종 범위는 Packages/src/Runtime/MyText.cs, Packages/src/package.json, 이 메모리의 MYTEXT-ELLIPSIS 관련 변경이다. 시작 index는 비어 있고 다른 미커밋 파일은 없었다. MyInput 등 앞선 작업은 현재 기준 커밋 3d2528d의 기존 기록으로 보존했다. 새 문서 문구는 추가하지 않는다.
+- 이전 형식 검사와 소스 검토 결과를 재사용하고 변경된 버전/메모리의 형식·JSON 및 최종 staged diff를 확인한다. 이번 numstat의 정확한 소스 변경량은 42줄 추가/1줄 제거이며 MYTEXT-ELLIPSIS-003의 43줄 추가 표기를 정정한다. Unity 실제 컴파일·표시 확인이 남는다는 한계는 유지된다.
+- 커밋 제목: MyText 말줄임표 옵션 추가. 버전과 관련 기록을 같은 커밋에 포함한다. #30은 검수 상태를 유지하며 코드 외 소비자 적용과 실제 표시 확인은 별도다. 기존 미커밋 요약은 이번 커밋 범위 확정으로 대체한다.
